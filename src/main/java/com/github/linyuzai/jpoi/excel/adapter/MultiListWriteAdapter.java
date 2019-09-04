@@ -44,11 +44,13 @@ public class MultiListWriteAdapter extends LambdaFieldDataWriteAdapter {
         addListData(listData, cls);
     }
 
-    public <T> void addListData(List<?> dataList, LambdaMethod<T, ?>... lambdaMethods) {
+    @SafeVarargs
+    public final <T> void addListData(List<?> dataList, LambdaMethod<T, ?>... lambdaMethods) {
         addListData(null, dataList, lambdaMethods);
     }
 
-    public <T> void addListData(String sheetName, List<?> dataList, LambdaMethod<T, ?>... lambdaMethods) {
+    @SafeVarargs
+    public final <T> void addListData(String sheetName, List<?> dataList, LambdaMethod<T, ?>... lambdaMethods) {
         ListData listData = new ListData();
         listData.setDataList(dataList);
         listData.setSheetName(sheetName);

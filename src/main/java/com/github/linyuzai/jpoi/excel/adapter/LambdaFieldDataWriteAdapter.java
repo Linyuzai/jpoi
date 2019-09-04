@@ -8,7 +8,8 @@ import java.util.List;
 
 public class LambdaFieldDataWriteAdapter extends ListDataWriteAdapter {
 
-    public <T> void addListData(ListData listData, LambdaMethod<T, ?>... lambdaMethods) {
+    @SafeVarargs
+    public final <T> void addListData(ListData listData, LambdaMethod<T, ?>... lambdaMethods) {
         int sheet = getListDataList().size();
         getListDataList().add(sheet, listData);
         List<FieldData> fieldDataList = new ArrayList<>();

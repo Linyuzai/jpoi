@@ -3,6 +3,7 @@ package com.github.linyuzai.jpoi.excel;
 import com.github.linyuzai.jpoi.excel.adapter.SimpleDataWriteAdapter;
 import com.github.linyuzai.jpoi.excel.adapter.TitleIndexDataWriteAdapter;
 import com.github.linyuzai.jpoi.excel.adapter.WriteAdapter;
+import com.github.linyuzai.jpoi.excel.auto.AutoWorkbook;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
 import com.github.linyuzai.jpoi.excel.setter.PoiValueSetter;
@@ -134,6 +135,16 @@ public class JExcelTransfer {
     }
 
     private void write(Workbook workbook, WriteAdapter writeAdapter, List<PoiListener> poiListeners, List<ValueConverter> valueConverters, ValueSetter valueSetter) {
+        if (workbook instanceof AutoWorkbook) {
+            int count = 0;
+            for (int i = 0; i < writeAdapter.getSheetCount(); i++) {
+                int t = writeAdapter.getRowCount(i);
+                if (t > count) {
+                    count = t;
+                }
+            }
+            workbook = AutoWorkbook.getWorkbook(count);
+        }
         for (PoiListener poiListener : poiListeners) {
             poiListener.onWorkbookCreate(workbook);
         }
