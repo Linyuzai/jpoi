@@ -73,11 +73,11 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
     private void reuseValueConverter(AnnotationFieldData fieldData, Class<? extends ValueConverter> cls) {
         if (!cls.isInterface()) {
             try {
-                if (AnnotationFieldData.valueConverterMap.containsKey(cls.getName())) {
-                    fieldData.setValueConverter(AnnotationFieldData.valueConverterMap.get(cls.getName()));
+                if (ValueConverter.cache.containsKey(cls.getName())) {
+                    fieldData.setValueConverter(ValueConverter.cache.get(cls.getName()));
                 } else {
                     ValueConverter valueConverter = cls.newInstance();
-                    AnnotationFieldData.valueConverterMap.put(cls.getName(), valueConverter);
+                    ValueConverter.cache.put(cls.getName(), valueConverter);
                     fieldData.setValueConverter(valueConverter);
                 }
             } catch (InstantiationException | IllegalAccessException e) {
@@ -95,8 +95,6 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
     }
 
     public static class AnnotationFieldData extends FieldData {
-
-        private static Map<String, ValueConverter> valueConverterMap = new ConcurrentHashMap<>();
 
         private boolean isMethod;
         private ValueConverter valueConverter;
