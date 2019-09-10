@@ -31,6 +31,8 @@ public class PictureValueConverter implements ValueConverter {
             picture = new BufferedImagePicture((BufferedImage) value);
         } else if (value instanceof File) {
             picture = new FilePicture((File) value);
+        } else if (value instanceof String) {
+
         }
         if (picture != null) {
             picture.setLocation(getLocation(sheet, row, cell, value));

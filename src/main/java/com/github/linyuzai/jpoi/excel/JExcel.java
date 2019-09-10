@@ -9,22 +9,22 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class JExcel {
 
     public static JExcelTransfer xls() {
-        return new JExcelTransfer(new HSSFWorkbook());
+        return use(new HSSFWorkbook());
     }
 
     public static JExcelTransfer xlsx() {
-        return new JExcelTransfer(new XSSFWorkbook());
+        return use(new XSSFWorkbook());
     }
 
     public static JExcelTransfer sxlsx() {
-        return new JExcelTransfer(new SXSSFWorkbook());
+        return use(new SXSSFWorkbook());
     }
 
     public static JExcelTransfer auto() {
-        return new JExcelTransfer(new AutoWorkbook());
+        return use(new AutoWorkbook());
     }
 
-    public static JExcelTransfer of(Workbook workbook) {
+    public static JExcelTransfer use(Workbook workbook) {
         if (workbook == null) {
             throw new RuntimeException("workbook is null");
         }

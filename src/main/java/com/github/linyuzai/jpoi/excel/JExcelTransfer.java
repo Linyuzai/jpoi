@@ -135,6 +135,7 @@ public class JExcelTransfer {
     }
 
     private void write(Workbook workbook, WriteAdapter writeAdapter, List<PoiListener> poiListeners, List<ValueConverter> valueConverters, ValueSetter valueSetter) {
+        Workbook fromAuto = workbook;
         if (workbook instanceof AutoWorkbook) {
             int count = 0;
             for (int i = 0; i < writeAdapter.getSheetCount(); i++) {
@@ -143,35 +144,35 @@ public class JExcelTransfer {
                     count = t;
                 }
             }
-            workbook = AutoWorkbook.getWorkbook(count);
+            fromAuto = AutoWorkbook.getWorkbook(count);
         }
         for (PoiListener poiListener : poiListeners) {
-            poiListener.onWorkbookCreate(workbook);
+            poiListener.onWorkbookCreate(fromAuto);
         }
         int sheetCount = writeAdapter.getSheetCount();
         for (int s = 0; s < sheetCount; s++) {
             String sheetName = writeAdapter.getSheetName(s);
             Sheet sheet;
             if (sheetName == null) {
-                sheet = workbook.createSheet();
+                sheet = fromAuto.createSheet();
             } else {
-                sheet = workbook.createSheet(sheetName);
+                sheet = fromAuto.createSheet(sheetName);
             }
             Drawing<?> drawing = sheet.createDrawingPatriarch();
             for (PoiListener poiListener : poiListeners) {
-                poiListener.onSheetCreate(s, sheet, drawing, workbook);
+                poiListener.onSheetCreate(s, sheet, drawing, fromAuto);
             }
             int rowCount = writeAdapter.getRowCount(s);
             for (int r = 0; r < rowCount; r++) {
                 Row row = sheet.createRow(r);
                 for (PoiListener poiListener : poiListeners) {
-                    poiListener.onRowCreate(r, s, row, sheet, workbook);
+                    poiListener.onRowCreate(r, s, row, sheet, fromAuto);
                 }
                 int cellCount = writeAdapter.getCellCount(s, r);
                 for (int c = 0; c < cellCount; c++) {
                     Cell cell = row.createCell(c);
                     for (PoiListener poiListener : poiListeners) {
-                        poiListener.onCellCreate(c, r, s, cell, row, sheet, workbook);
+                        poiListener.onCellCreate(c, r, s, cell, row, sheet, fromAuto);
                     }
                     ValueConverter valueConverter = null;
                     Object o = writeAdapter.getData(s, r, c);
@@ -185,7 +186,7 @@ public class JExcelTransfer {
                         throw new RuntimeException("No value converter matched");
                     }
                     Object value = valueConverter.adaptValue(s, r, c, o);
-                    valueSetter.setValue(s, r, c, cell, row, sheet, drawing, workbook, value);
+                    valueSetter.setValue(s, r, c, cell, row, sheet, drawing, fromAuto, value);
                 }
             }
         }

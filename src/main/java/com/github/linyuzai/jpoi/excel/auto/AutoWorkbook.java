@@ -13,6 +13,12 @@ import java.util.List;
 
 public class AutoWorkbook implements Workbook {
 
+    private static AutoWorkbook sInstance = new AutoWorkbook();
+
+    public static AutoWorkbook getInstance() {
+        return sInstance;
+    }
+
     private static int largeFileCount = 1000;
 
     public static Workbook getWorkbook(int count) {
