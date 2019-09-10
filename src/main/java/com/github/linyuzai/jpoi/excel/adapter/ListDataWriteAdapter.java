@@ -146,10 +146,10 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
     @Override
     public Object getDataCalculateHeader(int sheet, int row, int cell, int realRow, int realCell) {
         Object entity = listDataList.get(sheet).getDataList().get(row);
-        return getValueFromEntity(sheet, row, cell, entity);
+        return getValueFromEntity(sheet, row, cell, realRow, realCell, entity);
     }
 
-    public Object getValueFromEntity(int sheet, int row, int cell, Object entity) {
+    public Object getValueFromEntity(int sheet, int row, int cell, int realRow, int realCell, Object entity) {
         FieldData fieldData = fieldDataList.get(sheet).get(cell);
         String fieldName = fieldData.getFieldName();
         Object val;
@@ -173,7 +173,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
         ValueConverter valueConverter;
         if (fieldData instanceof AnnotationFieldData &&
                 (valueConverter = ((AnnotationFieldData) fieldData).getValueConverter()) != null) {
-            val = valueConverter.adaptValue(sheet, row, cell, val);
+            val = valueConverter.adaptValue(sheet, realRow, realCell, val);
         }
         return val;
     }

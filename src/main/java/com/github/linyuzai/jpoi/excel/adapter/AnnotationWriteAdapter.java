@@ -2,12 +2,10 @@ package com.github.linyuzai.jpoi.excel.adapter;
 
 import com.github.linyuzai.jpoi.excel.annotation.JExcelCell;
 import com.github.linyuzai.jpoi.excel.annotation.JExcelSheet;
-import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
+import com.github.linyuzai.jpoi.excel.converter.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
 
@@ -73,7 +71,17 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
     private void reuseValueConverter(AnnotationFieldData fieldData, Class<? extends ValueConverter> cls) {
         if (!cls.isInterface()) {
             try {
-                if (ValueConverter.cache.containsKey(cls.getName())) {
+                if (cls == NullValueConverter.class) {
+                    fieldData.setValueConverter(NullValueConverter.getInstance());
+                } else if (cls == ObjectValueConverter.class) {
+                    fieldData.setValueConverter(ObjectValueConverter.getInstance());
+                } else if (cls == PictureValueConverter.class) {
+                    fieldData.setValueConverter(PictureValueConverter.getInstance());
+                } else if (cls == PoiValueConverter.class) {
+                    fieldData.setValueConverter(PoiValueConverter.getInstance());
+                } else if (cls == SupportValueConverter.class) {
+                    fieldData.setValueConverter(SupportValueConverter.getInstance());
+                } else if (ValueConverter.cache.containsKey(cls.getName())) {
                     fieldData.setValueConverter(ValueConverter.cache.get(cls.getName()));
                 } else {
                     ValueConverter valueConverter = cls.newInstance();

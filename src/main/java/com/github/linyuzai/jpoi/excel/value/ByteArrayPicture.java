@@ -8,6 +8,11 @@ public class ByteArrayPicture extends PoiPicture {
         this.bytes = bytes;
     }
 
+    public ByteArrayPicture(Padding padding, Location location, int type, String format, byte[] bytes) {
+        super(padding, location, type, format);
+        this.bytes = bytes;
+    }
+
     public byte[] getBytes() {
         return bytes;
     }

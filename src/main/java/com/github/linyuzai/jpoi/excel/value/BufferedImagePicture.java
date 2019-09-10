@@ -10,6 +10,11 @@ public class BufferedImagePicture extends PoiPicture {
         this.bufferedImage = bufferedImage;
     }
 
+    public BufferedImagePicture(Padding padding, Location location, int type, String format, BufferedImage bufferedImage) {
+        super(padding, location, type, format);
+        this.bufferedImage = bufferedImage;
+    }
+
     public BufferedImage getBufferedImage() {
         return bufferedImage;
     }

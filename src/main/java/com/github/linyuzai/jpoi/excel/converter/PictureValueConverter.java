@@ -1,9 +1,6 @@
 package com.github.linyuzai.jpoi.excel.converter;
 
-import com.github.linyuzai.jpoi.excel.value.BufferedImagePicture;
-import com.github.linyuzai.jpoi.excel.value.ByteArrayPicture;
-import com.github.linyuzai.jpoi.excel.value.FilePicture;
-import com.github.linyuzai.jpoi.excel.value.PoiPicture;
+import com.github.linyuzai.jpoi.excel.value.*;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.awt.image.BufferedImage;
@@ -19,7 +16,7 @@ public class PictureValueConverter implements ValueConverter {
 
     @Override
     public boolean supportValue(int sheet, int row, int cell, Object value) {
-        return value instanceof File || value instanceof BufferedImage || value instanceof byte[];
+        return value instanceof File || value instanceof BufferedImage || value instanceof byte[] || value instanceof String;
     }
 
     @Override
@@ -32,7 +29,7 @@ public class PictureValueConverter implements ValueConverter {
         } else if (value instanceof File) {
             picture = new FilePicture((File) value);
         } else if (value instanceof String) {
-
+            picture = new Base64Picture((String) value);
         }
         if (picture != null) {
             picture.setLocation(getLocation(sheet, row, cell, value));

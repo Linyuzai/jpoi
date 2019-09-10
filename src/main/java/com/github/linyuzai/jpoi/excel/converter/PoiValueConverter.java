@@ -27,6 +27,6 @@ public class PoiValueConverter implements ValueConverter {
 
     @Override
     public int getOrder() {
-        return Integer.MAX_VALUE - 1;
+        return Integer.MAX_VALUE - 2;
     }
 }

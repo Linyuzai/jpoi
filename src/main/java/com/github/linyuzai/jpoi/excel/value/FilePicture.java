@@ -10,6 +10,11 @@ public class FilePicture extends PoiPicture {
         this.file = file;
     }
 
+    public FilePicture(Padding padding, Location location, int type, String format, File file) {
+        super(padding, location, type, format);
+        this.file = file;
+    }
+
     public FilePicture(String path) {
         this.file = new File(path);
     }

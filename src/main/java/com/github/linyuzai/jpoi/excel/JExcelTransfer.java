@@ -6,7 +6,7 @@ import com.github.linyuzai.jpoi.excel.adapter.WriteAdapter;
 import com.github.linyuzai.jpoi.excel.auto.AutoWorkbook;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
-import com.github.linyuzai.jpoi.excel.setter.PoiValueSetter;
+import com.github.linyuzai.jpoi.excel.setter.SupportValueSetter;
 import com.github.linyuzai.jpoi.excel.setter.ValueSetter;
 import com.github.linyuzai.jpoi.order.Ordered;
 import org.apache.poi.ss.usermodel.*;
@@ -18,6 +18,7 @@ import java.util.List;
 public class JExcelTransfer {
 
     private Workbook workbook;
+    private Workbook real;
     private List<PoiListener> poiListeners;
     private List<ValueConverter> valueConverters;
     private ValueSetter valueSetter;
@@ -29,10 +30,11 @@ public class JExcelTransfer {
         this.workbook = workbook;
         this.poiListeners = new ArrayList<>();
         this.valueConverters = new ArrayList<>();
-        setValueSetter(PoiValueSetter.getInstance());
+        setValueSetter(SupportValueSetter.getInstance());
         addValueConverter(NullValueConverter.getInstance());
-        addValueConverter(PictureValueConverter.getInstance());
+        //addValueConverter(PictureValueConverter.getInstance());
         addValueConverter(PoiValueConverter.getInstance());
+        addValueConverter(SupportValueConverter.getInstance());
         addValueConverter(ObjectValueConverter.getInstance());
     }
 
@@ -131,51 +133,48 @@ public class JExcelTransfer {
             throw new RuntimeException("PoiListeners is null");
         }
         write(workbook, writeAdapter, poiListeners, valueConverters, valueSetter);
-        return new JExcelWriter(workbook);
+        return new JExcelWriter(real);
     }
 
     private void write(Workbook workbook, WriteAdapter writeAdapter, List<PoiListener> poiListeners, List<ValueConverter> valueConverters, ValueSetter valueSetter) {
-        Workbook fromAuto = workbook;
+        real = workbook;
         if (workbook instanceof AutoWorkbook) {
             int count = 0;
             for (int i = 0; i < writeAdapter.getSheetCount(); i++) {
-                int t = writeAdapter.getRowCount(i);
-                if (t > count) {
-                    count = t;
-                }
+                count += writeAdapter.getRowCount(i);
             }
-            fromAuto = AutoWorkbook.getWorkbook(count);
+            real = AutoWorkbook.getWorkbook(count);
         }
         for (PoiListener poiListener : poiListeners) {
-            poiListener.onWorkbookCreate(fromAuto);
+            poiListener.onWorkbookCreate(real);
         }
         int sheetCount = writeAdapter.getSheetCount();
         for (int s = 0; s < sheetCount; s++) {
             String sheetName = writeAdapter.getSheetName(s);
             Sheet sheet;
             if (sheetName == null) {
-                sheet = fromAuto.createSheet();
+                sheet = real.createSheet();
             } else {
-                sheet = fromAuto.createSheet(sheetName);
+                sheet = real.createSheet(sheetName);
             }
             Drawing<?> drawing = sheet.createDrawingPatriarch();
             for (PoiListener poiListener : poiListeners) {
-                poiListener.onSheetCreate(s, sheet, drawing, fromAuto);
+                poiListener.onSheetCreate(s, sheet, drawing, real);
             }
             int rowCount = writeAdapter.getRowCount(s);
             for (int r = 0; r < rowCount; r++) {
                 Row row = sheet.createRow(r);
                 for (PoiListener poiListener : poiListeners) {
-                    poiListener.onRowCreate(r, s, row, sheet, fromAuto);
+                    poiListener.onRowCreate(r, s, row, sheet, real);
                 }
                 int cellCount = writeAdapter.getCellCount(s, r);
                 for (int c = 0; c < cellCount; c++) {
                     Cell cell = row.createCell(c);
                     for (PoiListener poiListener : poiListeners) {
-                        poiListener.onCellCreate(c, r, s, cell, row, sheet, fromAuto);
+                        poiListener.onCellCreate(c, r, s, cell, row, sheet, real);
                     }
-                    ValueConverter valueConverter = null;
                     Object o = writeAdapter.getData(s, r, c);
+                    ValueConverter valueConverter = null;
                     for (ValueConverter vc : valueConverters) {
                         if (vc.supportValue(s, r, c, o)) {
                             valueConverter = vc;
@@ -186,7 +185,7 @@ public class JExcelTransfer {
                         throw new RuntimeException("No value converter matched");
                     }
                     Object value = valueConverter.adaptValue(s, r, c, o);
-                    valueSetter.setValue(s, r, c, cell, row, sheet, drawing, fromAuto, value);
+                    valueSetter.setValue(s, r, c, cell, row, sheet, drawing, real, value);
                 }
             }
         }
@@ -202,9 +201,9 @@ public class JExcelTransfer {
             write();
         }
         if (exd) {
-            return new JExcelTransfer(workbook, poiListeners, valueConverters, valueSetter, writeAdapter);
+            return new JExcelTransfer(real, poiListeners, valueConverters, valueSetter, writeAdapter);
         } else {
-            return new JExcelTransfer(workbook);
+            return new JExcelTransfer(real);
         }
     }
 }

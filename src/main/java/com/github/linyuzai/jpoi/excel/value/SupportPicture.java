@@ -7,6 +7,8 @@ public interface SupportPicture extends SupportValue {
 
     int getType();
 
+    String getFormat();
+
     class Location {
         private int startRow;
         private int startCell;
