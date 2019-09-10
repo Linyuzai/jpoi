@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.adapter;
 
+import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
 import org.apache.poi.ss.usermodel.*;
 
@@ -151,11 +152,12 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
     public Object getValueFromEntity(int sheet, int row, int cell, Object entity) {
         FieldData fieldData = fieldDataList.get(sheet).get(cell);
         String fieldName = fieldData.getFieldName();
+        Object val;
         if (fieldData instanceof AnnotationFieldData && ((AnnotationFieldData) fieldData).isMethod()) {
             try {
                 Method method = entity.getClass().getMethod(fieldName);
                 method.setAccessible(true);
-                return method.invoke(entity);
+                val = method.invoke(entity);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
@@ -163,11 +165,17 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
             try {
                 Field field = entity.getClass().getDeclaredField(fieldName);
                 field.setAccessible(true);
-                return field.get(entity);
+                val = field.get(entity);
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
+        ValueConverter valueConverter;
+        if (fieldData instanceof AnnotationFieldData &&
+                (valueConverter = ((AnnotationFieldData) fieldData).getValueConverter()) != null) {
+            val = valueConverter.adaptValue(sheet, row, cell, val);
+        }
+        return val;
     }
 
     @Override

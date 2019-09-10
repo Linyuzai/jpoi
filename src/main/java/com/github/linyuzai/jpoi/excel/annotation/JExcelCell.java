@@ -1,5 +1,7 @@
 package com.github.linyuzai.jpoi.excel.annotation;
 
+import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
+
 import java.lang.annotation.*;
 
 @Target({ElementType.METHOD, ElementType.FIELD})
@@ -8,4 +10,6 @@ import java.lang.annotation.*;
 public @interface JExcelCell {
 
     String title() default "";
+
+    Class<? extends ValueConverter> valueConverter() default ValueConverter.class;
 }
