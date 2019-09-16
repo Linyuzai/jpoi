@@ -13,5 +13,7 @@ public @interface JExcelCell {
 
     Class<? extends ValueConverter> valueConverter() default ValueConverter.class;
 
+    boolean autoSize() default true;
+
     int order() default Integer.MAX_VALUE;
 }

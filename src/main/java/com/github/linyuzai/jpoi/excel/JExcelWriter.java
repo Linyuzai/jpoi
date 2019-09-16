@@ -17,8 +17,14 @@ public class JExcelWriter {
     }
 
     public void to(OutputStream outputStream) throws IOException {
+        to(outputStream, true);
+    }
+
+    public void to(OutputStream outputStream, boolean close) throws IOException {
         workbook.write(outputStream);
-        workbook.close();
+        if (close) {
+            workbook.close();
+        }
     }
 
     public void to(File file) throws IOException {

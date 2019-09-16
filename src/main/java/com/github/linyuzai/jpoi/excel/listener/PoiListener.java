@@ -5,11 +5,35 @@ import org.apache.poi.ss.usermodel.*;
 
 public interface PoiListener extends Ordered {
 
-    void onWorkbookCreate(Workbook workbook);
+    default void onWorkbookCreate(Workbook workbook) {
 
-    void onSheetCreate(int s, Sheet sheet, Drawing<?> drawing, Workbook workbook);
+    }
 
-    void onRowCreate(int r, int s, Row row, Sheet sheet, Workbook workbook);
+    default void onSheetCreate(int s, Sheet sheet, Drawing<?> drawing, Workbook workbook) {
 
-    void onCellCreate(int c, int r, int s, Cell cell, Row row, Sheet sheet, Workbook workbook);
+    }
+
+    default void onRowCreate(int r, int s, Row row, Sheet sheet, Workbook workbook) {
+
+    }
+
+    default void onCellCreate(int c, int r, int s, Cell cell, Row row, Sheet sheet, Workbook workbook) {
+
+    }
+
+    default void onCellValueSet(int c, int r, int s, Cell cell, Row row, Sheet sheet, Workbook workbook) {
+
+    }
+
+    default void onRowValueSet(int r, int s, Row row, Sheet sheet, Workbook workbook) {
+
+    }
+
+    default void onSheetValueSet(int s, Sheet sheet, Drawing<?> drawing, Workbook workbook) {
+
+    }
+
+    default void onWorkbookValueSet(Workbook workbook) {
+
+    }
 }

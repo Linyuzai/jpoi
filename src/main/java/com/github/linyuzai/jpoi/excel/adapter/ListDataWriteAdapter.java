@@ -211,18 +211,28 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
     }
 
     @Override
-    public void onSheetCreate(int s, Sheet sheet, Drawing<?> drawing, Workbook workbook) {
-
-    }
-
-    @Override
-    public void onRowCreate(int r, int s, Row row, Sheet sheet, Workbook workbook) {
-
-    }
-
-    @Override
-    public void onCellCreate(int c, int r, int s, Cell cell, Row row, Sheet sheet, Workbook workbook) {
-
+    public void onSheetValueSet(int s, Sheet sheet, Drawing<?> drawing, Workbook workbook) {
+        for (int columnNum = 0; columnNum < fieldDataList.size(); columnNum++) {
+            if (fieldDataList.get(s).get(columnNum).isAutoSize()) {
+                int columnWidth = sheet.getColumnWidth(columnNum) / 256;
+                for (int rowNum = 0; rowNum < sheet.getLastRowNum(); rowNum++) {
+                    Row currentRow = sheet.getRow(rowNum);
+                    /*if (sheet.getRow(rowNum) == null) {
+                        currentRow = sheet.createRow(rowNum);
+                    }*/
+                    if (currentRow != null && currentRow.getCell(columnNum) != null) {
+                        Cell currentCell = currentRow.getCell(columnNum);
+                        if (currentCell.getCellType() == CellType.STRING) {
+                            int length = currentCell.getStringCellValue().getBytes().length;
+                            if (columnWidth < length) {
+                                columnWidth = length;
+                            }
+                        }
+                    }
+                }
+                sheet.setColumnWidth(columnNum, columnWidth * 256);
+            }
+        }
     }
 
     public static class ListData {

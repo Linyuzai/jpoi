@@ -4,7 +4,8 @@ import com.github.linyuzai.jpoi.excel.adapter.SimpleDataWriteAdapter;
 import com.github.linyuzai.jpoi.excel.annotation.JExcelCell;
 import com.github.linyuzai.jpoi.excel.annotation.JExcelSheet;
 import com.github.linyuzai.jpoi.excel.converter.PictureValueConverter;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import com.github.linyuzai.jpoi.excel.listener.PoiListener;
+import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,21 +16,24 @@ public class ExcelTest {
 
     public static void main(String[] args) throws IOException {
         List<TestBean> list = new ArrayList<>();
-        list.add(new TestBean("111", 1.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
-        list.add(new TestBean("222", 2.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
-        list.add(new TestBean("333", 3.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
-        list.add(new TestBean("444", 4.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
+        for (int i = 0; i < 500; i++) {
+            list.add(new TestBean("111", 1.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
+        }
+        //list.add(new TestBean("111", 1.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
+        //list.add(new TestBean("222", 2.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
+        //list.add(new TestBean("333", 3.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
+        //list.add(new TestBean("444", 4.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
         //JExcel.xlsx().data(list).append().data(list).write().to(new File("C:\\JExcel\\111.xlsx"));
         //JExcel.xlsx().data(list, list).write().to(new File("C:\\JExcel\\111.xlsx"));
         //SimpleDataWriteAdapter sa = new SimpleDataWriteAdapter(list, TestBean::getTestString, TestBean::getTestDouble);
         //sa.addListData(list, TestBean::getTestString);
-        JExcel.auto().data(list, list).write().to(new File("C:\\JExcel\\111.xlsx"));
+        JExcel.sxlsx().data(list).write().to(new File("C:\\JExcel\\111.xlsx"));
     }
 
     @JExcelSheet(name = "2222222")
     public static class TestBean {
 
-        @JExcelCell(title = "str")
+        @JExcelCell(title = "string11111")
         private String testString;
         private Double testDouble;
         @JExcelCell(valueConverter = PictureValueConverter.class)

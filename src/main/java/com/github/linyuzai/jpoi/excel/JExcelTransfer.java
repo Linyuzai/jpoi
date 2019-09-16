@@ -188,8 +188,20 @@ public class JExcelTransfer {
                     }
                     Object value = valueConverter.adaptValue(s, r, c, o);
                     valueSetter.setValue(s, r, c, cell, row, sheet, drawing, real, value);
+                    for (PoiListener poiListener : poiListeners) {
+                        poiListener.onCellValueSet(c, r, s, cell, row, sheet, real);
+                    }
+                }
+                for (PoiListener poiListener : poiListeners) {
+                    poiListener.onRowValueSet(r, s, row, sheet, real);
                 }
             }
+            for (PoiListener poiListener : poiListeners) {
+                poiListener.onSheetValueSet(s, sheet, drawing, real);
+            }
+        }
+        for (PoiListener poiListener : poiListeners) {
+            poiListener.onWorkbookValueSet(real);
         }
         transferred = true;
     }

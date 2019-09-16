@@ -39,6 +39,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             FieldData fieldData = new FieldData();
             fieldData.setFieldName(field.getName());
             fieldData.setFieldDescription(field.getName());
+            fieldData.setAutoSize(true);
             fieldData.setOrder(Integer.MAX_VALUE);
             return fieldData;
         } else {
@@ -46,6 +47,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             AnnotationFieldData fieldData = new AnnotationFieldData();
             fieldData.setFieldName(field.getName());
             fieldData.setFieldDescription(title.isEmpty() ? field.getName() : title);
+            fieldData.setAutoSize(fa.autoSize());
             fieldData.setMethod(false);
             fieldData.setOrder(fa.order());
             reuseValueConverter(fieldData, fa.valueConverter());
@@ -59,6 +61,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             FieldData fieldData = new FieldData();
             fieldData.setFieldName(method.getName());
             fieldData.setFieldDescription(method.getName());
+            fieldData.setAutoSize(true);
             fieldData.setOrder(Integer.MAX_VALUE);
             return fieldData;
         } else {
@@ -66,6 +69,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             AnnotationFieldData fieldData = new AnnotationFieldData();
             fieldData.setFieldName(method.getName());
             fieldData.setFieldDescription(title.isEmpty() ? method.getName() : title);
+            fieldData.setAutoSize(ma.autoSize());
             fieldData.setMethod(true);
             fieldData.setOrder(ma.order());
             if (method.getParameterTypes().length > 0) {
