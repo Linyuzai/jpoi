@@ -5,6 +5,7 @@ public abstract class ClassWriteAdapter extends HeaderWriteAdapter {
     public static class FieldData {
         private String fieldName;
         private String fieldDescription;
+        private int order;
 
         public String getFieldName() {
             return fieldName;
@@ -20,6 +21,14 @@ public abstract class ClassWriteAdapter extends HeaderWriteAdapter {
 
         public void setFieldDescription(String fieldDescription) {
             this.fieldDescription = fieldDescription;
+        }
+
+        public int getOrder() {
+            return order;
+        }
+
+        public void setOrder(int order) {
+            this.order = order;
         }
     }
 }

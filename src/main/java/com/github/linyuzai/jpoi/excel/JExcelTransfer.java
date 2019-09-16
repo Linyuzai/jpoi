@@ -58,18 +58,20 @@ public class JExcelTransfer {
         return this;
     }
 
-    public void addPoiListener(PoiListener poiListener) {
+    public JExcelTransfer addPoiListener(PoiListener poiListener) {
         this.poiListeners.add(poiListener);
         this.poiListeners.sort(Comparator.comparingInt(Ordered::getOrder));
+        return this;
     }
 
     public List<ValueConverter> getValueConverters() {
         return valueConverters;
     }
 
-    public void setValueConverters(List<ValueConverter> valueConverters) {
+    public JExcelTransfer setValueConverters(List<ValueConverter> valueConverters) {
         this.valueConverters = valueConverters;
         this.valueConverters.sort(Comparator.comparingInt(Ordered::getOrder));
+        return this;
     }
 
     public JExcelTransfer addValueConverter(ValueConverter valueConverter) {
@@ -118,7 +120,7 @@ public class JExcelTransfer {
 
     public JExcelWriter write() {
         if (workbook == null) {
-            throw new RuntimeException("No source to write");
+            throw new RuntimeException("No source to transfer");
         }
         if (writeAdapter == null) {
             throw new RuntimeException("WriteAdapter is null");
@@ -132,11 +134,11 @@ public class JExcelTransfer {
         if (poiListeners == null) {
             throw new RuntimeException("PoiListeners is null");
         }
-        write(workbook, writeAdapter, poiListeners, valueConverters, valueSetter);
+        transfer(workbook, writeAdapter, poiListeners, valueConverters, valueSetter);
         return new JExcelWriter(real);
     }
 
-    private void write(Workbook workbook, WriteAdapter writeAdapter, List<PoiListener> poiListeners, List<ValueConverter> valueConverters, ValueSetter valueSetter) {
+    private void transfer(Workbook workbook, WriteAdapter writeAdapter, List<PoiListener> poiListeners, List<ValueConverter> valueConverters, ValueSetter valueSetter) {
         real = workbook;
         if (workbook instanceof AutoWorkbook) {
             int count = 0;

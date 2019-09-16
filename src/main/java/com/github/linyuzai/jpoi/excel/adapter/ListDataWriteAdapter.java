@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiListener {
@@ -72,6 +73,9 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
             } else {
                 fieldDataList.add(sheet, Collections.emptyList());
             }
+        }
+        for (List<FieldData> fd : fieldDataList) {
+            fd.sort(Comparator.comparingInt(FieldData::getOrder));
         }
     }
 

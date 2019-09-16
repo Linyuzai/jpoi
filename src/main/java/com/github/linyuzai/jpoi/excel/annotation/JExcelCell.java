@@ -12,4 +12,6 @@ public @interface JExcelCell {
     String title() default "";
 
     Class<? extends ValueConverter> valueConverter() default ValueConverter.class;
+
+    int order() default Integer.MAX_VALUE;
 }

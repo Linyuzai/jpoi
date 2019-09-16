@@ -39,6 +39,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             FieldData fieldData = new FieldData();
             fieldData.setFieldName(field.getName());
             fieldData.setFieldDescription(field.getName());
+            fieldData.setOrder(Integer.MAX_VALUE);
             return fieldData;
         } else {
             String title = fa.title().trim();
@@ -46,6 +47,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             fieldData.setFieldName(field.getName());
             fieldData.setFieldDescription(title.isEmpty() ? field.getName() : title);
             fieldData.setMethod(false);
+            fieldData.setOrder(fa.order());
             reuseValueConverter(fieldData, fa.valueConverter());
             return fieldData;
         }
@@ -57,6 +59,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             FieldData fieldData = new FieldData();
             fieldData.setFieldName(method.getName());
             fieldData.setFieldDescription(method.getName());
+            fieldData.setOrder(Integer.MAX_VALUE);
             return fieldData;
         } else {
             String title = ma.title().trim();
@@ -64,6 +67,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             fieldData.setFieldName(method.getName());
             fieldData.setFieldDescription(title.isEmpty() ? method.getName() : title);
             fieldData.setMethod(true);
+            fieldData.setOrder(ma.order());
             if (method.getParameterTypes().length > 0) {
                 throw new RuntimeException("Only support no args method");
             }
