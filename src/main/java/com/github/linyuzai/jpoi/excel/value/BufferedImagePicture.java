@@ -1,5 +1,7 @@
 package com.github.linyuzai.jpoi.excel.value;
 
+import org.apache.poi.ss.usermodel.ClientAnchor;
+
 import java.awt.image.BufferedImage;
 
 public class BufferedImagePicture extends PoiPicture {
@@ -10,8 +12,8 @@ public class BufferedImagePicture extends PoiPicture {
         this.bufferedImage = bufferedImage;
     }
 
-    public BufferedImagePicture(Padding padding, Location location, int type, String format, BufferedImage bufferedImage) {
-        super(padding, location, type, format);
+    public BufferedImagePicture(Padding padding, Location location, ClientAnchor.AnchorType anchorType, int type, String format, BufferedImage bufferedImage) {
+        super(padding, location, anchorType, type, format);
         this.bufferedImage = bufferedImage;
     }
 

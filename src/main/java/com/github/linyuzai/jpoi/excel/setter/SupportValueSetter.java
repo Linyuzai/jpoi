@@ -37,13 +37,9 @@ public class SupportValueSetter extends PoiValueSetter {
             ClientAnchor anchor = drawing.createAnchor(
                     padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom(),
                     location.getStartCell(), location.getStartRow(), location.getEndCell(), location.getEndRow());
-            configAnchor(anchor, s, r, c);
+            anchor.setAnchorType(((SupportPicture) value).getAnchorType());
             create((SupportPicture) value, anchor, workbook, drawing);
         }
-    }
-
-    public void configAnchor(ClientAnchor anchor, int s, int r, int c) {
-
     }
 
     private void create(SupportPicture value, ClientAnchor anchor, Workbook workbook, Drawing<?> drawing) {
@@ -62,8 +58,8 @@ public class SupportValueSetter extends PoiValueSetter {
                     }
                 }
                 ImageIO.write(((BufferedImagePicture) value).getBufferedImage(), format, byteArrayOut);
-                create(new ByteArrayPicture(value.getPadding(), value.getLocation(), type, value.getFormat(),
-                        byteArrayOut.toByteArray()), anchor, workbook, drawing);
+                create(new ByteArrayPicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
+                        type, value.getFormat(), byteArrayOut.toByteArray()), anchor, workbook, drawing);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -76,15 +72,15 @@ public class SupportValueSetter extends PoiValueSetter {
                     type = Workbook.PICTURE_TYPE_PNG;
                 }
                 BufferedImage bufferedImage = ImageIO.read(file);
-                create(new BufferedImagePicture(value.getPadding(), value.getLocation(), type, value.getFormat(),
-                        bufferedImage), anchor, workbook, drawing);
+                create(new BufferedImagePicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
+                        type, value.getFormat(), bufferedImage), anchor, workbook, drawing);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (value instanceof Base64Picture) {
             byte[] bytes = Base64.getDecoder().decode(((Base64Picture) value).getBase64());
-            create(new ByteArrayPicture(value.getPadding(), value.getLocation(), type, value.getFormat(),
-                    bytes), anchor, workbook, drawing);
+            create(new ByteArrayPicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
+                    type, value.getFormat(), bytes), anchor, workbook, drawing);
         }
     }
 }

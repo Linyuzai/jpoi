@@ -1,6 +1,7 @@
 package com.github.linyuzai.jpoi.excel.converter;
 
 import com.github.linyuzai.jpoi.excel.value.*;
+import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.awt.image.BufferedImage;
@@ -34,6 +35,7 @@ public class PictureValueConverter implements ValueConverter {
         if (picture != null) {
             picture.setLocation(getLocation(sheet, row, cell, value));
             picture.setPadding(getPadding(sheet, row, cell, value));
+            picture.setAnchorType(getAnchorType(sheet, row, cell, value));
             picture.setType(getType(sheet, row, cell, value));
             return picture;
         }
@@ -50,6 +52,10 @@ public class PictureValueConverter implements ValueConverter {
 
     public int getType(int sheet, int row, int cell, Object value) {
         return Workbook.PICTURE_TYPE_JPEG;
+    }
+
+    public ClientAnchor.AnchorType getAnchorType(int sheet, int row, int cell, Object value) {
+        return ClientAnchor.AnchorType.MOVE_AND_RESIZE;
     }
 
     @Override

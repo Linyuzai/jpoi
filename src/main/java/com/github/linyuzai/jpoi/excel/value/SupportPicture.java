@@ -1,11 +1,15 @@
 package com.github.linyuzai.jpoi.excel.value;
 
+import org.apache.poi.ss.usermodel.ClientAnchor;
+
 public interface SupportPicture extends SupportValue {
     PoiPicture.Padding getPadding();
 
     PoiPicture.Location getLocation();
 
     int getType();
+
+    ClientAnchor.AnchorType getAnchorType();
 
     String getFormat();
 

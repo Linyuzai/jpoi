@@ -1,18 +1,22 @@
 package com.github.linyuzai.jpoi.excel.value;
 
+import org.apache.poi.ss.usermodel.ClientAnchor;
+
 public class PoiPicture implements SupportPicture {
 
     private Padding padding;
     private Location location;
+    private ClientAnchor.AnchorType anchorType;
     private int type;
     private String format;
 
     public PoiPicture() {
     }
 
-    public PoiPicture(Padding padding, Location location, int type, String format) {
+    public PoiPicture(Padding padding, Location location, ClientAnchor.AnchorType anchorType, int type, String format) {
         this.padding = padding;
         this.location = location;
+        this.anchorType = anchorType;
         this.type = type;
         this.format = format;
     }
@@ -42,6 +46,15 @@ public class PoiPicture implements SupportPicture {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    @Override
+    public ClientAnchor.AnchorType getAnchorType() {
+        return anchorType;
+    }
+
+    public void setAnchorType(ClientAnchor.AnchorType anchorType) {
+        this.anchorType = anchorType;
     }
 
     @Override

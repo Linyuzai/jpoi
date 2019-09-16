@@ -1,5 +1,7 @@
 package com.github.linyuzai.jpoi.excel.value;
 
+import org.apache.poi.ss.usermodel.ClientAnchor;
+
 public class Base64Picture extends PoiPicture {
 
     private String base64;
@@ -8,8 +10,8 @@ public class Base64Picture extends PoiPicture {
         this.base64 = base64;
     }
 
-    public Base64Picture(Padding padding, Location location, int type, String format, String base64) {
-        super(padding, location, type, format);
+    public Base64Picture(Padding padding, Location location, ClientAnchor.AnchorType anchorType, int type, String format, String base64) {
+        super(padding, location, anchorType, type, format);
         this.base64 = base64;
     }
 

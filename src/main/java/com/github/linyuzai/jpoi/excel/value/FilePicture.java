@@ -1,5 +1,7 @@
 package com.github.linyuzai.jpoi.excel.value;
 
+import org.apache.poi.ss.usermodel.ClientAnchor;
+
 import java.io.File;
 
 public class FilePicture extends PoiPicture {
@@ -10,8 +12,8 @@ public class FilePicture extends PoiPicture {
         this.file = file;
     }
 
-    public FilePicture(Padding padding, Location location, int type, String format, File file) {
-        super(padding, location, type, format);
+    public FilePicture(Padding padding, Location location, ClientAnchor.AnchorType anchorType, int type, String format, File file) {
+        super(padding, location, anchorType, type, format);
         this.file = file;
     }
 
