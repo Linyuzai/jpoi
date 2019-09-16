@@ -16,8 +16,12 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             return null;
         } else {
             JExcelSheet ca = cls.getAnnotation(JExcelSheet.class);
+            if (ca == null) {
+                return null;
+            }
             String title;
-            if (ca == null || (title = ca.name().trim()).isEmpty()) {
+            annotationOnly = ca.annotationOnly();
+            if ((title = ca.name().trim()).isEmpty()) {
                 return null;
             } else {
                 AnnotationFieldData fieldData = new AnnotationFieldData();

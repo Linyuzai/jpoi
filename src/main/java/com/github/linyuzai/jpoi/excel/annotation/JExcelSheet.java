@@ -8,4 +8,6 @@ import java.lang.annotation.*;
 public @interface JExcelSheet {
 
     String name() default "";
+
+    boolean annotationOnly() default false;
 }
