@@ -6,7 +6,11 @@ import org.apache.poi.ss.usermodel.*;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Base64;
 
 public class SupportValueSetter extends PoiValueSetter {
@@ -33,8 +37,13 @@ public class SupportValueSetter extends PoiValueSetter {
             ClientAnchor anchor = drawing.createAnchor(
                     padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom(),
                     location.getStartCell(), location.getStartRow(), location.getEndCell(), location.getEndRow());
+            configAnchor(anchor, s, r, c);
             create((SupportPicture) value, anchor, workbook, drawing);
         }
+    }
+
+    public void configAnchor(ClientAnchor anchor, int s, int r, int c) {
+
     }
 
     private void create(SupportPicture value, ClientAnchor anchor, Workbook workbook, Drawing<?> drawing) {
@@ -60,7 +69,13 @@ public class SupportValueSetter extends PoiValueSetter {
             }
         } else if (value instanceof FilePicture) {
             try {
-                BufferedImage bufferedImage = ImageIO.read(((FilePicture) value).getFile());
+                File file = ((FilePicture) value).getFile();
+                Path path = Paths.get(file.getAbsolutePath());
+                String mime = Files.probeContentType(path);
+                if (mime.equals("image/png")) {
+                    type = Workbook.PICTURE_TYPE_PNG;
+                }
+                BufferedImage bufferedImage = ImageIO.read(file);
                 create(new BufferedImagePicture(value.getPadding(), value.getLocation(), type, value.getFormat(),
                         bufferedImage), anchor, workbook, drawing);
             } catch (IOException e) {
