@@ -6,28 +6,46 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class JExcel {
 
     public static JExcelTransfer xls() {
-        return use(new HSSFWorkbook());
+        return of(new HSSFWorkbook());
+    }
+
+    public static JExcelAnalyzer xls(InputStream is) throws IOException {
+        return from(new HSSFWorkbook(is));
     }
 
     public static JExcelTransfer xlsx() {
-        return use(new XSSFWorkbook());
+        return of(new XSSFWorkbook());
+    }
+
+    public static JExcelAnalyzer xlsx(InputStream is) throws IOException {
+        return from(new XSSFWorkbook(is));
     }
 
     public static JExcelTransfer sxlsx() {
-        return use(new SXSSFWorkbook());
+        return of(new SXSSFWorkbook());
     }
 
     public static JExcelTransfer auto() {
-        return use(new AutoWorkbook());
+        return of(new AutoWorkbook());
     }
 
-    public static JExcelTransfer use(Workbook workbook) {
+    public static JExcelTransfer of(Workbook workbook) {
         if (workbook == null) {
             throw new RuntimeException("workbook is null");
         }
         return new JExcelTransfer(workbook);
+    }
+
+    public static JExcelAnalyzer from(Workbook workbook) {
+        if (workbook == null) {
+            throw new RuntimeException("workbook is null");
+        }
+        return new JExcelAnalyzer(workbook);
     }
 }

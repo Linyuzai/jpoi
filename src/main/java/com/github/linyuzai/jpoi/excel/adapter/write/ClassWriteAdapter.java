@@ -1,4 +1,4 @@
-package com.github.linyuzai.jpoi.excel.adapter;
+package com.github.linyuzai.jpoi.excel.adapter.write;
 
 public abstract class ClassWriteAdapter extends HeaderWriteAdapter {
 

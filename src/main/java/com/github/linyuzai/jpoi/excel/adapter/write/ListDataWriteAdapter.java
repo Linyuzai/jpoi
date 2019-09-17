@@ -1,4 +1,4 @@
-package com.github.linyuzai.jpoi.excel.adapter;
+package com.github.linyuzai.jpoi.excel.adapter.write;
 
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
@@ -8,10 +8,7 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiListener {
 
@@ -81,6 +78,9 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
     }
 
     public List<FieldData> getFieldDataList(Class<?> cls) {
+        /*if (Map.class.isAssignableFrom(cls)) {
+
+        }*/
         if (illegalFieldDataClass(cls)) {
             return Collections.emptyList();
         }
