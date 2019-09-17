@@ -5,6 +5,7 @@ public abstract class ClassWriteAdapter extends HeaderWriteAdapter {
     public static class FieldData {
         private String fieldName;
         private String fieldDescription;
+        private int width;
         private boolean autoSize;
         private int order;
 
@@ -22,6 +23,14 @@ public abstract class ClassWriteAdapter extends HeaderWriteAdapter {
 
         public void setFieldDescription(String fieldDescription) {
             this.fieldDescription = fieldDescription;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public void setWidth(int width) {
+            this.width = width;
         }
 
         public boolean isAutoSize() {

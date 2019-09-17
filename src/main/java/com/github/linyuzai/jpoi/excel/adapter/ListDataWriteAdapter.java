@@ -3,6 +3,7 @@ package com.github.linyuzai.jpoi.excel.adapter;
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -211,26 +212,32 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
     }
 
     @Override
+    public void onSheetCreate(int s, Sheet sheet, Drawing<?> drawing, Workbook workbook) {
+        if (sheet instanceof SXSSFSheet) {
+            ((SXSSFSheet) sheet).trackAllColumnsForAutoSizing();
+        }
+    }
+
+    @Override
+    public void onCellValueSet(int c, int r, int s, Cell cell, Row row, Sheet sheet, Workbook workbook) {
+        if (cell.getCellType() == CellType.STRING) {
+            int length = cell.getStringCellValue().getBytes().length;
+            FieldData fieldData = fieldDataList.get(s).get(c);
+            if (length > 0 && fieldData.isAutoSize() && fieldData.getWidth() < length) {
+                fieldData.setWidth(length);
+            }
+        }
+    }
+
+    @Override
     public void onSheetValueSet(int s, Sheet sheet, Drawing<?> drawing, Workbook workbook) {
-        for (int columnNum = 0; columnNum < fieldDataList.size(); columnNum++) {
-            if (fieldDataList.get(s).get(columnNum).isAutoSize()) {
-                int columnWidth = sheet.getColumnWidth(columnNum) / 256;
-                for (int rowNum = 0; rowNum < sheet.getLastRowNum(); rowNum++) {
-                    Row currentRow = sheet.getRow(rowNum);
-                    /*if (sheet.getRow(rowNum) == null) {
-                        currentRow = sheet.createRow(rowNum);
-                    }*/
-                    if (currentRow != null && currentRow.getCell(columnNum) != null) {
-                        Cell currentCell = currentRow.getCell(columnNum);
-                        if (currentCell.getCellType() == CellType.STRING) {
-                            int length = currentCell.getStringCellValue().getBytes().length;
-                            if (columnWidth < length) {
-                                columnWidth = length;
-                            }
-                        }
-                    }
-                }
-                sheet.setColumnWidth(columnNum, columnWidth * 256);
+        for (int columnNum = 0; columnNum < fieldDataList.get(s).size(); columnNum++) {
+            FieldData fieldData = fieldDataList.get(s).get(columnNum);
+            if (fieldData.isAutoSize()) {
+                sheet.autoSizeColumn(columnNum);
+            }
+            if (fieldData.getWidth() > 0) {
+                sheet.setColumnWidth(columnNum, fieldData.getWidth() * 256 + 200);
             }
         }
     }

@@ -15,5 +15,7 @@ public @interface JExcelCell {
 
     boolean autoSize() default true;
 
+    int width() default 0;
+
     int order() default Integer.MAX_VALUE;
 }
