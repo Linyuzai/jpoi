@@ -11,9 +11,9 @@ public interface ReadAdapter {
 
     Object readCell(Object value, int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook);
 
-    Object readRow(List<Object> cellValues, int s, int r, Row row, Sheet sheet, Workbook workbook);
+    Object readRow(List<?> cellValues, int s, int r, Row row, Sheet sheet, Workbook workbook);
 
-    Object readSheet(List<Object> rowValues, int s, Sheet sheet, Workbook workbook);
+    Object readSheet(List<?> rowValues, int s, Sheet sheet, Workbook workbook);
 
-    Object readWorkbook(List<Object> sheetValues, Workbook workbook);
+    Object readWorkbook(List<?> sheetValues, Workbook workbook);
 }

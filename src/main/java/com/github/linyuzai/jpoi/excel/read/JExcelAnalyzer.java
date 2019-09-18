@@ -23,6 +23,10 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         this.workbook = workbook;
     }
 
+    public Object analyze() {
+        return analyze(workbook, readAdapter, valueConverters, valueGetter);
+    }
+
     private Object analyze(Workbook workbook, ReadAdapter readAdapter, List<ValueConverter> valueConverters, ValueGetter valueGetter) {
         List<Object> sheetValues = new ArrayList<>();
         for (int s = 0; s < workbook.getNumberOfSheets(); s++) {
