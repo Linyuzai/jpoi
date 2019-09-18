@@ -11,5 +11,5 @@ public interface ValueConverter extends Ordered {
 
     boolean supportValue(int sheet, int row, int cell, Object value);
 
-    Object adaptValue(int sheet, int row, int cell, Object value);
+    Object convertValue(int sheet, int row, int cell, Object value);
 }

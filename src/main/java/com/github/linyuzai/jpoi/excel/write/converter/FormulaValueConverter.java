@@ -14,7 +14,7 @@ public class FormulaValueConverter implements ValueConverter {
     }
 
     @Override
-    public Object adaptValue(int sheet, int row, int cell, Object value) {
+    public Object convertValue(int sheet, int row, int cell, Object value) {
         return null;
     }
 }

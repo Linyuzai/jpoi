@@ -186,7 +186,7 @@ public class JExcelTransfer {
                     if (valueConverter == null) {
                         throw new RuntimeException("No value converter matched");
                     }
-                    Object value = valueConverter.adaptValue(s, r, c, o);
+                    Object value = valueConverter.convertValue(s, r, c, o);
                     valueSetter.setValue(s, r, c, cell, row, sheet, drawing, real, value);
                     for (PoiWriteListener poiWriteListener : poiWriteListeners) {
                         poiWriteListener.onCellValueSet(c, r, s, cell, row, sheet, real);

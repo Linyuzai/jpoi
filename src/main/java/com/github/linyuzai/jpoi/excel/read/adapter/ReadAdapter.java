@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ReadAdapter {
 
-    Object readCell(int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook);
+    Object readCell(Object value, int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook);
 
     Object readRow(List<Object> cellValues, int s, int r, Row row, Sheet sheet, Workbook workbook);
 

@@ -178,7 +178,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiW
         ValueConverter valueConverter;
         if (writeField instanceof AnnotationWriteField &&
                 (valueConverter = ((AnnotationWriteField) writeField).getValueConverter()) != null) {
-            val = valueConverter.adaptValue(sheet, realRow, realCell, val);
+            val = valueConverter.convertValue(sheet, realRow, realCell, val);
         }
         return val;
     }
