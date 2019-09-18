@@ -55,7 +55,11 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             reuseValueConverter(writeField, fa.valueConverter());
             return writeField;
         }*/
-        return getWriteFieldIncludeAnnotation(field.getName(), fa);
+        WriteField writeField = getWriteFieldIncludeAnnotation(field.getName(), fa);
+        if (writeField instanceof AnnotationWriteField) {
+            ((AnnotationWriteField) writeField).setMethod(false);
+        }
+        return writeField;
     }
 
     public WriteField getWriteFieldIncludeAnnotation(Method method) {
@@ -84,8 +88,11 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             return writeField;
         }*/
         WriteField writeField = getWriteFieldIncludeAnnotation(method.getName(), ma);
-        if (writeField instanceof AnnotationWriteField && method.getParameterTypes().length > 0) {
-            throw new RuntimeException("Only support no args method");
+        if (writeField instanceof AnnotationWriteField) {
+            ((AnnotationWriteField) writeField).setMethod(true);
+            if (method.getParameterTypes().length > 0) {
+                throw new RuntimeException("Only support no args method");
+            }
         }
         return writeField;
     }
@@ -106,7 +113,6 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             writeField.setFieldDescription(title.isEmpty() ? name : title);
             writeField.setAutoSize(annotation.autoSize());
             writeField.setWidth(annotation.width());
-            writeField.setMethod(true);
             writeField.setOrder(annotation.order());
             reuseValueConverter(writeField, annotation.valueConverter());
             return writeField;

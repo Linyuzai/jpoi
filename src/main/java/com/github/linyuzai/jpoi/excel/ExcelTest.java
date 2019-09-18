@@ -53,7 +53,7 @@ public class ExcelTest {
                 .write().to(new File("C:\\JExcel\\111.xlsx"));
     }
 
-    @JExcelWriteSheet(name = "2222222")
+    @JExcelWriteSheet(name = "2222222", annotationOnly = true)
     public static class TestBean {
 
         @JExcelWriteCell(title = "string11111")
