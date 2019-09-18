@@ -23,7 +23,7 @@ public class LambdaFieldDataWriteAdapter extends ListDataWriteAdapter {
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
-            WriteField writeField = getFieldDataIncludeAnnotation(method);
+            WriteField writeField = getWriteFieldIncludeAnnotation(method);
             if (writeField instanceof AnnotationWriteField) {
                 writeFieldList.add(writeField);
             } else {
@@ -41,7 +41,7 @@ public class LambdaFieldDataWriteAdapter extends ListDataWriteAdapter {
                 } catch (NoSuchFieldException ignore) {
                     continue;
                 }
-                writeFieldList.add(getFieldDataIncludeAnnotation(fieldFromMethodName));
+                writeFieldList.add(getWriteFieldIncludeAnnotation(fieldFromMethodName));
             }
         }
         getWriteFieldList().add(sheet, writeFieldList);
