@@ -1,0 +1,142 @@
+package com.github.linyuzai.jpoi.excel.write.adapter;
+
+import com.github.linyuzai.jpoi.excel.write.annotation.JExcelWriteCell;
+import com.github.linyuzai.jpoi.excel.write.annotation.JExcelWriteSheet;
+import com.github.linyuzai.jpoi.excel.write.converter.*;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
+
+    private boolean annotationOnly;
+
+    public WriteField getFieldDataIncludeAnnotation(Class<?> cls) {
+        if (cls == null) {
+            return null;
+        } else {
+            JExcelWriteSheet ca = cls.getAnnotation(JExcelWriteSheet.class);
+            if (ca == null) {
+                return null;
+            }
+            String title;
+            annotationOnly = ca.annotationOnly();
+            if ((title = ca.name().trim()).isEmpty()) {
+                return null;
+            } else {
+                AnnotationWriteField writeField = new AnnotationWriteField();
+                writeField.setFieldName(cls.getName());
+                writeField.setFieldDescription(title);
+                writeField.setMethod(false);
+                return writeField;
+            }
+        }
+    }
+
+    public WriteField getFieldDataIncludeAnnotation(Field field) {
+        JExcelWriteCell fa = field.getAnnotation(JExcelWriteCell.class);
+        if (fa == null) {
+            WriteField writeField = new WriteField();
+            writeField.setFieldName(field.getName());
+            writeField.setFieldDescription(field.getName());
+            writeField.setAutoSize(true);
+            writeField.setOrder(Integer.MAX_VALUE);
+            return writeField;
+        } else {
+            String title = fa.title().trim();
+            AnnotationWriteField writeField = new AnnotationWriteField();
+            writeField.setFieldName(field.getName());
+            writeField.setFieldDescription(title.isEmpty() ? field.getName() : title);
+            writeField.setAutoSize(fa.autoSize());
+            writeField.setMethod(false);
+            writeField.setOrder(fa.order());
+            reuseValueConverter(writeField, fa.valueConverter());
+            return writeField;
+        }
+    }
+
+    public WriteField getFieldDataIncludeAnnotation(Method method) {
+        JExcelWriteCell ma = method.getAnnotation(JExcelWriteCell.class);
+        if (ma == null) {
+            WriteField writeField = new WriteField();
+            writeField.setFieldName(method.getName());
+            writeField.setFieldDescription(method.getName());
+            writeField.setAutoSize(true);
+            writeField.setOrder(Integer.MAX_VALUE);
+            return writeField;
+        } else {
+            String title = ma.title().trim();
+            AnnotationWriteField writeField = new AnnotationWriteField();
+            writeField.setFieldName(method.getName());
+            writeField.setFieldDescription(title.isEmpty() ? method.getName() : title);
+            writeField.setAutoSize(ma.autoSize());
+            writeField.setMethod(true);
+            writeField.setOrder(ma.order());
+            if (method.getParameterTypes().length > 0) {
+                throw new RuntimeException("Only support no args method");
+            }
+            reuseValueConverter(writeField, ma.valueConverter());
+            return writeField;
+        }
+    }
+
+    private void reuseValueConverter(AnnotationWriteField writeField, Class<? extends ValueConverter> cls) {
+        if (!cls.isInterface()) {
+            try {
+                if (cls == ErrorValueConverter.class) {
+                    writeField.setValueConverter(ErrorValueConverter.getInstance());
+                } else if (cls == FormulaValueConverter.class) {
+                    writeField.setValueConverter(FormulaValueConverter.getInstance());
+                } else if (cls == NullValueConverter.class) {
+                    writeField.setValueConverter(NullValueConverter.getInstance());
+                } else if (cls == ObjectValueConverter.class) {
+                    writeField.setValueConverter(ObjectValueConverter.getInstance());
+                } else if (cls == PictureValueConverter.class) {
+                    writeField.setValueConverter(PictureValueConverter.getInstance());
+                } else if (cls == PoiValueConverter.class) {
+                    writeField.setValueConverter(PoiValueConverter.getInstance());
+                } else if (cls == SupportValueConverter.class) {
+                    writeField.setValueConverter(SupportValueConverter.getInstance());
+                } else if (ValueConverter.cache.containsKey(cls.getName())) {
+                    writeField.setValueConverter(ValueConverter.cache.get(cls.getName()));
+                } else {
+                    ValueConverter valueConverter = cls.newInstance();
+                    ValueConverter.cache.put(cls.getName(), valueConverter);
+                    writeField.setValueConverter(valueConverter);
+                }
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean isAnnotationOnly() {
+        return annotationOnly;
+    }
+
+    public void setAnnotationOnly(boolean annotationOnly) {
+        this.annotationOnly = annotationOnly;
+    }
+
+    public static class AnnotationWriteField extends WriteField {
+
+        private boolean isMethod;
+        private ValueConverter valueConverter;
+
+        public boolean isMethod() {
+            return isMethod;
+        }
+
+        public void setMethod(boolean method) {
+            isMethod = method;
+        }
+
+        public ValueConverter getValueConverter() {
+            return valueConverter;
+        }
+
+        public void setValueConverter(ValueConverter valueConverter) {
+            this.valueConverter = valueConverter;
+        }
+    }
+}

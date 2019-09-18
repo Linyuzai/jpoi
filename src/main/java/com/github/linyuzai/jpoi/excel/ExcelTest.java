@@ -1,9 +1,9 @@
 package com.github.linyuzai.jpoi.excel;
 
-import com.github.linyuzai.jpoi.excel.adapter.write.SimpleDataWriteAdapter;
-import com.github.linyuzai.jpoi.excel.annotation.JExcelCell;
-import com.github.linyuzai.jpoi.excel.annotation.JExcelSheet;
-import com.github.linyuzai.jpoi.excel.converter.PictureValueConverter;
+import com.github.linyuzai.jpoi.excel.write.adapter.SimpleDataWriteAdapter;
+import com.github.linyuzai.jpoi.excel.write.annotation.JExcelWriteCell;
+import com.github.linyuzai.jpoi.excel.write.annotation.JExcelWriteSheet;
+import com.github.linyuzai.jpoi.excel.write.converter.PictureValueConverter;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 
@@ -53,13 +53,13 @@ public class ExcelTest {
                 .write().to(new File("C:\\JExcel\\111.xlsx"));
     }
 
-    @JExcelSheet(name = "2222222")
+    @JExcelWriteSheet(name = "2222222")
     public static class TestBean {
 
-        @JExcelCell(title = "string11111")
+        @JExcelWriteCell(title = "string11111")
         private String testString;
         private Double testDouble;
-        @JExcelCell(autoSize = false, valueConverter = PictureValueConverter.class)
+        @JExcelWriteCell(autoSize = false, valueConverter = PictureValueConverter.class)
         private File file;
 
         public TestBean(String testString, Double testDouble, File file) {

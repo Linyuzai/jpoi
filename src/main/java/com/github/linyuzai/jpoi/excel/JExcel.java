@@ -1,6 +1,8 @@
 package com.github.linyuzai.jpoi.excel;
 
-import com.github.linyuzai.jpoi.excel.auto.AutoWorkbook;
+import com.github.linyuzai.jpoi.excel.read.JExcelAnalyzer;
+import com.github.linyuzai.jpoi.excel.write.JExcelTransfer;
+import com.github.linyuzai.jpoi.excel.write.workbook.AutoWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
