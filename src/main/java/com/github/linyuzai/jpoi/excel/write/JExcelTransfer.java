@@ -14,6 +14,9 @@ import org.apache.poi.ss.usermodel.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class JExcelTransfer {
 
@@ -24,6 +27,8 @@ public class JExcelTransfer {
     private ValueSetter valueSetter;
     private WriteAdapter writeAdapter;
 
+    private Executor executor = Executors.newCachedThreadPool();
+    private boolean async = false;
     private boolean transferred = false;
 
     public JExcelTransfer(Workbook workbook) {
@@ -46,6 +51,34 @@ public class JExcelTransfer {
         if (writeAdapter instanceof PoiWriteListener && poiWriteListeners != null) {
             poiWriteListeners.remove(writeAdapter);
         }
+    }
+
+    @Deprecated
+    public JExcelTransfer async() {
+        async = true;
+        return this;
+    }
+
+    public JExcelTransfer sync() {
+        async = false;
+        return this;
+    }
+
+    public boolean isAsync() {
+        return async;
+    }
+
+    public JExcelTransfer executor(Executor executor) {
+        this.executor = executor;
+        return this;
+    }
+
+    public Executor getExecutor() {
+        return executor;
+    }
+
+    public boolean isTransferred() {
+        return transferred;
     }
 
     public List<PoiWriteListener> getPoiWriteListeners() {
@@ -134,11 +167,6 @@ public class JExcelTransfer {
         if (poiWriteListeners == null) {
             throw new RuntimeException("PoiListeners is null");
         }
-        transfer(workbook, writeAdapter, poiWriteListeners, valueConverters, valueSetter);
-        return new JExcelWriter(real);
-    }
-
-    private void transfer(Workbook workbook, WriteAdapter writeAdapter, List<PoiWriteListener> poiWriteListeners, List<ValueConverter> valueConverters, ValueSetter valueSetter) {
         real = workbook;
         if (workbook instanceof AutoWorkbook) {
             int count = 0;
@@ -147,33 +175,55 @@ public class JExcelTransfer {
             }
             real = AutoWorkbook.getWorkbook(count);
         }
+
+        //long t1 = System.currentTimeMillis();
+
+        if (async) {
+            transferAsync(executor, real, writeAdapter, poiWriteListeners, valueConverters, valueSetter);
+        } else {
+            transfer(real, writeAdapter, poiWriteListeners, valueConverters, valueSetter);
+        }
+        //System.out.println(System.currentTimeMillis() - t1);
+        transferred = true;
+        return new JExcelWriter(real);
+    }
+
+    private static void transfer(Workbook workbook, WriteAdapter writeAdapter, List<PoiWriteListener> poiWriteListeners, List<ValueConverter> valueConverters, ValueSetter valueSetter) {
+        /*real = workbook;
+        if (workbook instanceof AutoWorkbook) {
+            int count = 0;
+            for (int i = 0; i < writeAdapter.getSheetCount(); i++) {
+                count += writeAdapter.getRowCount(i);
+            }
+            real = AutoWorkbook.getWorkbook(count);
+        }*/
         for (PoiWriteListener poiWriteListener : poiWriteListeners) {
-            poiWriteListener.onWorkbookCreate(real);
+            poiWriteListener.onWorkbookCreate(workbook);
         }
         int sheetCount = writeAdapter.getSheetCount();
         for (int s = 0; s < sheetCount; s++) {
             String sheetName = writeAdapter.getSheetName(s);
             Sheet sheet;
             if (sheetName == null) {
-                sheet = real.createSheet();
+                sheet = workbook.createSheet();
             } else {
-                sheet = real.createSheet(sheetName);
+                sheet = workbook.createSheet(sheetName);
             }
             Drawing<?> drawing = sheet.createDrawingPatriarch();
             for (PoiWriteListener poiWriteListener : poiWriteListeners) {
-                poiWriteListener.onSheetCreate(s, sheet, drawing, real);
+                poiWriteListener.onSheetCreate(s, sheet, drawing, workbook);
             }
             int rowCount = writeAdapter.getRowCount(s);
             for (int r = 0; r < rowCount; r++) {
                 Row row = sheet.createRow(r);
                 for (PoiWriteListener poiWriteListener : poiWriteListeners) {
-                    poiWriteListener.onRowCreate(r, s, row, sheet, real);
+                    poiWriteListener.onRowCreate(r, s, row, sheet, workbook);
                 }
                 int cellCount = writeAdapter.getCellCount(s, r);
                 for (int c = 0; c < cellCount; c++) {
                     Cell cell = row.createCell(c);
                     for (PoiWriteListener poiWriteListener : poiWriteListeners) {
-                        poiWriteListener.onCellCreate(c, r, s, cell, row, sheet, real);
+                        poiWriteListener.onCellCreate(c, r, s, cell, row, sheet, workbook);
                     }
                     Object o = writeAdapter.getData(s, r, c);
                     ValueConverter valueConverter = null;
@@ -187,23 +237,85 @@ public class JExcelTransfer {
                         throw new RuntimeException("No value converter matched");
                     }
                     Object value = valueConverter.convertValue(s, r, c, o);
-                    valueSetter.setValue(s, r, c, cell, row, sheet, drawing, real, value);
+                    valueSetter.setValue(s, r, c, cell, row, sheet, drawing, workbook, value);
                     for (PoiWriteListener poiWriteListener : poiWriteListeners) {
-                        poiWriteListener.onCellValueSet(c, r, s, cell, row, sheet, real);
+                        poiWriteListener.onCellValueSet(c, r, s, cell, row, sheet, workbook);
                     }
                 }
                 for (PoiWriteListener poiWriteListener : poiWriteListeners) {
-                    poiWriteListener.onRowValueSet(r, s, row, sheet, real);
+                    poiWriteListener.onRowValueSet(r, s, row, sheet, workbook);
                 }
             }
             for (PoiWriteListener poiWriteListener : poiWriteListeners) {
-                poiWriteListener.onSheetValueSet(s, sheet, drawing, real);
+                poiWriteListener.onSheetValueSet(s, sheet, drawing, workbook);
             }
         }
         for (PoiWriteListener poiWriteListener : poiWriteListeners) {
-            poiWriteListener.onWorkbookValueSet(real);
+            poiWriteListener.onWorkbookValueSet(workbook);
         }
-        transferred = true;
+    }
+
+    private static void transferAsync(Executor executor, Workbook workbook, WriteAdapter writeAdapter,
+                                      List<PoiWriteListener> poiWriteListeners,
+                                      List<ValueConverter> valueConverters, ValueSetter valueSetter) {
+        int total = 0;
+        for (int s = 0; s < writeAdapter.getSheetCount(); s++) {
+            for (int r = 0; r < writeAdapter.getRowCount(s); r++) {
+                total += writeAdapter.getCellCount(s, r);
+            }
+        }
+        CountDownLatch countDownLatch = new CountDownLatch(total);
+        for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+            poiWriteListener.onWorkbookCreate(workbook);
+        }
+        int sheetCount = writeAdapter.getSheetCount();
+        for (int s = 0; s < sheetCount; s++) {
+            String sheetName = writeAdapter.getSheetName(s);
+            Sheet sheet;
+            if (sheetName == null) {
+                sheet = workbook.createSheet();
+            } else {
+                sheet = workbook.createSheet(sheetName);
+            }
+            Drawing<?> drawing = sheet.createDrawingPatriarch();
+            for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                poiWriteListener.onSheetCreate(s, sheet, drawing, workbook);
+            }
+            int rowCount = writeAdapter.getRowCount(s);
+            for (int r = 0; r < rowCount; r++) {
+                Row row = sheet.createRow(r);
+                for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                    poiWriteListener.onRowCreate(r, s, row, sheet, workbook);
+                }
+                int cellCount = writeAdapter.getCellCount(s, r);
+                for (int c = 0; c < cellCount; c++) {
+                    Cell cell = row.createCell(c);
+                    for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                        poiWriteListener.onCellCreate(c, r, s, cell, row, sheet, workbook);
+                    }
+                    Runnable runnable = new DataTransfer(countDownLatch, writeAdapter, valueConverters,
+                            valueSetter, workbook, sheet, row, cell, drawing, s, r, c);
+                    executor.execute(runnable);
+                    for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                        poiWriteListener.onCellValueSet(c, r, s, cell, row, sheet, workbook);
+                    }
+                }
+                for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                    poiWriteListener.onRowValueSet(r, s, row, sheet, workbook);
+                }
+            }
+            for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                poiWriteListener.onSheetValueSet(s, sheet, drawing, workbook);
+            }
+        }
+        for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+            poiWriteListener.onWorkbookValueSet(workbook);
+        }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public JExcelTransfer append() {
@@ -218,6 +330,246 @@ public class JExcelTransfer {
             return new JExcelTransfer(real, poiWriteListeners, valueConverters, valueSetter, writeAdapter);
         } else {
             return new JExcelTransfer(real);
+        }
+    }
+
+    static class DataTransfer implements Runnable {
+
+        private CountDownLatch countDownLatch;
+
+        private WriteAdapter writeAdapter;
+        private List<ValueConverter> valueConverters;
+        private ValueSetter valueSetter;
+
+        private Workbook workbook;
+        private Sheet sheet;
+        private Row row;
+        private Cell cell;
+        private Drawing<?> drawing;
+
+        int s;
+        int r;
+        int c;
+
+        public DataTransfer(CountDownLatch countDownLatch, WriteAdapter writeAdapter, List<ValueConverter> valueConverters,
+                            ValueSetter valueSetter, Workbook workbook, Sheet sheet, Row row, Cell cell, Drawing<?> drawing,
+                            int s, int r, int c) {
+            this.countDownLatch = countDownLatch;
+            this.writeAdapter = writeAdapter;
+            this.valueConverters = valueConverters;
+            this.valueSetter = valueSetter;
+            this.workbook = workbook;
+            this.sheet = sheet;
+            this.row = row;
+            this.cell = cell;
+            this.drawing = drawing;
+            this.s = s;
+            this.r = r;
+            this.c = c;
+        }
+
+        @Override
+        public void run() {
+            Object o = writeAdapter.getData(s, r, c);
+            ValueConverter valueConverter = null;
+            for (ValueConverter vc : valueConverters) {
+                if (vc.supportValue(s, r, c, o)) {
+                    valueConverter = vc;
+                    break;
+                }
+            }
+            if (valueConverter == null) {
+                throw new RuntimeException("No value converter matched");
+            }
+            Object value = valueConverter.convertValue(s, r, c, o);
+            valueSetter.setValue(s, r, c, cell, row, sheet, drawing, workbook, value);
+            countDownLatch.countDown();
+            //System.out.println(countDownLatch.getCount());
+        }
+    }
+
+    static class WorkbookTransfer implements Runnable {
+
+        Executor executor;
+        CountDownLatch countDownLatch;
+
+        Workbook workbook;
+        WriteAdapter writeAdapter;
+        List<PoiWriteListener> poiWriteListeners;
+        List<ValueConverter> valueConverters;
+        ValueSetter valueSetter;
+
+        WorkbookTransfer(Executor executor, CountDownLatch countDownLatch, Workbook workbook, WriteAdapter writeAdapter,
+                         List<PoiWriteListener> poiWriteListeners,
+                         List<ValueConverter> valueConverters, ValueSetter valueSetter) {
+            this.executor = executor;
+            this.countDownLatch = countDownLatch;
+
+            this.workbook = workbook;
+            this.writeAdapter = writeAdapter;
+            this.poiWriteListeners = poiWriteListeners;
+            this.valueConverters = valueConverters;
+            this.valueSetter = valueSetter;
+        }
+
+        void transfer() {
+            executor.execute(this);
+        }
+
+        @Override
+        public void run() {
+            for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                poiWriteListener.onWorkbookCreate(workbook);
+            }
+            int sheetCount = writeAdapter.getSheetCount();
+            CountDownLatch cdl = new CountDownLatch(sheetCount);
+            for (int s = 0; s < sheetCount; s++) {
+                new SheetTransfer(s, executor, cdl, workbook, writeAdapter, poiWriteListeners,
+                        valueConverters, valueSetter).transfer();
+            }
+            try {
+                cdl.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                poiWriteListener.onWorkbookValueSet(workbook);
+            }
+            countDownLatch.countDown();
+        }
+    }
+
+    static class SheetTransfer extends WorkbookTransfer {
+
+        int s;
+
+        SheetTransfer(int s, Executor executor, CountDownLatch countDownLatch, Workbook workbook, WriteAdapter writeAdapter,
+                      List<PoiWriteListener> poiWriteListeners,
+                      List<ValueConverter> valueConverters, ValueSetter valueSetter) {
+            super(executor, countDownLatch, workbook, writeAdapter, poiWriteListeners, valueConverters, valueSetter);
+            this.s = s;
+        }
+
+        Sheet createSheet(String sheetName) {
+            synchronized (SheetTransfer.class) {
+                return sheetName == null ? workbook.createSheet() : workbook.createSheet(sheetName);
+            }
+        }
+
+        @Override
+        public void run() {
+            String sheetName = writeAdapter.getSheetName(s);
+            Sheet sheet = createSheet(sheetName);
+            Drawing<?> drawing = sheet.createDrawingPatriarch();
+            for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                poiWriteListener.onSheetCreate(s, sheet, drawing, workbook);
+            }
+            int rowCount = writeAdapter.getRowCount(s);
+            CountDownLatch cdl = new CountDownLatch(rowCount);
+            for (int r = 0; r < rowCount; r++) {
+                new RowTransfer(r, sheet, drawing, s, executor, cdl, workbook, writeAdapter, poiWriteListeners,
+                        valueConverters, valueSetter).transfer();
+            }
+            try {
+                cdl.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                poiWriteListener.onSheetValueSet(s, sheet, drawing, workbook);
+            }
+            countDownLatch.countDown();
+        }
+    }
+
+    static class RowTransfer extends SheetTransfer {
+
+        int r;
+        Sheet sheet;
+        Drawing<?> drawing;
+
+        RowTransfer(int r, Sheet sheet, Drawing<?> drawing, int s, Executor executor, CountDownLatch countDownLatch,
+                    Workbook workbook, WriteAdapter writeAdapter, List<PoiWriteListener> poiWriteListeners,
+                    List<ValueConverter> valueConverters, ValueSetter valueSetter) {
+            super(s, executor, countDownLatch, workbook, writeAdapter, poiWriteListeners, valueConverters, valueSetter);
+            this.r = r;
+            this.sheet = sheet;
+            this.drawing = drawing;
+        }
+
+        Row createRow(int r) {
+            synchronized (RowTransfer.class) {
+                return sheet.createRow(r);
+            }
+        }
+
+        @Override
+        public void run() {
+            Row row = createRow(r);
+            for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                poiWriteListener.onRowCreate(r, s, row, sheet, workbook);
+            }
+            int cellCount = writeAdapter.getCellCount(s, r);
+            CountDownLatch cdl = new CountDownLatch(cellCount);
+            for (int c = 0; c < cellCount; c++) {
+                new CellTransfer(c, row, r, sheet, drawing, s, executor, cdl, workbook, writeAdapter, poiWriteListeners,
+                        valueConverters, valueSetter).transfer();
+            }
+            try {
+                cdl.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                poiWriteListener.onRowValueSet(r, s, row, sheet, workbook);
+            }
+            countDownLatch.countDown();
+        }
+    }
+
+    static class CellTransfer extends RowTransfer {
+
+        int c;
+        Row row;
+
+        CellTransfer(int c, Row row, int r, Sheet sheet, Drawing<?> drawing, int s, Executor executor,
+                     CountDownLatch countDownLatch, Workbook workbook,
+                     WriteAdapter writeAdapter, List<PoiWriteListener> poiWriteListeners,
+                     List<ValueConverter> valueConverters, ValueSetter valueSetter) {
+            super(r, sheet, drawing, s, executor, countDownLatch, workbook, writeAdapter, poiWriteListeners, valueConverters, valueSetter);
+            this.c = c;
+            this.row = row;
+        }
+
+        Cell createCell(int c) {
+            synchronized (CellTransfer.class) {
+                return row.createCell(c);
+            }
+        }
+
+        @Override
+        public void run() {
+            Cell cell = createCell(c);
+            for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                poiWriteListener.onCellCreate(c, r, s, cell, row, sheet, workbook);
+            }
+            Object o = writeAdapter.getData(s, r, c);
+            ValueConverter valueConverter = null;
+            for (ValueConverter vc : valueConverters) {
+                if (vc.supportValue(s, r, c, o)) {
+                    valueConverter = vc;
+                    break;
+                }
+            }
+            if (valueConverter == null) {
+                throw new RuntimeException("No value converter matched");
+            }
+            Object value = valueConverter.convertValue(s, r, c, o);
+            valueSetter.setValue(s, r, c, cell, row, sheet, drawing, workbook, value);
+            for (PoiWriteListener poiWriteListener : poiWriteListeners) {
+                poiWriteListener.onCellValueSet(c, r, s, cell, row, sheet, workbook);
+            }
+            countDownLatch.countDown();
         }
     }
 }

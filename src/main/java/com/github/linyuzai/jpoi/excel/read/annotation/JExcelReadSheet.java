@@ -10,4 +10,6 @@ public @interface JExcelReadSheet {
     String name() default "";
 
     boolean annotationOnly() default false;
+
+    boolean toMap() default false;
 }

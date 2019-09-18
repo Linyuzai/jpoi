@@ -1,10 +1,19 @@
 package com.github.linyuzai.jpoi.excel.read.adapter;
 
-public abstract class ClassReadAdapter extends HeaderReadAdapter {
+public abstract class ClassReadAdapter extends ListReadAdapter {
     public static class ReadField {
+        private int index;
         private String fieldName;
         private String fieldDescription;
-        private int index;
+        private int order;
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
 
         public String getFieldName() {
             return fieldName;
@@ -22,12 +31,12 @@ public abstract class ClassReadAdapter extends HeaderReadAdapter {
             this.fieldDescription = fieldDescription;
         }
 
-        public int getIndex() {
-            return index;
+        public int getOrder() {
+            return order;
         }
 
-        public void setIndex(int index) {
-            this.index = index;
+        public void setOrder(int order) {
+            this.order = order;
         }
     }
 }

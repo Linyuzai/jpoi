@@ -17,7 +17,7 @@ public class ExcelTest {
 
     public static void main(String[] args) throws IOException {
         List<TestBean> list = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 50000; i++) {
             list.add(new TestBean(UUID.randomUUID().toString(), 1.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
         }
         //list.add(new TestBean("11111111111111111111111111111111111111", 1.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
@@ -28,8 +28,8 @@ public class ExcelTest {
         //JExcel.xlsx().data(list, list).write().to(new File("C:\\JExcel\\111.xlsx"));
         //SimpleDataWriteAdapter sa = new SimpleDataWriteAdapter(list, TestBean::getTestString, TestBean::getTestDouble);
         //sa.addListData(list, TestBean::getTestString);
-        JExcel.sxlsx()
-                .writeAdapter(new SimpleDataWriteAdapter(list) {
+        JExcel.sxlsx().async()
+                /*.writeAdapter(new SimpleDataWriteAdapter(list) {
                     @Override
                     public int getHeaderRowCount(int sheet) {
                         return 2;
@@ -48,9 +48,10 @@ public class ExcelTest {
                         sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, getCellCount(s, 0) - 1));
                         super.onSheetCreate(s, sheet, drawing, workbook);
                     }
-                })
-                //.data(list)
+                })*/
+                .data(list)
                 .write().to(new File("C:\\JExcel\\111.xlsx"));
+        System.out.println("-------------------------------------------");
     }
 
     @JExcelWriteSheet(name = "2222222", annotationOnly = true)
@@ -59,7 +60,7 @@ public class ExcelTest {
         @JExcelWriteCell(title = "string11111")
         private String testString;
         private Double testDouble;
-        @JExcelWriteCell(autoSize = false, valueConverter = PictureValueConverter.class)
+        //@JExcelWriteCell(autoSize = false, valueConverter = PictureValueConverter.class)
         private File file;
 
         public TestBean(String testString, Double testDouble, File file) {
