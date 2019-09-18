@@ -19,17 +19,17 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             if (ca == null) {
                 return null;
             }
+            AnnotationWriteField writeField = new AnnotationWriteField();
+            writeField.setFieldName(cls.getName());
+            writeField.setMethod(false);
+            writeField.setAnnotationOnly(ca.annotationOnly());
             String title;
-            annotationOnly = ca.annotationOnly();
             if ((title = ca.name().trim()).isEmpty()) {
-                return null;
+                writeField.setFieldDescription(null);
             } else {
-                AnnotationWriteField writeField = new AnnotationWriteField();
-                writeField.setFieldName(cls.getName());
                 writeField.setFieldDescription(title);
-                writeField.setMethod(false);
-                return writeField;
             }
+            return writeField;
         }
     }
 
@@ -154,6 +154,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
     public static class AnnotationWriteField extends WriteField {
 
         private boolean isMethod;
+        private boolean annotationOnly;
         private ValueConverter valueConverter;
 
         public boolean isMethod() {
@@ -162,6 +163,14 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
 
         public void setMethod(boolean method) {
             isMethod = method;
+        }
+
+        public boolean isAnnotationOnly() {
+            return annotationOnly;
+        }
+
+        public void setAnnotationOnly(boolean annotationOnly) {
+            this.annotationOnly = annotationOnly;
         }
 
         public ValueConverter getValueConverter() {

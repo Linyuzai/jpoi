@@ -52,7 +52,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiW
 
     public void cellFields(int sheet, List<?> dataList, Class<?> cls) {
         WriteField writeField = getWriteFieldIncludeAnnotation(cls);
-        if (writeField != null) {
+        if (writeField instanceof AnnotationWriteField) {
             /*StringBuilder sheetName = new StringBuilder(writeField.getFieldDescription());
             for (ListData listData : listDataList) {
                 if (sheetName.toString().equals(listData.getSheetName())) {
@@ -60,7 +60,10 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiW
                     break;
                 }
             }*/
-            listDataList.get(sheet).setSheetName(writeField.getFieldDescription());
+            setAnnotationOnly(((AnnotationWriteField) writeField).isAnnotationOnly());
+            if (writeField.getFieldDescription() != null) {
+                listDataList.get(sheet).setSheetName(writeField.getFieldDescription());
+            }
         }
         if (cls != null && !cls.isInterface() && !cls.isArray() && !cls.isPrimitive() && !isWrapClass(cls) && cls != String.class) {
             writeFieldList.add(sheet, getWriteFieldList(cls));

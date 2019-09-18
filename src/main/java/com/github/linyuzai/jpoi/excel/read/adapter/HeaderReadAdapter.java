@@ -12,9 +12,9 @@ public abstract class HeaderReadAdapter implements ReadAdapter {
     @Override
     public Object readCell(Object value, int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook) {
         if (c < getHeaderCellCount(s, r)) {
-            return readHeaderCell(s, r, c, cell, row, sheet, workbook);
+            return readHeaderCell(value, s, r, c, cell, row, sheet, workbook);
         } else {
-            return readDataCell(s, r, c, cell, row, sheet, workbook);
+            return readDataCell(value, s, r, c, cell, row, sheet, workbook);
         }
     }
 
@@ -27,11 +27,11 @@ public abstract class HeaderReadAdapter implements ReadAdapter {
         }
     }
 
-    public abstract Object readHeaderCell(int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook);
+    public abstract Object readHeaderCell(Object value, int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook);
 
     public abstract Object readHeaderRow(List<?> cellValues, int s, int r, Row row, Sheet sheet, Workbook workbook);
 
-    public abstract Object readDataCell(int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook);
+    public abstract Object readDataCell(Object value, int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook);
 
     public abstract Object readDataRow(List<?> cellValues, int s, int r, Row row, Sheet sheet, Workbook workbook);
 
