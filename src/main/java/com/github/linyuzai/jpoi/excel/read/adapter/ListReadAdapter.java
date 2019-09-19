@@ -2,21 +2,21 @@ package com.github.linyuzai.jpoi.excel.read.adapter;
 
 import java.util.*;
 
-public abstract class ListReadAdapter<T> extends HeaderReadAdapter {
+public abstract class ListReadAdapter extends HeaderReadAdapter {
 
-    private Map<Integer, Map<Integer, T>> readMap;
+    private Map<Integer, Map<Integer, Object>> readMap;
 
     public ListReadAdapter() {
         readMap = createMap(-1);
     }
 
-    public Map<Integer, Map<Integer, T>> getReadMap() {
+    public Map<Integer, Map<Integer, Object>> getReadMap() {
         return readMap;
     }
 
     @Override
     public void readOverlappingCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
-
+        readRowHeaderCell(value, s, r, c, sCount, rCount, cCount);
     }
 
     @Override
@@ -31,8 +31,8 @@ public abstract class ListReadAdapter<T> extends HeaderReadAdapter {
 
     @Override
     public void readDataCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
-        Map<Integer, T> rowMap = readMap.computeIfAbsent(s, k -> createMap(s));
-        T cellContainer = rowMap.get(r);
+        Map<Integer, Object> rowMap = readMap.computeIfAbsent(s, k -> createMap(s));
+        Object cellContainer = rowMap.get(r);
         if (cellContainer == null) {
             cellContainer = createContainer(value, s, r, c, sCount, rCount, cCount);
             rowMap.put(r, cellContainer);
@@ -40,9 +40,9 @@ public abstract class ListReadAdapter<T> extends HeaderReadAdapter {
         adaptValue(cellContainer, value, s, r, c, sCount, rCount, cCount);
     }
 
-    public abstract T createContainer(Object value, int s, int r, int c, int sCount, int rCount, int cCount);
+    public abstract Object createContainer(Object value, int s, int r, int c, int sCount, int rCount, int cCount);
 
-    public abstract void adaptValue(T cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount);
+    public abstract void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount);
 
     @Override
     public int getHeaderRowCount(int sheet) {

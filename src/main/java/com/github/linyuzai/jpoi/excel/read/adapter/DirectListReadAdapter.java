@@ -4,16 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DirectListReadAdapter extends ListReadAdapter<Map<Integer, Object>> {
+@SuppressWarnings("unchecked")
+public class DirectListReadAdapter extends ListReadAdapter {
 
     @Override
-    public Map<Integer, Object> createContainer(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
-        return new HashMap<>();
+    public Object createContainer(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+        return new HashMap<Integer, Object>();
     }
-
+    
     @Override
-    public void adaptValue(Map<Integer, Object> cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
-        cellContainer.put(c, value);
+    public void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+        ((Map<Integer, Object>) cellContainer).put(c, value);
     }
 
     @Override
@@ -22,7 +23,7 @@ public class DirectListReadAdapter extends ListReadAdapter<Map<Integer, Object>>
                 .collect(Collectors.collectingAndThen(Collectors.toList(), r -> r.stream()
                         .map(rm -> rm.values().stream()
                                 .collect(Collectors.collectingAndThen(Collectors.toList(), c -> c.stream()
-                                        .map(Map::values).collect(Collectors.toList()))))))
+                                        .map(cm -> ((Map<Integer, Object>) cm).values()).collect(Collectors.toList()))))))
                 .collect(Collectors.toList());
     }
 }
