@@ -25,7 +25,7 @@ public class ExcelTest {
     }
 
     public static void read() throws IOException {
-        Object o = JExcel.xlsx(new FileInputStream("C:\\JExcel\\111.xlsx")).target(TestBean.class).read().getValue();
+        Object o = JExcel.xlsx(new FileInputStream("C:\\JExcel\\111.xlsx")).direct().read().getValue();
         System.out.println(o);
     }
 

@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.read.adapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,7 +12,7 @@ public class DirectListReadAdapter extends ListReadAdapter {
     public Object createContainer(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
         return new HashMap<Integer, Object>();
     }
-    
+
     @Override
     public void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
         ((Map<Integer, Object>) cellContainer).put(c, value);
@@ -23,7 +24,8 @@ public class DirectListReadAdapter extends ListReadAdapter {
                 .collect(Collectors.collectingAndThen(Collectors.toList(), r -> r.stream()
                         .map(rm -> rm.values().stream()
                                 .collect(Collectors.collectingAndThen(Collectors.toList(), c -> c.stream()
-                                        .map(cm -> ((Map<Integer, Object>) cm).values()).collect(Collectors.toList()))))))
+                                        .map(cm -> new ArrayList<>(((Map<Integer, Object>) cm).values()))
+                                        .collect(Collectors.toList()))))))
                 .collect(Collectors.toList());
     }
 }

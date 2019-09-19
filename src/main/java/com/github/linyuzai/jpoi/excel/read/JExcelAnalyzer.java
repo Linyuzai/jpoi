@@ -1,6 +1,7 @@
 package com.github.linyuzai.jpoi.excel.read;
 
 import com.github.linyuzai.jpoi.excel.JExcelBase;
+import com.github.linyuzai.jpoi.excel.read.adapter.DirectListReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.MapReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.ObjectReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.ReadAdapter;
@@ -28,7 +29,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
 
     public JExcelAnalyzer(Workbook workbook) {
         this.workbook = workbook;
-        //this.poiWriteListeners = new ArrayList<>();
+        this.poiReadListeners = new ArrayList<>();
         this.valueConverters = new ArrayList<>();
         setValueGetter(PoiValueGetter.getInstance());
         addValueConverter(NullValueConverter.getInstance());
@@ -110,7 +111,27 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         return this;
     }
 
+    public JExcelAnalyzer direct() {
+        setReadAdapter(new DirectListReadAdapter());
+        return this;
+    }
+
     public JExcelReader read() {
+        if (workbook == null) {
+            throw new RuntimeException("No source to transfer");
+        }
+        if (readAdapter == null) {
+            throw new RuntimeException("ReadAdapter is null");
+        }
+        if (valueConverters == null) {
+            throw new RuntimeException("ValueConverter is null");
+        }
+        if (valueGetter == null) {
+            throw new RuntimeException("ValueGetter is null");
+        }
+        if (poiReadListeners == null) {
+            throw new RuntimeException("PoiReadListeners is null");
+        }
         return new JExcelReader(analyze(workbook, readAdapter, valueConverters, valueGetter));
     }
 

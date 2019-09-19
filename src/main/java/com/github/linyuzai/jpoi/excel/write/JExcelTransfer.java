@@ -165,7 +165,7 @@ public class JExcelTransfer {
             throw new RuntimeException("ValueSetter is null");
         }
         if (poiWriteListeners == null) {
-            throw new RuntimeException("PoiListeners is null");
+            throw new RuntimeException("PoiWriteListeners is null");
         }
         real = workbook;
         if (workbook instanceof AutoWorkbook) {
