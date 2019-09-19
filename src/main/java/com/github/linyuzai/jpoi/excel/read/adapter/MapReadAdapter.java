@@ -1,14 +1,9 @@
 package com.github.linyuzai.jpoi.excel.read.adapter;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class MapReadAdapter extends AnnotationReadAdapter {
+public class MapReadAdapter extends AnnotationReadAdapter<Map<String, Object>> {
 
     private Map<Integer, Map<Integer, ReadField>> readFieldMap = new HashMap<>();
 
@@ -30,14 +25,14 @@ public class MapReadAdapter extends AnnotationReadAdapter {
         addField(0, readField);
     }
 
+
     @Override
-    public Object readDataRow(List<?> cellValues, int s, int r, Row row, Sheet sheet, Workbook workbook) {
-        Map<String, Object> valueMap = new HashMap<>();
-        for (int i = 0; i < cellValues.size(); i++) {
-            if (readFieldMap.containsKey(i)) {
-                valueMap.put(readFieldMap.get(s).get(i).getFieldName(), cellValues.get(i));
-            }
-        }
-        return valueMap;
+    public Map<String, Object> createContainer(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+        return null;
+    }
+
+    @Override
+    public void adaptValue(Map<String, Object> cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+
     }
 }

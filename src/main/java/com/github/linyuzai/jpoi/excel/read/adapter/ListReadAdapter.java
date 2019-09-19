@@ -1,33 +1,48 @@
 package com.github.linyuzai.jpoi.excel.read.adapter;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import java.util.*;
 
-import java.util.List;
+public abstract class ListReadAdapter<T> extends HeaderReadAdapter {
 
-public class ListReadAdapter extends HeaderReadAdapter {
+    private Map<Integer, Map<Integer, T>> readMap;
 
-    @Override
-    public Object readHeaderCell(Object value, int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook) {
-        return value;
+    public ListReadAdapter() {
+        readMap = createMap(-1);
+    }
+
+    public Map<Integer, Map<Integer, T>> getReadMap() {
+        return readMap;
     }
 
     @Override
-    public Object readHeaderRow(List<?> cellValues, int s, int r, Row row, Sheet sheet, Workbook workbook) {
-        return cellValues;
+    public void readOverlappingCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+
     }
 
     @Override
-    public Object readDataCell(Object value, int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook) {
-        return value;
+    public void readCellHeaderCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+
     }
 
     @Override
-    public Object readDataRow(List<?> cellValues, int s, int r, Row row, Sheet sheet, Workbook workbook) {
-        return cellValues;
+    public void readRowHeaderCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+
     }
+
+    @Override
+    public void readDataCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+        Map<Integer, T> rowMap = readMap.computeIfAbsent(s, k -> createMap(s));
+        T cellContainer = rowMap.get(r);
+        if (cellContainer == null) {
+            cellContainer = createContainer(value, s, r, c, sCount, rCount, cCount);
+            rowMap.put(r, cellContainer);
+        }
+        adaptValue(cellContainer, value, s, r, c, sCount, rCount, cCount);
+    }
+
+    public abstract T createContainer(Object value, int s, int r, int c, int sCount, int rCount, int cCount);
+
+    public abstract void adaptValue(T cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount);
 
     @Override
     public int getHeaderRowCount(int sheet) {
@@ -40,12 +55,11 @@ public class ListReadAdapter extends HeaderReadAdapter {
     }
 
     @Override
-    public Object readSheet(List<?> rowValues, int s, Sheet sheet, Workbook workbook) {
-        return rowValues;
+    public Object getValue() {
+        return null;
     }
 
-    @Override
-    public Object readWorkbook(List<?> sheetValues, Workbook workbook) {
-        return sheetValues;
+    public <M> Map<Integer, M> createMap(int s) {
+        return new HashMap<>();
     }
 }

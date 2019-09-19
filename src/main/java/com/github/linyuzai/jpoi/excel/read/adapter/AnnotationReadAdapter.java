@@ -3,7 +3,7 @@ package com.github.linyuzai.jpoi.excel.read.adapter;
 import com.github.linyuzai.jpoi.excel.read.annotation.JExcelReadSheet;
 import com.github.linyuzai.jpoi.excel.write.converter.ValueConverter;
 
-public abstract class AnnotationReadAdapter extends ClassReadAdapter {
+public abstract class AnnotationReadAdapter<T> extends ClassReadAdapter<T> {
 
     private boolean annotationOnly;
 

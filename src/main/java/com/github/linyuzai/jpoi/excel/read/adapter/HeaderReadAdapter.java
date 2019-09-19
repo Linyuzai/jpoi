@@ -1,39 +1,29 @@
 package com.github.linyuzai.jpoi.excel.read.adapter;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-
-import java.util.List;
-
 public abstract class HeaderReadAdapter implements ReadAdapter {
 
     @Override
-    public Object readCell(Object value, int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook) {
-        if (c < getHeaderCellCount(s, r)) {
-            return readHeaderCell(value, s, r, c, cell, row, sheet, workbook);
+    public void readCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+        int headerCellCount = getHeaderCellCount(s, r);
+        int headerRowCount = getHeaderRowCount(s);
+        if (c < headerCellCount && r < headerRowCount) {
+            readOverlappingCell(value, s, r, c, sCount, rCount, cCount);
+        } else if (c < headerCellCount) {
+            readCellHeaderCell(value, s, r, c, sCount, rCount, cCount);
+        } else if (r < headerRowCount) {
+            readRowHeaderCell(value, s, r, c, sCount, rCount, cCount);
         } else {
-            return readDataCell(value, s, r, c, cell, row, sheet, workbook);
+            readDataCell(value, s, r, c, sCount, rCount, cCount);
         }
     }
 
-    @Override
-    public Object readRow(List<?> cellValues, int s, int r, Row row, Sheet sheet, Workbook workbook) {
-        if (r < getHeaderRowCount(s)) {
-            return readHeaderRow(cellValues, s, r, row, sheet, workbook);
-        } else {
-            return readDataRow(cellValues, s, r, row, sheet, workbook);
-        }
-    }
+    public abstract void readOverlappingCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount);
 
-    public abstract Object readHeaderCell(Object value, int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook);
+    public abstract void readCellHeaderCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount);
 
-    public abstract Object readHeaderRow(List<?> cellValues, int s, int r, Row row, Sheet sheet, Workbook workbook);
+    public abstract void readRowHeaderCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount);
 
-    public abstract Object readDataCell(Object value, int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook);
-
-    public abstract Object readDataRow(List<?> cellValues, int s, int r, Row row, Sheet sheet, Workbook workbook);
+    public abstract void readDataCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount);
 
     public abstract int getHeaderRowCount(int sheet);
 

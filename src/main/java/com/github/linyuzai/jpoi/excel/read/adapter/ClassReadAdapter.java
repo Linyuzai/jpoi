@@ -1,6 +1,6 @@
 package com.github.linyuzai.jpoi.excel.read.adapter;
 
-public abstract class ClassReadAdapter extends ListReadAdapter {
+public abstract class ClassReadAdapter<T> extends ListReadAdapter<T> {
     public static class ReadField {
         private int index;
         private String fieldName;
