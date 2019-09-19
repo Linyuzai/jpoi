@@ -60,7 +60,7 @@ public class ExcelTest {
         @JExcelWriteCell(title = "string11111")
         private String testString;
         private Double testDouble;
-        //@JExcelWriteCell(autoSize = false, valueConverter = PictureValueConverter.class)
+        @JExcelWriteCell(autoSize = false, valueConverter = PictureValueConverter.class)
         private File file;
 
         public TestBean(String testString, Double testDouble, File file) {

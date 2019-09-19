@@ -60,13 +60,13 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiW
                     break;
                 }
             }*/
-            setAnnotationOnly(((AnnotationWriteField) writeField).isAnnotationOnly());
+            listDataList.get(sheet).setAnnotationOnly(((AnnotationWriteField) writeField).isAnnotationOnly());
             if (writeField.getFieldDescription() != null) {
                 listDataList.get(sheet).setSheetName(writeField.getFieldDescription());
             }
         }
         if (cls != null && !cls.isInterface() && !cls.isArray() && !cls.isPrimitive() && !isWrapClass(cls) && cls != String.class) {
-            writeFieldList.add(sheet, getWriteFieldList(cls));
+            writeFieldList.add(sheet, getWriteFieldList(sheet, cls));
         } else {
             if (dataList.size() > 0) {
                 //writeFieldList.add(sheet, getWriteFieldList(dataList.get(0).getClass()));
@@ -80,7 +80,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiW
         }
     }
 
-    public List<WriteField> getWriteFieldList(Class<?> cls) {
+    public List<WriteField> getWriteFieldList(int sheet, Class<?> cls) {
         /*if (Map.class.isAssignableFrom(cls)) {
 
         }*/
@@ -91,7 +91,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiW
         List<WriteField> writeFieldList = new ArrayList<>();
         for (Field field : fields) {
             WriteField writeField = getWriteFieldIncludeAnnotation(field);
-            if (isAnnotationOnly()) {
+            if (listDataList.get(sheet).isAnnotationOnly()) {
                 if (writeField instanceof AnnotationWriteField) {
                     writeFieldList.add(writeField);
                 }
@@ -247,6 +247,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiW
 
     public static class ListData {
         private String sheetName;
+        private boolean annotationOnly;
         private List<?> dataList;
 
         public String getSheetName() {
@@ -255,6 +256,14 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiW
 
         public void setSheetName(String sheetName) {
             this.sheetName = sheetName;
+        }
+
+        public boolean isAnnotationOnly() {
+            return annotationOnly;
+        }
+
+        public void setAnnotationOnly(boolean annotationOnly) {
+            this.annotationOnly = annotationOnly;
         }
 
         public List<?> getDataList() {

@@ -9,8 +9,6 @@ import java.lang.reflect.Method;
 
 public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
 
-    private boolean annotationOnly;
-
     public WriteField getWriteFieldIncludeAnnotation(Class<?> cls) {
         if (cls == null) {
             return null;
@@ -114,7 +112,8 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             writeField.setAutoSize(annotation.autoSize());
             writeField.setWidth(annotation.width());
             writeField.setOrder(annotation.order());
-            reuseValueConverter(writeField, annotation.valueConverter());
+            writeField.setValueConverter(ValueConverter.getWithCache(annotation.valueConverter()));
+            //reuseValueConverter(writeField, annotation.valueConverter());
             return writeField;
         }
     }
@@ -147,14 +146,6 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
                 e.printStackTrace();
             }
         }
-    }
-
-    public boolean isAnnotationOnly() {
-        return annotationOnly;
-    }
-
-    public void setAnnotationOnly(boolean annotationOnly) {
-        this.annotationOnly = annotationOnly;
     }
 
     public static class AnnotationWriteField extends WriteField {

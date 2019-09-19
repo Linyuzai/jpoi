@@ -18,4 +18,6 @@ public @interface JExcelWriteCell {
     int width() default 0;
 
     int order() default Integer.MAX_VALUE;
+
+    String standbyFor() default "";
 }

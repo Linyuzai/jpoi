@@ -1,11 +1,12 @@
 package com.github.linyuzai.jpoi.excel.read.adapter;
 
+import com.github.linyuzai.jpoi.excel.read.annotation.JExcelReadCell;
 import com.github.linyuzai.jpoi.excel.read.annotation.JExcelReadSheet;
 import com.github.linyuzai.jpoi.excel.write.converter.ValueConverter;
 
-public abstract class AnnotationReadAdapter extends ClassReadAdapter {
+import java.lang.reflect.Field;
 
-    private boolean annotationOnly;
+public abstract class AnnotationReadAdapter extends ClassReadAdapter {
 
     public ReadField getReadFieldIncludeAnnotation(Class<?> cls) {
         if (cls == null) {
@@ -29,12 +30,25 @@ public abstract class AnnotationReadAdapter extends ClassReadAdapter {
         }
     }
 
-    public boolean isAnnotationOnly() {
-        return annotationOnly;
-    }
-
-    public void setAnnotationOnly(boolean annotationOnly) {
-        this.annotationOnly = annotationOnly;
+    public ReadField getReadFieldIncludeAnnotation(Field field) {
+        JExcelReadCell fa = field.getAnnotation(JExcelReadCell.class);
+        if (fa == null) {
+            ReadField readField = new ReadField();
+            readField.setFieldName(field.getName());
+            readField.setFieldDescription(field.getName());
+            readField.setIndex(-1);
+            //readField.setOrder(Integer.MAX_VALUE);
+            return readField;
+        } else {
+            String title = fa.title().trim();
+            AnnotationReadField readField = new AnnotationReadField();
+            readField.setFieldName(field.getName());
+            readField.setFieldDescription(title.isEmpty() ? field.getName() : title);
+            readField.setIndex(fa.index());
+            //readField.setOrder(fa.order());
+            //reuseValueConverter(writeField, fa.valueConverter());
+            return readField;
+        }
     }
 
     public static class AnnotationReadField extends ReadField {

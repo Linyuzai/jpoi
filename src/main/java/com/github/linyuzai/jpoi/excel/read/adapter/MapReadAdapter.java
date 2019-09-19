@@ -41,7 +41,8 @@ public class MapReadAdapter extends AnnotationReadAdapter {
 
     @Override
     public void readRowHeaderCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
-        addFieldData(s, c, null, String.valueOf(value));
+        String str = String.valueOf(value);
+        addFieldData(s, c, str, str);
     }
 
     @Override
@@ -54,8 +55,10 @@ public class MapReadAdapter extends AnnotationReadAdapter {
     public void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
         FieldData fieldData = fieldDataMap.get(s);
         if (fieldData != null) {
-            String key = fieldData.getReadFieldMap().get(c).getFieldDescription();
-            ((Map<String, Object>) cellContainer).put(key, value);
+            ReadField readField = fieldData.getReadFieldMap().get(c);
+            if (readField != null && readField.getFieldName() != null) {
+                ((Map<String, Object>) cellContainer).put(readField.getFieldName(), value);
+            }
         }
     }
 
@@ -66,6 +69,7 @@ public class MapReadAdapter extends AnnotationReadAdapter {
 
     public static class FieldData {
         private String sheetName;
+        private boolean toMap;
         private Map<Integer, ReadField> readFieldMap;
 
         public String getSheetName() {
@@ -74,6 +78,14 @@ public class MapReadAdapter extends AnnotationReadAdapter {
 
         public void setSheetName(String sheetName) {
             this.sheetName = sheetName;
+        }
+
+        public boolean isToMap() {
+            return toMap;
+        }
+
+        public void setToMap(boolean toMap) {
+            this.toMap = toMap;
         }
 
         public Map<Integer, ReadField> getReadFieldMap() {
