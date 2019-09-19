@@ -1,6 +1,7 @@
 package com.github.linyuzai.jpoi.excel.read.adapter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class ListReadAdapter extends HeaderReadAdapter {
 
@@ -56,7 +57,11 @@ public abstract class ListReadAdapter extends HeaderReadAdapter {
 
     @Override
     public Object getValue() {
-        return null;
+        return getReadMap().values().stream()
+                .collect(Collectors.collectingAndThen(Collectors.toList(), r -> r.stream()
+                        .map(rm -> rm.values().stream()
+                                .collect(Collectors.collectingAndThen(Collectors.toList(), ArrayList::new)))))
+                .collect(Collectors.toList());
     }
 
     public <M> Map<Integer, M> createMap(int s) {

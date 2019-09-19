@@ -1,5 +1,7 @@
 package com.github.linyuzai.jpoi.excel;
 
+import com.github.linyuzai.jpoi.excel.read.annotation.JExcelReadCell;
+import com.github.linyuzai.jpoi.excel.read.annotation.JExcelReadSheet;
 import com.github.linyuzai.jpoi.excel.write.adapter.SimpleDataWriteAdapter;
 import com.github.linyuzai.jpoi.excel.write.annotation.JExcelWriteCell;
 import com.github.linyuzai.jpoi.excel.write.annotation.JExcelWriteSheet;
@@ -8,6 +10,8 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +20,18 @@ import java.util.UUID;
 public class ExcelTest {
 
     public static void main(String[] args) throws IOException {
+        read();
+        //write();
+    }
+
+    public static void read() throws IOException {
+        Object o = JExcel.xlsx(new FileInputStream("C:\\JExcel\\111.xlsx")).target(TestBean.class).read().getValue();
+        System.out.println(o);
+    }
+
+    public static void write() throws IOException {
         List<TestBean> list = new ArrayList<>();
-        for (int i = 0; i < 50000; i++) {
+        for (int i = 0; i < 5; i++) {
             list.add(new TestBean(UUID.randomUUID().toString(), 1.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
         }
         //list.add(new TestBean("11111111111111111111111111111111111111", 1.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
@@ -28,7 +42,7 @@ public class ExcelTest {
         //JExcel.xlsx().data(list, list).write().to(new File("C:\\JExcel\\111.xlsx"));
         //SimpleDataWriteAdapter sa = new SimpleDataWriteAdapter(list, TestBean::getTestString, TestBean::getTestDouble);
         //sa.addListData(list, TestBean::getTestString);
-        JExcel.sxlsx().async()
+        JExcel.sxlsx()//.async()
                 /*.writeAdapter(new SimpleDataWriteAdapter(list) {
                     @Override
                     public int getHeaderRowCount(int sheet) {
@@ -54,14 +68,19 @@ public class ExcelTest {
         System.out.println("-------------------------------------------");
     }
 
+    @JExcelReadSheet(annotationOnly = true)
     @JExcelWriteSheet(name = "2222222", annotationOnly = true)
     public static class TestBean {
 
+        @JExcelReadCell(title = "string11111")
         @JExcelWriteCell(title = "string11111")
         private String testString;
         private Double testDouble;
         @JExcelWriteCell(autoSize = false, valueConverter = PictureValueConverter.class)
         private File file;
+
+        public TestBean() {
+        }
 
         public TestBean(String testString, Double testDouble, File file) {
             this.testString = testString;

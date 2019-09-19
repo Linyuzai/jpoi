@@ -91,7 +91,7 @@ public class JExcelTransfer {
         return this;
     }
 
-    public JExcelTransfer addPoiListener(PoiWriteListener poiWriteListener) {
+    public JExcelTransfer addPoiWriteListener(PoiWriteListener poiWriteListener) {
         this.poiWriteListeners.add(poiWriteListener);
         this.poiWriteListeners.sort(Comparator.comparingInt(Ordered::getOrder));
         return this;
@@ -123,7 +123,7 @@ public class JExcelTransfer {
         }
         this.valueSetter = valueSetter;
         if (valueSetter instanceof PoiWriteListener) {
-            addPoiListener((PoiWriteListener) valueSetter);
+            addPoiWriteListener((PoiWriteListener) valueSetter);
         }
         return this;
     }
@@ -132,23 +132,23 @@ public class JExcelTransfer {
         return writeAdapter;
     }
 
-    public JExcelTransfer writeAdapter(WriteAdapter writeAdapter) {
+    public JExcelTransfer setWriteAdapter(WriteAdapter writeAdapter) {
         if (this.writeAdapter instanceof PoiWriteListener) {
             poiWriteListeners.remove(this.writeAdapter);
         }
         this.writeAdapter = writeAdapter;
         if (writeAdapter instanceof PoiWriteListener) {
-            addPoiListener((PoiWriteListener) writeAdapter);
+            addPoiWriteListener((PoiWriteListener) writeAdapter);
         }
         return this;
     }
 
     public JExcelTransfer data(List<?> data) {
-        return writeAdapter(new SimpleDataWriteAdapter(data));
+        return setWriteAdapter(new SimpleDataWriteAdapter(data));
     }
 
     public JExcelTransfer data(List<?>... dataList) {
-        return writeAdapter(new TitleIndexDataWriteAdapter(dataList));
+        return setWriteAdapter(new TitleIndexDataWriteAdapter(dataList));
     }
 
     public JExcelWriter write() {

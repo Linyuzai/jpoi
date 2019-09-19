@@ -4,6 +4,12 @@ import org.apache.poi.ss.usermodel.*;
 
 public class PoiValueGetter implements ValueGetter {
 
+    private static PoiValueGetter sInstance = new PoiValueGetter();
+
+    public static PoiValueGetter getInstance() {
+        return sInstance;
+    }
+
     @Override
     public Object getValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook) {
         switch (cell.getCellType()) {
