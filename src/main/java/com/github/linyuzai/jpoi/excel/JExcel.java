@@ -1,6 +1,7 @@
 package com.github.linyuzai.jpoi.excel;
 
 import com.github.linyuzai.jpoi.excel.read.JExcelAnalyzer;
+import com.github.linyuzai.jpoi.excel.read.sax.SaxWorkbook;
 import com.github.linyuzai.jpoi.excel.write.JExcelTransfer;
 import com.github.linyuzai.jpoi.excel.write.workbook.AutoWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -31,6 +32,10 @@ public class JExcel {
 
     public static JExcelTransfer sxlsx() {
         return of(new SXSSFWorkbook());
+    }
+
+    public static JExcelAnalyzer sxlsx(InputStream is) throws IOException {
+        return from(new SaxWorkbook(is));
     }
 
     public static JExcelTransfer auto() {

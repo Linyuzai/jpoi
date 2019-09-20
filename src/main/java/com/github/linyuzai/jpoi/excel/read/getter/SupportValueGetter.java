@@ -23,16 +23,18 @@ public class SupportValueGetter extends PoiValueGetter {
             synchronized (this) {
                 if (pictureMap == null) {
                     Map<Integer, Map<Integer, ByteArrayPicture>> pictures = new HashMap<>();
-                    for (Shape shape : drawing) {
-                        if (shape instanceof Picture) {
-                            ByteArrayPicture bap = new ByteArrayPicture(((Picture) shape).getPictureData().getData());
-                            bap.setFormat(((Picture) shape).getPictureData().getMimeType());
-                            bap.setType(((Picture) shape).getPictureData().getPictureType());
-                            ClientAnchor anchor = ((Picture) shape).getClientAnchor();
-                            int rStart = anchor.getRow1();
-                            int cStart = anchor.getCol1();
-                            Map<Integer, ByteArrayPicture> pictureCell = pictures.computeIfAbsent(rStart, HashMap::new);
-                            pictureCell.put(cStart, bap);
+                    if (drawing != null) {
+                        for (Shape shape : drawing) {
+                            if (shape instanceof Picture) {
+                                ByteArrayPicture bap = new ByteArrayPicture(((Picture) shape).getPictureData().getData());
+                                bap.setFormat(((Picture) shape).getPictureData().getMimeType());
+                                bap.setType(((Picture) shape).getPictureData().getPictureType());
+                                ClientAnchor anchor = ((Picture) shape).getClientAnchor();
+                                int rStart = anchor.getRow1();
+                                int cStart = anchor.getCol1();
+                                Map<Integer, ByteArrayPicture> pictureCell = pictures.computeIfAbsent(rStart, HashMap::new);
+                                pictureCell.put(cStart, bap);
+                            }
                         }
                     }
                     pictureMap = Collections.unmodifiableMap(pictures);
