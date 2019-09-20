@@ -10,11 +10,11 @@ public class ErrorValueConverter implements ValueConverter {
 
     @Override
     public boolean supportValue(int sheet, int row, int cell, Object value) {
-        return false;
+        return value != null && value.getClass() == byte.class;
     }
 
     @Override
     public Object convertValue(int sheet, int row, int cell, Object value) {
-        return null;
+        return value;
     }
 }

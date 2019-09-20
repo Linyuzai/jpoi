@@ -6,7 +6,7 @@ import com.github.linyuzai.jpoi.excel.read.adapter.DirectListReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.MapReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.ObjectReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.ReadAdapter;
-import com.github.linyuzai.jpoi.excel.read.getter.PoiValueGetter;
+import com.github.linyuzai.jpoi.excel.read.getter.SupportValueGetter;
 import com.github.linyuzai.jpoi.excel.read.getter.ValueGetter;
 import com.github.linyuzai.jpoi.excel.read.listener.PoiReadListener;
 import com.github.linyuzai.jpoi.order.Ordered;
@@ -31,7 +31,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         this.workbook = workbook;
         this.poiReadListeners = new ArrayList<>();
         this.valueConverters = new ArrayList<>();
-        setValueGetter(PoiValueGetter.getInstance());
+        setValueGetter(SupportValueGetter.getInstance());
         addValueConverter(NullValueConverter.getInstance());
         //addValueConverter(PictureValueConverter.getInstance());
         addValueConverter(PoiValueConverter.getInstance());
@@ -145,7 +145,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                 int cCount = row.getLastCellNum();
                 for (int c = 0; c < cCount; c++) {
                     Cell cell = row.getCell(c);
-                    Object o = valueGetter.getValue(s, r, c, cell, row, sheet, workbook);
+                    Object o = valueGetter.getValue(s, r, c, cell, row, sheet, sheet.getDrawingPatriarch(), workbook);
                     ValueConverter valueConverter = null;
                     for (ValueConverter vc : valueConverters) {
                         if (vc.supportValue(s, r, c, o)) {

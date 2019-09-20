@@ -1,5 +1,7 @@
 package com.github.linyuzai.jpoi.excel.read.adapter;
 
+import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +59,13 @@ public class MapReadAdapter extends AnnotationReadAdapter {
         if (fieldData != null) {
             ReadField readField = fieldData.getReadFieldMap().get(c);
             if (readField != null && readField.getFieldName() != null) {
-                ((Map<String, Object>) cellContainer).put(readField.getFieldName(), value);
+                ValueConverter valueConverter;
+                Object val = value;
+                if (readField instanceof AnnotationReadField &&
+                        (valueConverter = ((AnnotationReadField) readField).getValueConverter()) != null) {
+                    val = valueConverter.convertValue(s, r, c, value);
+                }
+                ((Map<String, Object>) cellContainer).put(readField.getFieldName(), val);
             }
         }
     }
