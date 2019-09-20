@@ -2,11 +2,11 @@ package com.github.linyuzai.jpoi.excel.converter;
 
 import com.github.linyuzai.jpoi.support.SupportValue;
 
-public class SupportValueConverter implements ValueConverter {
+public class WriteSupportValueConverter implements ValueConverter {
 
-    private static SupportValueConverter sInstance = new SupportValueConverter();
+    private static WriteSupportValueConverter sInstance = new WriteSupportValueConverter();
 
-    public static SupportValueConverter getInstance() {
+    public static WriteSupportValueConverter getInstance() {
         return sInstance;
     }
 

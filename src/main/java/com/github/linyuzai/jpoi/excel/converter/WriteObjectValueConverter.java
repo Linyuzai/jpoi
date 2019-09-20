@@ -1,10 +1,10 @@
 package com.github.linyuzai.jpoi.excel.converter;
 
-public class ObjectValueConverter implements ValueConverter {
+public class WriteObjectValueConverter implements ValueConverter {
 
-    private static ObjectValueConverter sInstance = new ObjectValueConverter();
+    private static WriteObjectValueConverter sInstance = new WriteObjectValueConverter();
 
-    public static ObjectValueConverter getInstance() {
+    public static WriteObjectValueConverter getInstance() {
         return sInstance;
     }
 

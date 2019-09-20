@@ -39,8 +39,8 @@ public class JExcelTransfer {
         addValueConverter(NullValueConverter.getInstance());
         //addValueConverter(PictureValueConverter.getInstance());
         addValueConverter(PoiValueConverter.getInstance());
-        addValueConverter(SupportValueConverter.getInstance());
-        addValueConverter(ObjectValueConverter.getInstance());
+        addValueConverter(WriteSupportValueConverter.getInstance());
+        addValueConverter(WriteObjectValueConverter.getInstance());
     }
 
     public JExcelTransfer(Workbook workbook, List<PoiWriteListener> poiWriteListeners, List<ValueConverter> valueConverters, ValueSetter valueSetter, WriteAdapter writeAdapter) {

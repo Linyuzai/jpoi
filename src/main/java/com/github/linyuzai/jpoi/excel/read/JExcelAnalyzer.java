@@ -35,8 +35,8 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         addValueConverter(NullValueConverter.getInstance());
         //addValueConverter(PictureValueConverter.getInstance());
         addValueConverter(PoiValueConverter.getInstance());
-        addValueConverter(SupportValueConverter.getInstance());
-        addValueConverter(ObjectValueConverter.getInstance());
+        addValueConverter(ReadSupportValueConverter.getInstance());
+        addValueConverter(ReadObjectValueConverter.getInstance());
     }
 
     public List<PoiReadListener> getPoiReadListeners() {

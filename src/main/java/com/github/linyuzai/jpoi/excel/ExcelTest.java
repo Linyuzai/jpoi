@@ -21,7 +21,7 @@ public class ExcelTest {
     }
 
     public static void read() throws IOException {
-        Object o = JExcel.xlsx(new FileInputStream("C:\\JExcel\\111.xlsx")).direct().read().getValue();
+        Object o = JExcel.xlsx(new FileInputStream("C:\\JExcel\\111.xlsx")).target(TestBean.class).read().getValue();
         System.out.println(o);
     }
 
@@ -74,6 +74,8 @@ public class ExcelTest {
         private Double testDouble;
         @JExcelWriteCell(autoSize = false, valueConverter = PictureValueConverter.class)
         private File file;
+        @JExcelReadCell(title = "file")
+        private byte[] bytes;
 
         public TestBean() {
         }
@@ -106,6 +108,14 @@ public class ExcelTest {
 
         public void setFile(File file) {
             this.file = file;
+        }
+
+        public byte[] getBytes() {
+            return bytes;
+        }
+
+        public void setBytes(byte[] bytes) {
+            this.bytes = bytes;
         }
     }
 }

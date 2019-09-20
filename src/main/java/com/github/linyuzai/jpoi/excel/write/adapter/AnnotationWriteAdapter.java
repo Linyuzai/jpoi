@@ -127,14 +127,14 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
                     writeField.setValueConverter(FormulaValueConverter.getInstance());
                 } else if (cls == NullValueConverter.class) {
                     writeField.setValueConverter(NullValueConverter.getInstance());
-                } else if (cls == ObjectValueConverter.class) {
-                    writeField.setValueConverter(ObjectValueConverter.getInstance());
+                } else if (cls == WriteObjectValueConverter.class) {
+                    writeField.setValueConverter(WriteObjectValueConverter.getInstance());
                 } else if (cls == PictureValueConverter.class) {
                     writeField.setValueConverter(PictureValueConverter.getInstance());
                 } else if (cls == PoiValueConverter.class) {
                     writeField.setValueConverter(PoiValueConverter.getInstance());
-                } else if (cls == SupportValueConverter.class) {
-                    writeField.setValueConverter(SupportValueConverter.getInstance());
+                } else if (cls == WriteSupportValueConverter.class) {
+                    writeField.setValueConverter(WriteSupportValueConverter.getInstance());
                 } else if (ValueConverter.cache.containsKey(cls.getName())) {
                     writeField.setValueConverter(ValueConverter.cache.get(cls.getName()));
                 } else {
