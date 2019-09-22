@@ -16,8 +16,8 @@ import java.util.UUID;
 public class ExcelTest {
 
     public static void main(String[] args) throws IOException {
-        JExcel.sxlsx(new FileInputStream("C:\\JExcel\\111.xlsx"));
-        //read();
+        //JExcel.sxlsx(new FileInputStream("C:\\JExcel\\111.xlsx"));
+        read();
         //write();
     }
 

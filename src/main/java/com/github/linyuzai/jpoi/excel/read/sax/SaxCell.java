@@ -9,6 +9,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class SaxCell implements Cell {
+
+    private Object cellValue;
+    private CellType cellType;
+
     @Override
     public int getColumnIndex() {
         return 0;
@@ -31,7 +35,7 @@ public class SaxCell implements Cell {
 
     @Override
     public void setCellType(CellType cellType) {
-
+        this.cellType = cellType;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class SaxCell implements Cell {
 
     @Override
     public CellType getCellType() {
-        return null;
+        return cellType;
     }
 
     @Override
@@ -66,27 +70,27 @@ public class SaxCell implements Cell {
 
     @Override
     public void setCellValue(Date value) {
-
+        this.cellValue = value;
     }
 
     @Override
     public void setCellValue(Calendar value) {
-
+        this.cellValue = value;
     }
 
     @Override
     public void setCellValue(RichTextString value) {
-
+        this.cellValue = value;
     }
 
     @Override
     public void setCellValue(String value) {
-
+        this.cellValue = value;
     }
 
     @Override
     public void setCellFormula(String formula) throws FormulaParseException, IllegalStateException {
-
+        this.cellValue = formula;
     }
 
     @Override
@@ -96,47 +100,47 @@ public class SaxCell implements Cell {
 
     @Override
     public String getCellFormula() {
-        return null;
+        return (String) cellValue;
     }
 
     @Override
     public double getNumericCellValue() {
-        return 0;
+        return (double) cellValue;
     }
 
     @Override
     public Date getDateCellValue() {
-        return null;
+        return (Date) cellValue;
     }
 
     @Override
     public RichTextString getRichStringCellValue() {
-        return null;
+        return (RichTextString) cellValue;
     }
 
     @Override
     public String getStringCellValue() {
-        return null;
+        return (String) cellValue;
     }
 
     @Override
     public void setCellValue(boolean value) {
-
+        this.cellValue = value;
     }
 
     @Override
     public void setCellErrorValue(byte value) {
-
+        this.cellValue = value;
     }
 
     @Override
     public boolean getBooleanCellValue() {
-        return false;
+        return (boolean) cellValue;
     }
 
     @Override
     public byte getErrorCellValue() {
-        return 0;
+        return (byte) cellValue;
     }
 
     @Override

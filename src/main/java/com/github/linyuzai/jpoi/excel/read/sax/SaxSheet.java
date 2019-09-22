@@ -11,6 +11,7 @@ public class SaxSheet implements Sheet {
 
     private String name;
     private List<Row> rows = new ArrayList<>();
+    private Drawing<?> drawing;
 
     public String getName() {
         return name;
@@ -26,6 +27,14 @@ public class SaxSheet implements Sheet {
 
     public void setRows(List<Row> rows) {
         this.rows = rows;
+    }
+
+    public Drawing<?> getDrawing() {
+        return drawing;
+    }
+
+    public void setDrawing(Drawing<?> drawing) {
+        this.drawing = drawing;
     }
 
     @Override
@@ -510,7 +519,7 @@ public class SaxSheet implements Sheet {
 
     @Override
     public Drawing<?> getDrawingPatriarch() {
-        return null;
+        return getDrawing();
     }
 
     @Override
@@ -525,7 +534,7 @@ public class SaxSheet implements Sheet {
 
     @Override
     public String getSheetName() {
-        return null;
+        return getName();
     }
 
     @Override

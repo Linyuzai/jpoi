@@ -47,9 +47,9 @@ public class SaxWorkbook implements Workbook {
                 sheets.add(tempSheet);
                 //curRow = 1; //标记初始行为第一行
                 //sheetIndex++;
-                //sheets.getShapes()
                 InputStream sheet = xsi.next(); //sheets.next()和sheets.getSheetName()不能换位置，否则sheetName报错
                 tempSheet.setName(xsi.getSheetName());
+                tempSheet.setDrawing(new SaxDrawing(xsi.getShapes()));
                 InputSource sheetSource = new InputSource(sheet);
                 parser.parse(sheetSource); //解析excel的每条记录，在这个过程中startElement()、characters()、endElement()这三个函数会依次执行
                 sheet.close();
@@ -474,6 +474,8 @@ public class SaxWorkbook implements Workbook {
 
         private Queue<CellAddress> commentCellRefs;
 
+        private SaxRow tempRow;
+
         /**
          * Accepts objects needed while parsing.
          *
@@ -600,6 +602,9 @@ public class SaxWorkbook implements Workbook {
                     rowNum = nextRowNum;
                 }
                 //TODO output.startRow(rowNum);
+                tempRow = new SaxRow();
+                tempRow.setRowNum(rowNum);
+                tempSheet.getRows().add(tempRow);
             }
             // c => cell
             else if ("c".equals(localName)) {
@@ -723,6 +728,10 @@ public class SaxWorkbook implements Workbook {
 
                 // Output
                 //TODO output.cell(cellRef, thisStr, comment);
+                SaxCell saxCell = new SaxCell();
+                saxCell.setCellValue(thisStr);
+                saxCell.setCellType(CellType.STRING);
+                tempRow.getCells().add(saxCell);
             } else if ("f".equals(localName)) {
                 fIsOpen = false;
             } else if ("is".equals(localName)) {
@@ -742,6 +751,7 @@ public class SaxWorkbook implements Workbook {
 
                 // indicate that this sheet is now done
                 //TODO output.endSheet();
+                tempSheet.getRows().sort(Comparator.comparingInt(Row::getRowNum));
             } else if ("oddHeader".equals(localName) || "evenHeader".equals(localName) ||
                     "firstHeader".equals(localName)) {
                 hfIsOpen = false;

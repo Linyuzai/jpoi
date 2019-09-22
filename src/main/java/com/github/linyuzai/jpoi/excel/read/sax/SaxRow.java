@@ -8,6 +8,7 @@ import java.util.List;
 
 public class SaxRow implements Row {
 
+    private int rowNum;
     private List<Cell> cells = new ArrayList<>();
 
     public List<Cell> getCells() {
@@ -35,12 +36,12 @@ public class SaxRow implements Row {
 
     @Override
     public void setRowNum(int rowNum) {
-
+        this.rowNum = rowNum;
     }
 
     @Override
     public int getRowNum() {
-        return 0;
+        return rowNum;
     }
 
     @Override
