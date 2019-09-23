@@ -1,8 +1,8 @@
 package com.github.linyuzai.jpoi.excel.write.adapter;
 
 import com.github.linyuzai.jpoi.excel.converter.*;
-import com.github.linyuzai.jpoi.excel.write.annotation.JExcelWriteCell;
-import com.github.linyuzai.jpoi.excel.write.annotation.JExcelWriteSheet;
+import com.github.linyuzai.jpoi.excel.write.annotation.JExcelCellWriter;
+import com.github.linyuzai.jpoi.excel.write.annotation.JExcelSheetWriter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -13,7 +13,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
         if (cls == null) {
             return null;
         } else {
-            JExcelWriteSheet ca = cls.getAnnotation(JExcelWriteSheet.class);
+            JExcelSheetWriter ca = cls.getAnnotation(JExcelSheetWriter.class);
             if (ca == null) {
                 return null;
             }
@@ -32,7 +32,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
     }
 
     public WriteField getWriteFieldIncludeAnnotation(Field field) {
-        JExcelWriteCell fa = field.getAnnotation(JExcelWriteCell.class);
+        JExcelCellWriter fa = field.getAnnotation(JExcelCellWriter.class);
         /*if (fa == null) {
             WriteField writeField = new WriteField();
             writeField.setFieldName(field.getName());
@@ -61,7 +61,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
     }
 
     public WriteField getWriteFieldIncludeAnnotation(Method method) {
-        JExcelWriteCell ma = method.getAnnotation(JExcelWriteCell.class);
+        JExcelCellWriter ma = method.getAnnotation(JExcelCellWriter.class);
         /*if (ma == null) {
             WriteField writeField = new WriteField();
             writeField.setFieldName(method.getName());
@@ -95,7 +95,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
         return writeField;
     }
 
-    private WriteField getWriteFieldIncludeAnnotation(String name, JExcelWriteCell annotation) {
+    private WriteField getWriteFieldIncludeAnnotation(String name, JExcelCellWriter annotation) {
         if (annotation == null) {
             WriteField writeField = new WriteField();
             writeField.setFieldName(name);

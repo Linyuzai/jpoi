@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface JExcelWriteSheet {
+public @interface JExcelSheetWriter {
 
     String name() default "";
 

@@ -1,7 +1,7 @@
 package com.github.linyuzai.jpoi.excel.read.adapter;
 
-import com.github.linyuzai.jpoi.excel.read.annotation.JExcelReadCell;
-import com.github.linyuzai.jpoi.excel.read.annotation.JExcelReadSheet;
+import com.github.linyuzai.jpoi.excel.read.annotation.JExcelCellReader;
+import com.github.linyuzai.jpoi.excel.read.annotation.JExcelSheetReader;
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 
 import java.lang.reflect.Field;
@@ -12,7 +12,7 @@ public abstract class AnnotationReadAdapter extends ClassReadAdapter {
         if (cls == null) {
             return null;
         } else {
-            JExcelReadSheet ca = cls.getAnnotation(JExcelReadSheet.class);
+            JExcelSheetReader ca = cls.getAnnotation(JExcelSheetReader.class);
             if (ca == null) {
                 return null;
             }
@@ -31,7 +31,7 @@ public abstract class AnnotationReadAdapter extends ClassReadAdapter {
     }
 
     public ReadField getReadFieldIncludeAnnotation(Field field) {
-        JExcelReadCell fa = field.getAnnotation(JExcelReadCell.class);
+        JExcelCellReader fa = field.getAnnotation(JExcelCellReader.class);
         if (fa == null) {
             ReadField readField = new ReadField();
             readField.setFieldName(field.getName());

@@ -1,9 +1,9 @@
 package com.github.linyuzai.jpoi.excel;
 
-import com.github.linyuzai.jpoi.excel.read.annotation.JExcelReadCell;
-import com.github.linyuzai.jpoi.excel.read.annotation.JExcelReadSheet;
-import com.github.linyuzai.jpoi.excel.write.annotation.JExcelWriteCell;
-import com.github.linyuzai.jpoi.excel.write.annotation.JExcelWriteSheet;
+import com.github.linyuzai.jpoi.excel.read.annotation.JExcelCellReader;
+import com.github.linyuzai.jpoi.excel.read.annotation.JExcelSheetReader;
+import com.github.linyuzai.jpoi.excel.write.annotation.JExcelCellWriter;
+import com.github.linyuzai.jpoi.excel.write.annotation.JExcelSheetWriter;
 import com.github.linyuzai.jpoi.excel.converter.PictureValueConverter;
 
 import java.io.File;
@@ -65,17 +65,17 @@ public class ExcelTest {
         System.out.println("-------------------------------------------");
     }
 
-    @JExcelReadSheet(annotationOnly = true)
-    @JExcelWriteSheet(name = "2222222", annotationOnly = true)
+    @JExcelSheetReader(annotationOnly = true)
+    @JExcelSheetWriter(name = "2222222", annotationOnly = true)
     public static class TestBean {
 
-        @JExcelReadCell(title = "string11111")
-        @JExcelWriteCell(title = "string11111")
+        @JExcelCellReader(title = "string11111")
+        @JExcelCellWriter(title = "string11111")
         private String testString;
         private Double testDouble;
-        @JExcelWriteCell(autoSize = false, valueConverter = PictureValueConverter.class)
+        @JExcelCellWriter(autoSize = false, valueConverter = PictureValueConverter.class)
         private File file;
-        @JExcelReadCell(title = "file")
+        @JExcelCellReader(title = "file")
         private byte[] bytes;
 
         public TestBean() {
