@@ -602,8 +602,8 @@ public class SaxWorkbook implements Workbook {
                     rowNum = nextRowNum;
                 }
                 //TODO output.startRow(rowNum);
-                tempRow = new SaxRow();
-                tempRow.setRowNum(rowNum);
+                tempRow = (SaxRow) tempSheet.createRow(rowNum);//new SaxRow();
+                //tempRow.setRowNum(rowNum);
                 tempSheet.getRows().add(tempRow);
             }
             // c => cell
@@ -659,7 +659,7 @@ public class SaxWorkbook implements Workbook {
             if (isTextTag(localName)) {
                 vIsOpen = false;
 
-                SaxCell saxCell = new SaxCell();
+                SaxCell saxCell = (SaxCell) tempRow.createCell(tempRow.getCells().size());//new SaxCell();
                 tempRow.getCells().add(saxCell);
 
                 // Process the value contents as required, now we have it all

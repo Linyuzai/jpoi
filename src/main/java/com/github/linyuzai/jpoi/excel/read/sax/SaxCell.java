@@ -15,22 +15,22 @@ public class SaxCell implements Cell {
 
     @Override
     public int getColumnIndex() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int getRowIndex() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Sheet getSheet() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Row getRow() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -50,17 +50,17 @@ public class SaxCell implements Cell {
 
     @Override
     public CellType getCellTypeEnum() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellType getCachedFormulaResultType() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellType getCachedFormulaResultTypeEnum() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -95,7 +95,7 @@ public class SaxCell implements Cell {
 
     @Override
     public void removeFormula() throws IllegalStateException {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -145,61 +145,61 @@ public class SaxCell implements Cell {
 
     @Override
     public void setCellStyle(CellStyle style) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellStyle getCellStyle() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setAsActiveCell() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellAddress getAddress() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setCellComment(Comment comment) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Comment getCellComment() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void removeCellComment() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Hyperlink getHyperlink() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setHyperlink(Hyperlink link) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void removeHyperlink() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellRangeAddress getArrayFormulaRange() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isPartOfArrayFormulaGroup() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 }

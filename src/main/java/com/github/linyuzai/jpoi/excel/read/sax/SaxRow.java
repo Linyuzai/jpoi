@@ -21,17 +21,19 @@ public class SaxRow implements Row {
 
     @Override
     public Cell createCell(int column) {
-        return null;
+        return new SaxCell();
     }
 
     @Override
     public Cell createCell(int column, CellType type) {
-        return null;
+        Cell cell = createCell(column);
+        cell.setCellType(type);
+        return cell;
     }
 
     @Override
     public void removeCell(Cell cell) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -45,13 +47,13 @@ public class SaxRow implements Row {
     }
 
     @Override
-    public Cell getCell(int cellnum) {
-        return null;
+    public Cell getCell(int cellNum) {
+        return cells.get(cellNum);
     }
 
     @Override
-    public Cell getCell(int cellnum, MissingCellPolicy policy) {
-        return null;
+    public Cell getCell(int cellNum, MissingCellPolicy policy) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -61,86 +63,86 @@ public class SaxRow implements Row {
 
     @Override
     public short getLastCellNum() {
-        return 0;
+        return (short) (cells.size() - 1);
     }
 
     @Override
     public int getPhysicalNumberOfCells() {
-        return 0;
+        return cells.size();
     }
 
     @Override
     public void setHeight(short height) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setZeroHeight(boolean zHeight) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean getZeroHeight() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setHeightInPoints(float height) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public short getHeight() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public float getHeightInPoints() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isFormatted() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellStyle getRowStyle() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setRowStyle(CellStyle style) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Iterator<Cell> cellIterator() {
-        return null;
+        return cells.iterator();
     }
 
     @Override
     public Sheet getSheet() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int getOutlineLevel() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void shiftCellsRight(int firstShiftColumnIndex, int lastShiftColumnIndex, int step) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void shiftCellsLeft(int firstShiftColumnIndex, int lastShiftColumnIndex, int step) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Iterator<Cell> iterator() {
-        return null;
+        return cells.iterator();
     }
 }

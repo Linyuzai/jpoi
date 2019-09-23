@@ -24,22 +24,22 @@ public class SaxDrawing implements Drawing<XSSFShape> {
 
     @Override
     public Picture createPicture(ClientAnchor anchor, int pictureIndex) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Comment createCellComment(ClientAnchor anchor) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ClientAnchor createAnchor(int dx1, int dy1, int dx2, int dy2, int col1, int row1, int col2, int row2) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ObjectData createObjectData(ClientAnchor anchor, int storageId, int pictureIndex) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -38,23 +38,25 @@ public class SaxSheet implements Sheet {
     }
 
     @Override
-    public Row createRow(int rownum) {
-        return null;
+    public Row createRow(int rowNum) {
+        SaxRow row = new SaxRow();
+        row.setRowNum(rowNum);
+        return row;
     }
 
     @Override
     public void removeRow(Row row) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public Row getRow(int rownum) {
-        return null;
+    public Row getRow(int rowNum) {
+        return rows.get(rowNum);
     }
 
     @Override
     public int getPhysicalNumberOfRows() {
-        return 0;
+        return rows.size();
     }
 
     @Override
@@ -64,457 +66,457 @@ public class SaxSheet implements Sheet {
 
     @Override
     public int getLastRowNum() {
-        return 0;
+        return rows.size() - 1;
     }
 
     @Override
     public void setColumnHidden(int columnIndex, boolean hidden) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isColumnHidden(int columnIndex) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setRightToLeft(boolean value) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isRightToLeft() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setColumnWidth(int columnIndex, int width) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int getColumnWidth(int columnIndex) {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public float getColumnWidthInPixels(int columnIndex) {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setDefaultColumnWidth(int width) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int getDefaultColumnWidth() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public short getDefaultRowHeight() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public float getDefaultRowHeightInPoints() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setDefaultRowHeight(short height) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setDefaultRowHeightInPoints(float height) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellStyle getColumnStyle(int column) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int addMergedRegion(CellRangeAddress region) {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int addMergedRegionUnsafe(CellRangeAddress region) {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void validateMergedRegions() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setVerticallyCenter(boolean value) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setHorizontallyCenter(boolean value) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean getHorizontallyCenter() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean getVerticallyCenter() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void removeMergedRegion(int index) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void removeMergedRegions(Collection<Integer> indices) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int getNumMergedRegions() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellRangeAddress getMergedRegion(int index) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<CellRangeAddress> getMergedRegions() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Iterator<Row> rowIterator() {
-        return null;
+        return rows.iterator();
     }
 
     @Override
     public void setForceFormulaRecalculation(boolean value) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean getForceFormulaRecalculation() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setAutobreaks(boolean value) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setDisplayGuts(boolean value) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setDisplayZeros(boolean value) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isDisplayZeros() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setFitToPage(boolean value) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setRowSumsBelow(boolean value) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setRowSumsRight(boolean value) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean getAutobreaks() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean getDisplayGuts() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean getFitToPage() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean getRowSumsBelow() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean getRowSumsRight() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isPrintGridlines() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setPrintGridlines(boolean show) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isPrintRowAndColumnHeadings() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setPrintRowAndColumnHeadings(boolean show) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public PrintSetup getPrintSetup() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Header getHeader() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Footer getFooter() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setSelected(boolean value) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public double getMargin(short margin) {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setMargin(short margin, double size) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean getProtect() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void protectSheet(String password) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean getScenarioProtect() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setZoom(int scale) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public short getTopRow() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public short getLeftCol() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void showInPane(int toprow, int leftcol) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void shiftRows(int startRow, int endRow, int n) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void shiftRows(int startRow, int endRow, int n, boolean copyRowHeight, boolean resetOriginalRowHeight) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void shiftColumns(int startColumn, int endColumn, int n) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void createFreezePane(int colSplit, int rowSplit, int leftmostColumn, int topRow) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void createFreezePane(int colSplit, int rowSplit) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void createSplitPane(int xSplitPos, int ySplitPos, int leftmostColumn, int topRow, int activePane) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public PaneInformation getPaneInformation() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setDisplayGridlines(boolean show) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isDisplayGridlines() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setDisplayFormulas(boolean show) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isDisplayFormulas() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setDisplayRowColHeadings(boolean show) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isDisplayRowColHeadings() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setRowBreak(int row) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isRowBroken(int row) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void removeRowBreak(int row) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int[] getRowBreaks() {
-        return new int[0];
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int[] getColumnBreaks() {
-        return new int[0];
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setColumnBreak(int column) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isColumnBroken(int column) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void removeColumnBreak(int column) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setColumnGroupCollapsed(int columnNumber, boolean collapsed) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void groupColumn(int fromColumn, int toColumn) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void ungroupColumn(int fromColumn, int toColumn) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void groupRow(int fromRow, int toRow) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void ungroupRow(int fromRow, int toRow) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setRowGroupCollapsed(int row, boolean collapse) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setDefaultColumnStyle(int column, CellStyle style) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void autoSizeColumn(int column) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void autoSizeColumn(int column, boolean useMergedCells) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Comment getCellComment(CellAddress ref) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Map<CellAddress, ? extends Comment> getCellComments() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -524,12 +526,12 @@ public class SaxSheet implements Sheet {
 
     @Override
     public Drawing<?> createDrawingPatriarch() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Workbook getWorkbook() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -539,96 +541,96 @@ public class SaxSheet implements Sheet {
 
     @Override
     public boolean isSelected() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellRange<? extends Cell> setArrayFormula(String formula, CellRangeAddress range) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellRange<? extends Cell> removeArrayFormula(Cell cell) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public DataValidationHelper getDataValidationHelper() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<? extends DataValidation> getDataValidations() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void addValidationData(DataValidation dataValidation) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public AutoFilter setAutoFilter(CellRangeAddress range) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public SheetConditionalFormatting getSheetConditionalFormatting() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellRangeAddress getRepeatingRows() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellRangeAddress getRepeatingColumns() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setRepeatingRows(CellRangeAddress rowRangeRef) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setRepeatingColumns(CellRangeAddress columnRangeRef) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int getColumnOutlineLevel(int columnIndex) {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Hyperlink getHyperlink(int row, int column) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Hyperlink getHyperlink(CellAddress addr) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<? extends Hyperlink> getHyperlinkList() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CellAddress getActiveCell() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setActiveCell(CellAddress address) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Iterator<Row> iterator() {
-        return null;
+        return rows.iterator();
     }
 }
