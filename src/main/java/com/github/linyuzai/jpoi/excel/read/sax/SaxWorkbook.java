@@ -297,7 +297,7 @@ public class SaxWorkbook implements Workbook {
 
     @Override
     public Row.MissingCellPolicy getMissingCellPolicy() {
-        throw new UnsupportedOperationException();
+        return Row.MissingCellPolicy.CREATE_NULL_AS_BLANK;
     }
 
     @Override
@@ -659,15 +659,22 @@ public class SaxWorkbook implements Workbook {
             if (isTextTag(localName)) {
                 vIsOpen = false;
 
+                SaxCell saxCell = new SaxCell();
+                tempRow.getCells().add(saxCell);
+
                 // Process the value contents as required, now we have it all
                 switch (nextDataType) {
                     case BOOLEAN:
                         char first = value.charAt(0);
                         thisStr = first == '0' ? "FALSE" : "TRUE";
+                        saxCell.setCellValue(first != '0');
+                        saxCell.setCellType(CellType.BOOLEAN);
                         break;
 
                     case ERROR:
                         thisStr = "ERROR:" + value;
+                        saxCell.setCellErrorValue(value.toString().getBytes()[0]);
+                        saxCell.setCellType(CellType.ERROR);
                         break;
 
                     case FORMULA:
@@ -690,12 +697,16 @@ public class SaxWorkbook implements Workbook {
                                 thisStr = fv;
                             }
                         }
+                        saxCell.setCellFormula(thisStr);
+                        saxCell.setCellType(CellType.FORMULA);
                         break;
 
                     case INLINE_STRING:
                         // TODO: Can these ever have formatting on them?
                         XSSFRichTextString rtsi = new XSSFRichTextString(value.toString());
                         thisStr = rtsi.toString();
+                        saxCell.setCellValue(thisStr);
+                        saxCell.setCellType(CellType.STRING);
                         break;
 
                     case SST_STRING:
@@ -706,15 +717,23 @@ public class SaxWorkbook implements Workbook {
                             thisStr = rtss.toString();
                         } catch (NumberFormatException ex) {
                             logger.log(POILogger.ERROR, "Failed to parse SST index '" + sstIndex, ex);
+                            thisStr = null;
                         }
+                        saxCell.setCellValue(thisStr);
+                        saxCell.setCellType(CellType.STRING);
                         break;
 
                     case NUMBER:
                         String n = value.toString();
-                        if (this.formatString != null && n.length() > 0)
+                        if (this.formatString != null && n.length() > 0) {
                             thisStr = formatter.formatRawCellContents(Double.parseDouble(n), this.formatIndex, this.formatString);
-                        else
+                            saxCell.setCellValue(Double.parseDouble(n));
+                            saxCell.setCellType(CellType.NUMERIC);
+                        } else {
                             thisStr = n;
+                            saxCell.setCellValue(n);
+                            saxCell.setCellType(CellType.STRING);
+                        }
                         break;
 
                     default:
@@ -728,10 +747,7 @@ public class SaxWorkbook implements Workbook {
 
                 // Output
                 //TODO output.cell(cellRef, thisStr, comment);
-                SaxCell saxCell = new SaxCell();
-                saxCell.setCellValue(thisStr);
-                saxCell.setCellType(CellType.STRING);
-                tempRow.getCells().add(saxCell);
+
             } else if ("f".equals(localName)) {
                 fIsOpen = false;
             } else if ("is".equals(localName)) {

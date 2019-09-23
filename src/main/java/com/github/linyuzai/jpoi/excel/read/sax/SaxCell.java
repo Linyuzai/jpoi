@@ -40,7 +40,7 @@ public class SaxCell implements Cell {
 
     @Override
     public void setBlank() {
-
+        cellValue = "";
     }
 
     @Override
@@ -65,7 +65,7 @@ public class SaxCell implements Cell {
 
     @Override
     public void setCellValue(double value) {
-
+        this.cellValue = value;
     }
 
     @Override
