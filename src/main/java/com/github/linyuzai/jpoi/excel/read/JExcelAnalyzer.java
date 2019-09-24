@@ -2,18 +2,15 @@ package com.github.linyuzai.jpoi.excel.read;
 
 import com.github.linyuzai.jpoi.excel.JExcelBase;
 import com.github.linyuzai.jpoi.excel.converter.*;
+import com.github.linyuzai.jpoi.excel.listener.PoiListener;
 import com.github.linyuzai.jpoi.excel.read.adapter.DirectListReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.MapReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.ObjectReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.ReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.getter.SupportValueGetter;
 import com.github.linyuzai.jpoi.excel.read.getter.ValueGetter;
-import com.github.linyuzai.jpoi.excel.read.listener.PoiReadListener;
 import com.github.linyuzai.jpoi.order.Ordered;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -22,14 +19,14 @@ import java.util.List;
 public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
 
     private Workbook workbook;
-    private List<PoiReadListener> poiReadListeners;
+    private List<PoiListener> poiListeners;
     private List<ValueConverter> valueConverters;
     private ValueGetter valueGetter;
     private ReadAdapter readAdapter;
 
     public JExcelAnalyzer(Workbook workbook) {
         this.workbook = workbook;
-        this.poiReadListeners = new ArrayList<>();
+        this.poiListeners = new ArrayList<>();
         this.valueConverters = new ArrayList<>();
         setValueGetter(SupportValueGetter.getInstance());
         addValueConverter(NullValueConverter.getInstance());
@@ -39,19 +36,19 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         addValueConverter(ReadObjectValueConverter.getInstance());
     }
 
-    public List<PoiReadListener> getPoiReadListeners() {
-        return poiReadListeners;
+    public List<PoiListener> getPoiListeners() {
+        return poiListeners;
     }
 
-    public JExcelAnalyzer setPoiReadListeners(List<PoiReadListener> poiReadListeners) {
-        this.poiReadListeners = poiReadListeners;
-        this.poiReadListeners.sort(Comparator.comparingInt(Ordered::getOrder));
+    public JExcelAnalyzer setPoiListeners(List<PoiListener> poiListeners) {
+        this.poiListeners = poiListeners;
+        this.poiListeners.sort(Comparator.comparingInt(Ordered::getOrder));
         return this;
     }
 
-    public JExcelAnalyzer addPoiReadListener(PoiReadListener poiReadListener) {
-        this.poiReadListeners.add(poiReadListener);
-        this.poiReadListeners.sort(Comparator.comparingInt(Ordered::getOrder));
+    public JExcelAnalyzer addPoiReadListener(PoiListener poiListener) {
+        this.poiListeners.add(poiListener);
+        this.poiListeners.sort(Comparator.comparingInt(Ordered::getOrder));
         return this;
     }
 
@@ -76,12 +73,12 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
     }
 
     public JExcelAnalyzer setValueGetter(ValueGetter valueGetter) {
-        if (this.valueGetter instanceof PoiReadListener) {
-            poiReadListeners.remove(this.valueGetter);
+        if (this.valueGetter instanceof PoiListener) {
+            poiListeners.remove(this.valueGetter);
         }
         this.valueGetter = valueGetter;
-        if (valueGetter instanceof PoiReadListener) {
-            addPoiReadListener((PoiReadListener) valueGetter);
+        if (valueGetter instanceof PoiListener) {
+            addPoiReadListener((PoiListener) valueGetter);
         }
         return this;
     }
@@ -91,12 +88,12 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
     }
 
     public JExcelAnalyzer setReadAdapter(ReadAdapter readAdapter) {
-        if (this.readAdapter instanceof PoiReadListener) {
-            poiReadListeners.remove(this.readAdapter);
+        if (this.readAdapter instanceof PoiListener) {
+            poiListeners.remove(this.readAdapter);
         }
         this.readAdapter = readAdapter;
-        if (readAdapter instanceof PoiReadListener) {
-            addPoiReadListener((PoiReadListener) readAdapter);
+        if (readAdapter instanceof PoiListener) {
+            addPoiReadListener((PoiListener) readAdapter);
         }
         return this;
     }
@@ -129,23 +126,37 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         if (valueGetter == null) {
             throw new RuntimeException("ValueGetter is null");
         }
-        if (poiReadListeners == null) {
+        if (poiListeners == null) {
             throw new RuntimeException("PoiReadListeners is null");
         }
-        return new JExcelReader(analyze(workbook, readAdapter, valueConverters, valueGetter));
+        return new JExcelReader(analyze(workbook, readAdapter, poiListeners, valueConverters, valueGetter));
     }
 
-    private Object analyze(Workbook workbook, ReadAdapter readAdapter, List<ValueConverter> valueConverters, ValueGetter valueGetter) {
+    private static Object analyze(Workbook workbook, ReadAdapter readAdapter, List<PoiListener> poiListeners,
+                                  List<ValueConverter> valueConverters, ValueGetter valueGetter) {
+        for (PoiListener poiListener : poiListeners) {
+            poiListener.onWorkbookStart(workbook);
+        }
         int sCount = workbook.getNumberOfSheets();
         for (int s = 0; s < sCount; s++) {
             Sheet sheet = workbook.getSheetAt(s);
+            Drawing<?> drawing = sheet.getDrawingPatriarch();
+            for (PoiListener poiListener : poiListeners) {
+                poiListener.onSheetStart(s, sheet, drawing, workbook);
+            }
             int rCount = sheet.getLastRowNum() + 1;
             for (int r = 0; r < rCount; r++) {
                 Row row = sheet.getRow(r);
+                for (PoiListener poiListener : poiListeners) {
+                    poiListener.onRowStart(r, s, row, sheet, workbook);
+                }
                 int cCount = row.getLastCellNum();
                 for (int c = 0; c < cCount; c++) {
                     Cell cell = row.getCell(c);
-                    Object o = valueGetter.getValue(s, r, c, cell, row, sheet, sheet.getDrawingPatriarch(), workbook);
+                    for (PoiListener poiListener : poiListeners) {
+                        poiListener.onCellStart(c, r, s, cell, row, sheet, workbook);
+                    }
+                    Object o = valueGetter.getValue(s, r, c, cell, row, sheet, drawing, workbook);
                     ValueConverter valueConverter = null;
                     for (ValueConverter vc : valueConverters) {
                         if (vc.supportValue(s, r, c, o)) {
@@ -158,8 +169,20 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                     }
                     Object cellValue = valueConverter.convertValue(s, r, c, o);
                     readAdapter.readCell(cellValue, s, r, c, sCount, rCount, cCount);
+                    for (PoiListener poiListener : poiListeners) {
+                        poiListener.onCellEnd(c, r, s, cell, row, sheet, workbook);
+                    }
+                }
+                for (PoiListener poiListener : poiListeners) {
+                    poiListener.onRowEnd(r, s, row, sheet, workbook);
                 }
             }
+            for (PoiListener poiListener : poiListeners) {
+                poiListener.onSheetEnd(s, sheet, drawing, workbook);
+            }
+        }
+        for (PoiListener poiListener : poiListeners) {
+            poiListener.onWorkbookEnd(workbook);
         }
         return readAdapter.getValue();
     }
