@@ -1,6 +1,6 @@
 package com.github.linyuzai.jpoi.excel.read.getter;
 
-import com.github.linyuzai.jpoi.excel.value.ByteArrayPicture;
+import com.github.linyuzai.jpoi.excel.value.picture.ByteArrayPicture;
 import org.apache.poi.ss.usermodel.*;
 
 import java.util.Collections;

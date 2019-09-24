@@ -1,6 +1,6 @@
 package com.github.linyuzai.jpoi.excel.converter;
 
-import com.github.linyuzai.jpoi.excel.value.*;
+import com.github.linyuzai.jpoi.excel.value.picture.*;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Workbook;
 

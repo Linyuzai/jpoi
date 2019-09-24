@@ -1,4 +1,4 @@
-package com.github.linyuzai.jpoi.excel.value;
+package com.github.linyuzai.jpoi.excel.value.picture;
 
 import org.apache.poi.ss.usermodel.ClientAnchor;
 

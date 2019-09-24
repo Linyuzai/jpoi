@@ -1,6 +1,11 @@
 package com.github.linyuzai.jpoi.excel.write.setter;
 
-import com.github.linyuzai.jpoi.excel.value.*;
+import com.github.linyuzai.jpoi.excel.value.comment.RichTextStringComment;
+import com.github.linyuzai.jpoi.excel.value.comment.StringComment;
+import com.github.linyuzai.jpoi.excel.value.comment.SupportComment;
+import com.github.linyuzai.jpoi.excel.value.error.SupportErrorValue;
+import com.github.linyuzai.jpoi.excel.value.formula.SupportFormula;
+import com.github.linyuzai.jpoi.excel.value.picture.*;
 import com.github.linyuzai.jpoi.support.SupportValue;
 import org.apache.poi.ss.usermodel.*;
 
@@ -39,15 +44,33 @@ public class SupportValueSetter extends PoiValueSetter {
                     padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom(),
                     location.getStartCell(), location.getStartRow(), location.getEndCell(), location.getEndRow());
             anchor.setAnchorType(((SupportPicture) value).getAnchorType());
-            create((SupportPicture) value, anchor, workbook, drawing);
+            createPicture((SupportPicture) value, anchor, workbook, drawing);
         } else if (value instanceof SupportErrorValue) {
             cell.setCellErrorValue(((SupportErrorValue) value).getErrorValue());
         } else if (value instanceof SupportFormula) {
             cell.setCellFormula(((SupportFormula) value).getFormula());
+        } else if (value instanceof SupportComment) {
+            SupportComment.Location location = ((SupportComment) value).getLocation();
+            SupportComment.Padding padding = ((SupportComment) value).getPadding();
+            ClientAnchor anchor = drawing.createAnchor(
+                    padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom(),
+                    location.getStartCell(), location.getStartRow(), location.getEndCell(), location.getEndRow());
+            createComment(cell, (SupportComment) value, anchor, workbook, drawing);
         }
     }
 
-    private void create(SupportPicture value, ClientAnchor anchor, Workbook workbook, Drawing<?> drawing) {
+    private void createComment(Cell cell, SupportComment value, ClientAnchor anchor, Workbook workbook, Drawing<?> drawing) {
+        if (value instanceof StringComment) {
+            RichTextString rts = workbook.getCreationHelper().createRichTextString(((StringComment) value).getComment());
+            createComment(cell, new RichTextStringComment(rts), anchor, workbook, drawing);
+        } else if (value instanceof RichTextStringComment) {
+            Comment comment = drawing.createCellComment(anchor);
+            comment.setString(((RichTextStringComment) value).getRichTextString());
+            cell.setCellComment(comment);
+        }
+    }
+
+    private void createPicture(SupportPicture value, ClientAnchor anchor, Workbook workbook, Drawing<?> drawing) {
         int type = value.getType();
         if (value instanceof ByteArrayPicture) {
             drawing.createPicture(anchor, workbook.addPicture(((ByteArrayPicture) value).getBytes(), type));
@@ -63,7 +86,7 @@ public class SupportValueSetter extends PoiValueSetter {
                     }
                 }
                 ImageIO.write(((BufferedImagePicture) value).getBufferedImage(), format, byteArrayOut);
-                create(new ByteArrayPicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
+                createPicture(new ByteArrayPicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
                         type, value.getFormat(), byteArrayOut.toByteArray()), anchor, workbook, drawing);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -77,14 +100,14 @@ public class SupportValueSetter extends PoiValueSetter {
                     type = Workbook.PICTURE_TYPE_PNG;
                 }
                 BufferedImage bufferedImage = ImageIO.read(file);
-                create(new BufferedImagePicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
+                createPicture(new BufferedImagePicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
                         type, value.getFormat(), bufferedImage), anchor, workbook, drawing);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (value instanceof Base64Picture) {
             byte[] bytes = Base64.getDecoder().decode(((Base64Picture) value).getBase64());
-            create(new ByteArrayPicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
+            createPicture(new ByteArrayPicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
                     type, value.getFormat(), bytes), anchor, workbook, drawing);
         }
     }

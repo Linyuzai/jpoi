@@ -3,16 +3,13 @@ package com.github.linyuzai.jpoi.excel.value;
 import com.github.linyuzai.jpoi.support.SupportValue;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 
-public interface SupportPicture extends SupportValue {
-    PoiPicture.Padding getPadding();
+public interface SupportClientAnchorValue extends SupportValue {
 
-    PoiPicture.Location getLocation();
+    SupportClientAnchorValue.Padding getPadding();
 
-    int getType();
+    SupportClientAnchorValue.Location getLocation();
 
     ClientAnchor.AnchorType getAnchorType();
-
-    String getFormat();
 
     class Location {
         private int startRow;
