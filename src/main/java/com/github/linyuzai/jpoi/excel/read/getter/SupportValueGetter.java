@@ -1,5 +1,7 @@
 package com.github.linyuzai.jpoi.excel.read.getter;
 
+import com.github.linyuzai.jpoi.excel.value.error.ByteError;
+import com.github.linyuzai.jpoi.excel.value.formula.StringFormula;
 import com.github.linyuzai.jpoi.excel.value.picture.ByteArrayPicture;
 import org.apache.poi.ss.usermodel.*;
 
@@ -48,6 +50,13 @@ public class SupportValueGetter extends PoiValueGetter {
                 return fromCell;
             }
         }
-        return super.getValue(s, r, c, cell, row, sheet, drawing, workbook);
+        switch (cell.getCellType()) {
+            case FORMULA:
+                return new StringFormula(cell.getCellFormula());
+            case ERROR:
+                return new ByteError(cell.getErrorCellValue());
+            default:
+                return super.getValue(s, r, c, cell, row, sheet, drawing, workbook);
+        }
     }
 }

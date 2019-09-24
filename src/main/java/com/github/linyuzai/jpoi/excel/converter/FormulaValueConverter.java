@@ -1,5 +1,7 @@
 package com.github.linyuzai.jpoi.excel.converter;
 
+import com.github.linyuzai.jpoi.excel.value.formula.StringFormula;
+
 public class FormulaValueConverter implements ValueConverter {
 
     private static FormulaValueConverter sInstance = new FormulaValueConverter();
@@ -15,6 +17,9 @@ public class FormulaValueConverter implements ValueConverter {
 
     @Override
     public Object convertValue(int sheet, int row, int cell, Object value) {
-        return value;
+        if (value instanceof String) {
+            return new StringFormula((String) value);
+        }
+        return null;
     }
 }

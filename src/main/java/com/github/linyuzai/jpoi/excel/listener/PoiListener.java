@@ -4,9 +4,9 @@ import com.github.linyuzai.jpoi.order.Ordered;
 import org.apache.poi.ss.usermodel.*;
 
 /**
- * start is create for write,get for read
+ * start is create for write or get for read(start of handle)
  * <p>
- * end is value set for write,get for read
+ * end is value set for write or get for read(end of handle)
  */
 public interface PoiListener extends Ordered {
 
