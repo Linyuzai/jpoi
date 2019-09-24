@@ -19,5 +19,8 @@ public @interface JExcelCellWriter {
 
     int order() default Integer.MAX_VALUE;
 
+    @Deprecated
     String standbyFor() default "";
+
+    JExcelCellStyle style() default @JExcelCellStyle;
 }

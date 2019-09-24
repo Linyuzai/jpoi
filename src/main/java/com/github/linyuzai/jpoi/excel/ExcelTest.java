@@ -2,9 +2,9 @@ package com.github.linyuzai.jpoi.excel;
 
 import com.github.linyuzai.jpoi.excel.read.annotation.JExcelCellReader;
 import com.github.linyuzai.jpoi.excel.read.annotation.JExcelSheetReader;
-import com.github.linyuzai.jpoi.excel.write.annotation.JExcelCellWriter;
-import com.github.linyuzai.jpoi.excel.write.annotation.JExcelSheetWriter;
+import com.github.linyuzai.jpoi.excel.write.annotation.*;
 import com.github.linyuzai.jpoi.excel.converter.PictureValueConverter;
+import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,6 +39,47 @@ public class ExcelTest {
         //JExcel.xlsx().data(list, list).write().to(new File("C:\\JExcel\\111.xlsx"));
         //SimpleDataWriteAdapter sa = new SimpleDataWriteAdapter(list, TestBean::getTestString, TestBean::getTestDouble);
         //sa.addListData(list, TestBean::getTestString);
+        /*CellStyle style;
+        style.setAlignment();
+        style.setBorderBottom();
+        style.setBottomBorderColor();
+        style.setBorderLeft();
+        style.setLeftBorderColor();
+        style.setBorderRight();
+        style.setRightBorderColor();
+        style.setBorderTop();
+        style.setTopBorderColor();
+        style.setDataFormat();
+        style.setFillPattern();
+        style.setFillBackgroundColor();
+        style.setFillForegroundColor();
+        style.setFont();
+        style.setHidden();
+        style.setIndention();
+        style.setLocked();
+        style.setQuotePrefixed();
+        style.setRotation();
+        style.setShrinkToFit();
+        style.setWrapText();
+        style.setVerticalAlignment();*/
+
+        /*Font font;
+        font.setBold();
+        font.setCharSet();
+        font.setCharSet();
+        font.setColor();
+        font.setFontHeight();
+        font.setFontHeightInPoints();
+        font.setFontName();
+        font.setItalic();
+        font.setStrikeout();
+        font.setTypeOffset();
+        font.setUnderline();*/
+        /*Row row;
+        row.setHeight();
+        row.setHeightInPoints();
+        row.setZeroHeight();
+        row.setRowStyle();*/
         JExcel.sxlsx()//.async()
                 /*.writeAdapter(new SimpleDataWriteAdapter(list) {
                     @Override
@@ -66,15 +107,58 @@ public class ExcelTest {
     }
 
     @JExcelSheetReader(annotationOnly = true)
-    @JExcelSheetWriter(name = "2222222", annotationOnly = true)
+    @JExcelSheetWriter(name = "2222222", annotationOnly = true, style = @JExcelRowStyle(
+            height = 1,
+            heightInPoints = 1f,
+            zeroHeight = true,
+            cellStyle = @JExcelCellStyle
+    ))
     public static class TestBean {
 
         @JExcelCellReader(title = "string11111")
-        @JExcelCellWriter(title = "string11111")
+        @JExcelCellWriter(title = "string11111", style = @JExcelCellStyle(
+                horizontalAlignment = HorizontalAlignment.CENTER,
+                verticalAlignment = VerticalAlignment.BOTTOM,
+                dataFormat = 0,
+                hidden = true,
+                indention = 0,
+                locked = true,
+                quotePrefixed = true,
+                rotation = 1,
+                shrinkToFit = true,
+                wrapText = true,
+                border = @JExcelCellBorder(
+                        top = BorderStyle.DASH_DOT,
+                        topColor = 1,
+                        right = BorderStyle.DASH_DOT,
+                        rightColor = 1,
+                        bottom = BorderStyle.DASH_DOT,
+                        bottomColor = 1,
+                        left = BorderStyle.DASH_DOT,
+                        leftColor = 1),
+                fill = @JExcelCellFill(
+                        pattern = FillPatternType.ALT_BARS,
+                        foregroundColor = 1,
+                        backgroundColor = 1),
+                font = @JExcelCellFont(
+                        bold = true,
+                        charSet = 1,
+                        color = 1,
+                        fontHeight = 1,
+                        fontHeightInPoints = 1,
+                        fontName = "1",
+                        italic = true,
+                        strikeout = true,
+                        typeOffset = 1,
+                        underline = 1)
+        ))
         private String testString;
+
         private Double testDouble;
+
         @JExcelCellWriter(autoSize = false, valueConverter = PictureValueConverter.class)
         private File file;
+
         @JExcelCellReader(title = "file")
         private byte[] bytes;
 
