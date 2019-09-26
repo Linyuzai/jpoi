@@ -1,7 +1,7 @@
 package com.github.linyuzai.jpoi.excel.converter;
 
 import com.github.linyuzai.jpoi.excel.value.ClientAnchorValue;
-import com.github.linyuzai.jpoi.excel.value.picture.PoiPicture;
+import com.github.linyuzai.jpoi.excel.value.SupportClientAnchorValue;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 
 public abstract class ClientAnchorValueConverter implements ValueConverter {
@@ -14,12 +14,12 @@ public abstract class ClientAnchorValueConverter implements ValueConverter {
         }
     }
 
-    public PoiPicture.Location getLocation(int sheet, int row, int cell, Object value) {
-        return new PoiPicture.Location(row, cell, row + 1, cell + 1);
+    public SupportClientAnchorValue.Location getLocation(int sheet, int row, int cell, Object value) {
+        return new SupportClientAnchorValue.Location(row, cell, row + 1, cell + 1);
     }
 
-    public PoiPicture.Padding getPadding(int sheet, int row, int cell, Object value) {
-        return PoiPicture.Padding.getDefault();
+    public SupportClientAnchorValue.Padding getPadding(int sheet, int row, int cell, Object value) {
+        return SupportClientAnchorValue.Padding.getDefault();
     }
 
     public ClientAnchor.AnchorType getAnchorType(int sheet, int row, int cell, Object value) {
