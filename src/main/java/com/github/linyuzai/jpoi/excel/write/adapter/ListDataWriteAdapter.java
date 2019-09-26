@@ -1,7 +1,11 @@
 package com.github.linyuzai.jpoi.excel.write.adapter;
 
+import com.github.linyuzai.jpoi.excel.converter.CommentValueConverter;
+import com.github.linyuzai.jpoi.excel.converter.PictureValueConverter;
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
+import com.github.linyuzai.jpoi.excel.value.combination.ListCombinationValue;
+import com.github.linyuzai.jpoi.excel.value.combination.SupportCombinationValue;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 
@@ -40,6 +44,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
         int sheet = listDataList.size();
         listDataList.add(sheet, listData);
         cellFields(sheet, listData.getDataList(), cls);
+        combineFields(sheet);
     }
 
     public List<ListData> getListDataList() {
@@ -77,6 +82,57 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
         }
         for (List<WriteField> fd : writeFieldList) {
             fd.sort(Comparator.comparingInt(WriteField::getOrder));
+        }
+    }
+
+    public void combineFields(int sheet) {
+        List<WriteField> writeFields = writeFieldList.get(sheet);
+        Iterator<WriteField> iterator = writeFields.iterator();
+        while (iterator.hasNext()) {
+            WriteField writeField = iterator.next();
+            if (writeField instanceof AnnotationWriteField) {
+                boolean isComment = false;
+                boolean isPicture = false;
+                String commentField = ((AnnotationWriteField) writeField).getCommentOnField();
+                int commentIndex = ((AnnotationWriteField) writeField).getCommentOnIndex();
+                ValueConverter valueConverter = ((AnnotationWriteField) writeField).getValueConverter();
+                if (commentIndex >= 0 || (commentField != null && !commentField.isEmpty())) {
+                    isComment = true;
+                    if (valueConverter == null) {
+                        ((AnnotationWriteField) writeField).setValueConverter(CommentValueConverter.getInstance());
+                    }
+                }
+                String pictureField = ((AnnotationWriteField) writeField).getPictureOnField();
+                int pictureIndex = ((AnnotationWriteField) writeField).getPictureOnIndex();
+                if (pictureIndex >= 0 || (pictureField != null && !pictureField.isEmpty())) {
+                    isPicture = true;
+                    if (valueConverter == null) {
+                        ((AnnotationWriteField) writeField).setValueConverter(PictureValueConverter.getInstance());
+                    }
+                }
+                if (isComment && isPicture) {
+                    throw new IllegalArgumentException("Can't set comments and pictures at the same time on the field '" + writeField.getFieldName() + "'");
+                } else if (isComment || isPicture) {
+                    int index = commentIndex >= 0 ? commentIndex : pictureIndex;
+                    if (index >= 0) {
+                        if (index < writeFields.size()) {
+                            WriteField target = writeFields.get(index);
+                            if (target instanceof AnnotationWriteField) {
+                                ((AnnotationWriteField) target).getCombinationFields().add(writeField);
+                            }
+                        }
+                    } else {
+                        String field = (commentField != null && !commentField.isEmpty()) ? commentField : pictureField;
+                        for (WriteField rf : writeFields) {
+                            if (rf instanceof AnnotationWriteField && field.equals(rf.getFieldName())) {
+                                ((AnnotationWriteField) rf).getCombinationFields().add(writeField);
+                                break;
+                            }
+                        }
+                    }
+                    iterator.remove();
+                }
+            }
         }
     }
 
@@ -154,11 +210,10 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
     @Override
     public Object getDataCalculateHeader(int sheet, int row, int cell, int realRow, int realCell) {
         Object entity = listDataList.get(sheet).getDataList().get(row);
-        return getValueFromEntity(sheet, row, cell, realRow, realCell, entity);
+        return getValueFromEntity(sheet, row, cell, realRow, realCell, writeFieldList.get(sheet).get(cell), entity);
     }
 
-    public Object getValueFromEntity(int sheet, int row, int cell, int realRow, int realCell, Object entity) {
-        WriteField writeField = writeFieldList.get(sheet).get(cell);
+    public Object getValueFromEntity(int sheet, int row, int cell, int realRow, int realCell, WriteField writeField, Object entity) {
         String fieldName = writeField.getFieldName();
         Object val;
         if (writeField instanceof AnnotationWriteField && ((AnnotationWriteField) writeField).isMethod()) {
@@ -183,7 +238,16 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
                 (valueConverter = ((AnnotationWriteField) writeField).getValueConverter()) != null) {
             val = valueConverter.convertValue(sheet, realRow, realCell, val);
         }
-        return val;
+        if (writeField instanceof AnnotationWriteField && ((AnnotationWriteField) writeField).getCombinationFields().size() > 0) {
+            SupportCombinationValue combinationValue = new ListCombinationValue();
+            combinationValue.addValue(val);
+            for (WriteField combinationField : ((AnnotationWriteField) writeField).getCombinationFields()) {
+                combinationValue.addValue(getValueFromEntity(sheet, row, cell, realRow, realCell, combinationField, entity));
+            }
+            return combinationValue;
+        } else {
+            return val;
+        }
     }
 
     @Override

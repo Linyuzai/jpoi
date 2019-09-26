@@ -13,7 +13,9 @@ public interface ValueConverter extends Ordered {
         if (cls.isInterface()) {
             return null;
         }
-        if (cls == ErrorValueConverter.class) {
+        if (cls == CommentValueConverter.class) {
+            return CommentValueConverter.getInstance();
+        } else if (cls == ErrorValueConverter.class) {
             return ErrorValueConverter.getInstance();
         } else if (cls == FilePictureValueConverter.class) {
             return FilePictureValueConverter.getInstance();

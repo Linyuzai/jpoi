@@ -17,8 +17,8 @@ public class ExcelTest {
 
     public static void main(String[] args) throws IOException {
         //JExcel.sxlsx(new FileInputStream("C:\\JExcel\\111.xlsx"));
-        read();
-        //write();
+        //read();
+        write();
     }
 
     public static void read() throws IOException {
@@ -29,7 +29,7 @@ public class ExcelTest {
     public static void write() throws IOException {
         List<TestBean> list = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            list.add(new TestBean(UUID.randomUUID().toString(), 1.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
+            list.add(new TestBean(UUID.randomUUID().toString(), 1.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg"), "comment"));
         }
         //list.add(new TestBean("11111111111111111111111111111111111111", 1.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
         //list.add(new TestBean("222", 2.0, new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg")));
@@ -156,19 +156,24 @@ public class ExcelTest {
 
         private Double testDouble;
 
-        @JExcelCellWriter(autoSize = false, valueConverter = PictureValueConverter.class)
+        //@JExcelCellWriter(autoSize = false, valueConverter = PictureValueConverter.class)
+        @JExcelCellWriter(pictureOnFiled = "testString")
         private File file;
 
         @JExcelCellReader(title = "file")
         private byte[] bytes;
 
+        @JExcelCellWriter(commentOnField = "testString")
+        private String comment;
+
         public TestBean() {
         }
 
-        public TestBean(String testString, Double testDouble, File file) {
+        public TestBean(String testString, Double testDouble, File file, String comment) {
             this.testString = testString;
             this.testDouble = testDouble;
             this.file = file;
+            this.comment = comment;
         }
 
         public String getTestString() {
@@ -201,6 +206,14 @@ public class ExcelTest {
 
         public void setBytes(byte[] bytes) {
             this.bytes = bytes;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
         }
     }
 }

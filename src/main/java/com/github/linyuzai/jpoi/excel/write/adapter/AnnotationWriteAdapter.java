@@ -6,6 +6,8 @@ import com.github.linyuzai.jpoi.excel.write.annotation.JExcelSheetWriter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
 
@@ -113,6 +115,12 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             writeField.setWidth(annotation.width());
             writeField.setOrder(annotation.order());
             writeField.setValueConverter(ValueConverter.getWithCache(annotation.valueConverter()));
+            String commentField = annotation.commentOnField();
+            writeField.setCommentOnField(commentField.isEmpty() ? null : commentField);
+            writeField.setCommentOnIndex(annotation.commentOnIndex());
+            String pictureField = annotation.pictureOnFiled();
+            writeField.setPictureOnField(pictureField.isEmpty() ? null : pictureField);
+            writeField.setPictureOnIndex(annotation.pictureOnIndex());
             //reuseValueConverter(writeField, annotation.valueConverter());
             return writeField;
         }
@@ -153,6 +161,11 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
         private boolean isMethod;
         private boolean annotationOnly;
         private ValueConverter valueConverter;
+        private String commentOnField;
+        private int commentOnIndex;
+        private String pictureOnField;
+        private int pictureOnIndex;
+        private List<WriteField> combinationFields = new ArrayList<>();
 
         public boolean isMethod() {
             return isMethod;
@@ -176,6 +189,46 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
 
         public void setValueConverter(ValueConverter valueConverter) {
             this.valueConverter = valueConverter;
+        }
+
+        public String getCommentOnField() {
+            return commentOnField;
+        }
+
+        public void setCommentOnField(String commentOnField) {
+            this.commentOnField = commentOnField;
+        }
+
+        public int getCommentOnIndex() {
+            return commentOnIndex;
+        }
+
+        public void setCommentOnIndex(int commentOnIndex) {
+            this.commentOnIndex = commentOnIndex;
+        }
+
+        public String getPictureOnField() {
+            return pictureOnField;
+        }
+
+        public void setPictureOnField(String pictureOnField) {
+            this.pictureOnField = pictureOnField;
+        }
+
+        public int getPictureOnIndex() {
+            return pictureOnIndex;
+        }
+
+        public void setPictureOnIndex(int pictureOnIndex) {
+            this.pictureOnIndex = pictureOnIndex;
+        }
+
+        public List<WriteField> getCombinationFields() {
+            return combinationFields;
+        }
+
+        public void setCombinationFields(List<WriteField> combinationFields) {
+            this.combinationFields = combinationFields;
         }
     }
 }

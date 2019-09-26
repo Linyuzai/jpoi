@@ -7,7 +7,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-public class PictureValueConverter implements ValueConverter {
+public class PictureValueConverter extends ClientAnchorValueConverter {
 
     private static PictureValueConverter sInstance = new PictureValueConverter();
 
@@ -33,29 +33,15 @@ public class PictureValueConverter implements ValueConverter {
             picture = new Base64Picture((String) value);
         }
         if (picture != null) {
-            picture.setLocation(getLocation(sheet, row, cell, value));
-            picture.setPadding(getPadding(sheet, row, cell, value));
-            picture.setAnchorType(getAnchorType(sheet, row, cell, value));
+            configClientAnchorValue(sheet, row, cell, value, picture);
             picture.setType(getType(sheet, row, cell, value));
             return picture;
         }
         return null;
     }
 
-    public PoiPicture.Location getLocation(int sheet, int row, int cell, Object value) {
-        return new PoiPicture.Location(row, cell, row + 1, cell + 1);
-    }
-
-    public PoiPicture.Padding getPadding(int sheet, int row, int cell, Object value) {
-        return PoiPicture.Padding.getDefault();
-    }
-
     public int getType(int sheet, int row, int cell, Object value) {
         return Workbook.PICTURE_TYPE_JPEG;
-    }
-
-    public ClientAnchor.AnchorType getAnchorType(int sheet, int row, int cell, Object value) {
-        return ClientAnchor.AnchorType.MOVE_AND_RESIZE;
     }
 
     @Override
