@@ -1,8 +1,13 @@
 package com.github.linyuzai.jpoi.excel.read.getter;
 
+import com.github.linyuzai.jpoi.excel.value.combination.CombinationValue;
+import com.github.linyuzai.jpoi.excel.value.combination.ListCombinationValue;
+import com.github.linyuzai.jpoi.excel.value.comment.StringComment;
+import com.github.linyuzai.jpoi.excel.value.comment.SupportComment;
 import com.github.linyuzai.jpoi.excel.value.error.ByteError;
 import com.github.linyuzai.jpoi.excel.value.formula.StringFormula;
 import com.github.linyuzai.jpoi.excel.value.picture.ByteArrayPicture;
+import com.github.linyuzai.jpoi.excel.value.picture.SupportPicture;
 import org.apache.poi.ss.usermodel.*;
 
 import java.util.Collections;
@@ -44,19 +49,39 @@ public class SupportValueGetter extends PoiValueGetter {
             }
         }
         Map<Integer, ByteArrayPicture> fromRow = pictureMap.get(r);
+        SupportPicture picture = null;
         if (fromRow != null) {
-            ByteArrayPicture fromCell = fromRow.get(c);
-            if (fromCell != null) {
-                return fromCell;
-            }
+            picture = fromRow.get(c);
         }
+        Comment cellComment = cell.getCellComment();
+        SupportComment comment = null;
+        if (cellComment != null) {
+            comment = new StringComment(cellComment.getString().getString());
+        }
+        Object cellData;
         switch (cell.getCellType()) {
             case FORMULA:
-                return new StringFormula(cell.getCellFormula());
+                cellData = new StringFormula(cell.getCellFormula());
+                break;
             case ERROR:
-                return new ByteError(cell.getErrorCellValue());
+                cellData = new ByteError(cell.getErrorCellValue());
+                break;
             default:
-                return super.getValue(s, r, c, cell, row, sheet, drawing, workbook);
+                cellData = super.getValue(s, r, c, cell, row, sheet, drawing, workbook);
+                break;
+        }
+        if (picture != null || comment != null) {
+            CombinationValue combinationValue = new ListCombinationValue();
+            combinationValue.addValue(cellData);
+            if (comment != null) {
+                combinationValue.addValue(comment);
+            }
+            if (picture != null) {
+                combinationValue.addValue(picture);
+            }
+            return combinationValue;
+        } else {
+            return cellData;
         }
     }
 }

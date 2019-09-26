@@ -19,13 +19,13 @@ public @interface JExcelCellWriter {
 
     int order() default Integer.MAX_VALUE;
 
-    String commentOnField() default "";
+    String commentOfField() default "";
 
-    int commentOnIndex() default -1;
+    int commentOfIndex() default -1;
 
-    String pictureOnFiled() default "";
+    String pictureOfFiled() default "";
 
-    int pictureOnIndex() default -1;
+    int pictureOfIndex() default -1;
 
     @Deprecated
     String standbyFor() default "";

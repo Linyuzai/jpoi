@@ -1,8 +1,6 @@
 package com.github.linyuzai.jpoi.excel.value.combination;
 
-import com.github.linyuzai.jpoi.support.SupportValue;
-
-public interface SupportCombinationValue extends SupportValue {
+public interface CombinationValue {
 
     Object getValue();
 

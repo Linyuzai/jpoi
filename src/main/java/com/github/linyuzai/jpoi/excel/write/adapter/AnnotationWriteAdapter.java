@@ -115,12 +115,12 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             writeField.setWidth(annotation.width());
             writeField.setOrder(annotation.order());
             writeField.setValueConverter(ValueConverter.getWithCache(annotation.valueConverter()));
-            String commentField = annotation.commentOnField();
-            writeField.setCommentOnField(commentField.isEmpty() ? null : commentField);
-            writeField.setCommentOnIndex(annotation.commentOnIndex());
-            String pictureField = annotation.pictureOnFiled();
-            writeField.setPictureOnField(pictureField.isEmpty() ? null : pictureField);
-            writeField.setPictureOnIndex(annotation.pictureOnIndex());
+            String commentField = annotation.commentOfField();
+            writeField.setCommentOfField(commentField.isEmpty() ? null : commentField);
+            writeField.setCommentOfIndex(annotation.commentOfIndex());
+            String pictureField = annotation.pictureOfFiled();
+            writeField.setPictureOfField(pictureField.isEmpty() ? null : pictureField);
+            writeField.setPictureOfIndex(annotation.pictureOfIndex());
             //reuseValueConverter(writeField, annotation.valueConverter());
             return writeField;
         }
@@ -161,10 +161,10 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
         private boolean isMethod;
         private boolean annotationOnly;
         private ValueConverter valueConverter;
-        private String commentOnField;
-        private int commentOnIndex;
-        private String pictureOnField;
-        private int pictureOnIndex;
+        private String commentOfField;
+        private int commentOfIndex;
+        private String pictureOfField;
+        private int pictureOfIndex;
         private List<WriteField> combinationFields = new ArrayList<>();
 
         public boolean isMethod() {
@@ -191,36 +191,36 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             this.valueConverter = valueConverter;
         }
 
-        public String getCommentOnField() {
-            return commentOnField;
+        public String getCommentOfField() {
+            return commentOfField;
         }
 
-        public void setCommentOnField(String commentOnField) {
-            this.commentOnField = commentOnField;
+        public void setCommentOfField(String commentOfField) {
+            this.commentOfField = commentOfField;
         }
 
-        public int getCommentOnIndex() {
-            return commentOnIndex;
+        public int getCommentOfIndex() {
+            return commentOfIndex;
         }
 
-        public void setCommentOnIndex(int commentOnIndex) {
-            this.commentOnIndex = commentOnIndex;
+        public void setCommentOfIndex(int commentOfIndex) {
+            this.commentOfIndex = commentOfIndex;
         }
 
-        public String getPictureOnField() {
-            return pictureOnField;
+        public String getPictureOfField() {
+            return pictureOfField;
         }
 
-        public void setPictureOnField(String pictureOnField) {
-            this.pictureOnField = pictureOnField;
+        public void setPictureOfField(String pictureOfField) {
+            this.pictureOfField = pictureOfField;
         }
 
-        public int getPictureOnIndex() {
-            return pictureOnIndex;
+        public int getPictureOfIndex() {
+            return pictureOfIndex;
         }
 
-        public void setPictureOnIndex(int pictureOnIndex) {
-            this.pictureOnIndex = pictureOnIndex;
+        public void setPictureOfIndex(int pictureOfIndex) {
+            this.pictureOfIndex = pictureOfIndex;
         }
 
         public List<WriteField> getCombinationFields() {

@@ -5,6 +5,8 @@ import com.github.linyuzai.jpoi.excel.read.annotation.JExcelSheetReader;
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AnnotationReadAdapter extends ClassReadAdapter {
 
@@ -47,6 +49,12 @@ public abstract class AnnotationReadAdapter extends ClassReadAdapter {
             readField.setIndex(fa.index());
             //readField.setOrder(fa.order());
             //reuseValueConverter(writeField, fa.valueConverter());
+            String commentField = fa.commentOfField();
+            readField.setCommentOfField(commentField.isEmpty() ? null : commentField);
+            readField.setCommentOfIndex(fa.commentOfIndex());
+            String pictureField = fa.pictureOfFiled();
+            readField.setPictureOfField(pictureField.isEmpty() ? null : pictureField);
+            readField.setPictureOfIndex(fa.pictureOfIndex());
             return readField;
         }
     }
@@ -56,6 +64,11 @@ public abstract class AnnotationReadAdapter extends ClassReadAdapter {
         private boolean toMap;
         private boolean annotationOnly;
         private ValueConverter valueConverter;
+        private String commentOfField;
+        private int commentOfIndex;
+        private String pictureOfField;
+        private int pictureOfIndex;
+        private List<ReadField> combinationFields = new ArrayList<>();
 
         public boolean isToMap() {
             return toMap;
@@ -79,6 +92,46 @@ public abstract class AnnotationReadAdapter extends ClassReadAdapter {
 
         public void setValueConverter(ValueConverter valueConverter) {
             this.valueConverter = valueConverter;
+        }
+
+        public String getCommentOfField() {
+            return commentOfField;
+        }
+
+        public void setCommentOfField(String commentOfField) {
+            this.commentOfField = commentOfField;
+        }
+
+        public int getCommentOfIndex() {
+            return commentOfIndex;
+        }
+
+        public void setCommentOfIndex(int commentOfIndex) {
+            this.commentOfIndex = commentOfIndex;
+        }
+
+        public String getPictureOfField() {
+            return pictureOfField;
+        }
+
+        public void setPictureOfField(String pictureOfField) {
+            this.pictureOfField = pictureOfField;
+        }
+
+        public int getPictureOfIndex() {
+            return pictureOfIndex;
+        }
+
+        public void setPictureOfIndex(int pictureOfIndex) {
+            this.pictureOfIndex = pictureOfIndex;
+        }
+
+        public List<ReadField> getCombinationFields() {
+            return combinationFields;
+        }
+
+        public void setCombinationFields(List<ReadField> combinationFields) {
+            this.combinationFields = combinationFields;
         }
     }
 }

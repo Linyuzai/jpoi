@@ -3,7 +3,6 @@ package com.github.linyuzai.jpoi.excel;
 import com.github.linyuzai.jpoi.excel.read.annotation.JExcelCellReader;
 import com.github.linyuzai.jpoi.excel.read.annotation.JExcelSheetReader;
 import com.github.linyuzai.jpoi.excel.write.annotation.*;
-import com.github.linyuzai.jpoi.excel.converter.PictureValueConverter;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
@@ -157,13 +156,13 @@ public class ExcelTest {
         private Double testDouble;
 
         //@JExcelCellWriter(autoSize = false, valueConverter = PictureValueConverter.class)
-        @JExcelCellWriter(pictureOnFiled = "testString")
+        @JExcelCellWriter(pictureOfFiled = "testString")
         private File file;
 
         @JExcelCellReader(title = "file")
         private byte[] bytes;
 
-        @JExcelCellWriter(commentOnField = "testString")
+        @JExcelCellWriter(commentOfField = "testString")
         private String comment;
 
         public TestBean() {

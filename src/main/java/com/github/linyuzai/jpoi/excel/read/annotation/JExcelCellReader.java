@@ -14,4 +14,12 @@ public @interface JExcelCellReader {
     Class<? extends ValueConverter> valueConverter() default ValueConverter.class;
 
     int index() default -1;
+
+    String commentOfField() default "";
+
+    int commentOfIndex() default -1;
+
+    String pictureOfFiled() default "";
+
+    int pictureOfIndex() default -1;
 }

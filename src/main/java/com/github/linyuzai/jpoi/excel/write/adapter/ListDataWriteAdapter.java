@@ -5,7 +5,7 @@ import com.github.linyuzai.jpoi.excel.converter.PictureValueConverter;
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
 import com.github.linyuzai.jpoi.excel.value.combination.ListCombinationValue;
-import com.github.linyuzai.jpoi.excel.value.combination.SupportCombinationValue;
+import com.github.linyuzai.jpoi.excel.value.combination.CombinationValue;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 
@@ -93,8 +93,8 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
             if (writeField instanceof AnnotationWriteField) {
                 boolean isComment = false;
                 boolean isPicture = false;
-                String commentField = ((AnnotationWriteField) writeField).getCommentOnField();
-                int commentIndex = ((AnnotationWriteField) writeField).getCommentOnIndex();
+                String commentField = ((AnnotationWriteField) writeField).getCommentOfField();
+                int commentIndex = ((AnnotationWriteField) writeField).getCommentOfIndex();
                 ValueConverter valueConverter = ((AnnotationWriteField) writeField).getValueConverter();
                 if (commentIndex >= 0 || (commentField != null && !commentField.isEmpty())) {
                     isComment = true;
@@ -102,8 +102,8 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
                         ((AnnotationWriteField) writeField).setValueConverter(CommentValueConverter.getInstance());
                     }
                 }
-                String pictureField = ((AnnotationWriteField) writeField).getPictureOnField();
-                int pictureIndex = ((AnnotationWriteField) writeField).getPictureOnIndex();
+                String pictureField = ((AnnotationWriteField) writeField).getPictureOfField();
+                int pictureIndex = ((AnnotationWriteField) writeField).getPictureOfIndex();
                 if (pictureIndex >= 0 || (pictureField != null && !pictureField.isEmpty())) {
                     isPicture = true;
                     if (valueConverter == null) {
@@ -239,7 +239,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
             val = valueConverter.convertValue(sheet, realRow, realCell, val);
         }
         if (writeField instanceof AnnotationWriteField && ((AnnotationWriteField) writeField).getCombinationFields().size() > 0) {
-            SupportCombinationValue combinationValue = new ListCombinationValue();
+            CombinationValue combinationValue = new ListCombinationValue();
             combinationValue.addValue(val);
             for (WriteField combinationField : ((AnnotationWriteField) writeField).getCombinationFields()) {
                 combinationValue.addValue(getValueFromEntity(sheet, row, cell, realRow, realCell, combinationField, entity));

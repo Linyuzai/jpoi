@@ -1,10 +1,11 @@
 package com.github.linyuzai.jpoi.excel.read.adapter;
 
+import com.github.linyuzai.jpoi.excel.converter.CommentValueConverter;
+import com.github.linyuzai.jpoi.excel.converter.PictureValueConverter;
+import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
+
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ObjectReadAdapter extends MapReadAdapter {
 
@@ -26,6 +27,7 @@ public class ObjectReadAdapter extends MapReadAdapter {
             return;
         }
         fieldsFromClass(sheet, cls);
+        combineFields(sheet);
     }
 
     public void fieldsFromClass(int sheet, Class<?> cls) {
@@ -73,6 +75,64 @@ public class ObjectReadAdapter extends MapReadAdapter {
         }
     }
 
+    public void combineFields(int sheet) {
+        FieldData fieldData = getFieldDataMap().get(sheet);
+        if (fieldData == null) {
+            return;
+        }
+        Map<Integer, ReadField> readFieldMap = fieldData.getReadFieldMap();
+        Set<Integer> keys = new HashSet<>(readFieldMap.keySet());
+        for (Integer key : keys) {
+            ReadField readField = readFieldMap.get(key);
+            if (readField == null) {
+                continue;
+            }
+            if (readField instanceof AnnotationReadField) {
+                boolean isComment = false;
+                boolean isPicture = false;
+                String commentField = ((AnnotationReadField) readField).getCommentOfField();
+                int commentIndex = ((AnnotationReadField) readField).getCommentOfIndex();
+                ValueConverter valueConverter = ((AnnotationReadField) readField).getValueConverter();
+                if (commentIndex >= 0 || (commentField != null && !commentField.isEmpty())) {
+                    isComment = true;
+                    if (valueConverter == null) {
+                        ((AnnotationReadField) readField).setValueConverter(CommentValueConverter.getInstance());
+                    }
+                }
+                String pictureField = ((AnnotationReadField) readField).getPictureOfField();
+                int pictureIndex = ((AnnotationReadField) readField).getPictureOfIndex();
+                if (pictureIndex >= 0 || (pictureField != null && !pictureField.isEmpty())) {
+                    isPicture = true;
+                    if (valueConverter == null) {
+                        ((AnnotationReadField) readField).setValueConverter(PictureValueConverter.getInstance());
+                    }
+                }
+                if (isComment && isPicture) {
+                    throw new IllegalArgumentException("Can't set comments and pictures at the same time on the field '" + readField.getFieldName() + "'");
+                } else if (isComment || isPicture) {
+                    int index = commentIndex >= 0 ? commentIndex : pictureIndex;
+                    if (index >= 0) {
+                        if (readFieldMap.containsKey(index)) {
+                            ReadField target = readFieldMap.get(index);
+                            if (target instanceof AnnotationReadField) {
+                                ((AnnotationReadField) target).getCombinationFields().add(readField);
+                            }
+                        }
+                    } else {
+                        String field = (commentField != null && !commentField.isEmpty()) ? commentField : pictureField;
+                        for (ReadField rf : readFieldMap.values()) {
+                            if (rf instanceof AnnotationReadField && field.equals(rf.getFieldName())) {
+                                ((AnnotationReadField) rf).getCombinationFields().add(readField);
+                                break;
+                            }
+                        }
+                    }
+                    readFieldMap.remove(key);
+                }
+            }
+        }
+    }
+
     @Override
     public void readRowHeaderCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
         if (Map.class.isAssignableFrom(classes[s])) {
@@ -104,7 +164,14 @@ public class ObjectReadAdapter extends MapReadAdapter {
             if (fieldData != null) {
                 ReadField readField = fieldData.getReadFieldMap().get(c);
                 if (readField != null) {
-                    String fieldName = readField.getFieldName();
+                    if (readField instanceof AnnotationReadField && ((AnnotationReadField) readField).getCombinationFields().size() > 0) {
+                        for (ReadField combinationField : ((AnnotationReadField) readField).getCombinationFields()) {
+                            setFieldValue(cellContainer, value, s, r, c, combinationField);
+                        }
+                    } else {
+                        setFieldValue(cellContainer, value, s, r, c, readField);
+                    }
+                    /*String fieldName = readField.getFieldName();
                     if (fieldName != null) {
                         try {
                             Field field = classes[s].getDeclaredField(fieldName);
@@ -113,8 +180,27 @@ public class ObjectReadAdapter extends MapReadAdapter {
                         } catch (NoSuchFieldException | IllegalAccessException e) {
                             e.printStackTrace();
                         }
-                    }
+                    }*/
                 }
+            }
+        }
+    }
+
+    public void setFieldValue(Object cellContainer, Object value, int s, int r, int c, ReadField readField) {
+        ValueConverter valueConverter;
+        Object val = value;
+        if (readField instanceof AnnotationReadField &&
+                (valueConverter = ((AnnotationReadField) readField).getValueConverter()) != null) {
+            val = valueConverter.convertValue(s, r, c, value);
+        }
+        String fieldName = readField.getFieldName();
+        if (fieldName != null) {
+            try {
+                Field field = classes[s].getDeclaredField(fieldName);
+                field.setAccessible(true);
+                field.set(cellContainer, val);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
     }
