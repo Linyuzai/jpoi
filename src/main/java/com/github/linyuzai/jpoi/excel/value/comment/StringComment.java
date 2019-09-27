@@ -10,6 +10,7 @@ public class StringComment extends ClientAnchorValue implements SupportComment {
         this.comment = comment;
     }
 
+    @Override
     public String getComment() {
         return comment;
     }

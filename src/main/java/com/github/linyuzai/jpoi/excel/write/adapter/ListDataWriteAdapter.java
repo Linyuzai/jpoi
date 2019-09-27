@@ -91,21 +91,19 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
         while (iterator.hasNext()) {
             WriteField writeField = iterator.next();
             if (writeField instanceof AnnotationWriteField) {
-                boolean isComment = false;
-                boolean isPicture = false;
+                boolean isComment = ((AnnotationWriteField) writeField).isComment();
+                boolean isPicture = ((AnnotationWriteField) writeField).isPicture();
                 String commentField = ((AnnotationWriteField) writeField).getCommentOfField();
                 int commentIndex = ((AnnotationWriteField) writeField).getCommentOfIndex();
                 ValueConverter valueConverter = ((AnnotationWriteField) writeField).getValueConverter();
-                if (commentIndex >= 0 || (commentField != null && !commentField.isEmpty())) {
-                    isComment = true;
+                if (isComment) {
                     if (valueConverter == null) {
                         ((AnnotationWriteField) writeField).setValueConverter(CommentValueConverter.getInstance());
                     }
                 }
                 String pictureField = ((AnnotationWriteField) writeField).getPictureOfField();
                 int pictureIndex = ((AnnotationWriteField) writeField).getPictureOfIndex();
-                if (pictureIndex >= 0 || (pictureField != null && !pictureField.isEmpty())) {
-                    isPicture = true;
+                if (isPicture) {
                     if (valueConverter == null) {
                         ((AnnotationWriteField) writeField).setValueConverter(PictureValueConverter.getInstance());
                     }

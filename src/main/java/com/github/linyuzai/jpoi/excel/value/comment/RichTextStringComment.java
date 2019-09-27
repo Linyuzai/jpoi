@@ -18,4 +18,9 @@ public class RichTextStringComment extends ClientAnchorValue implements SupportC
     public void setRichTextString(RichTextString richTextString) {
         this.richTextString = richTextString;
     }
+
+    @Override
+    public String getComment() {
+        return richTextString.getString();
+    }
 }

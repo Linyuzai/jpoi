@@ -72,7 +72,7 @@ public class SupportValueSetter extends PoiValueSetter {
 
     private void createComment(Cell cell, SupportComment value, ClientAnchor anchor, Workbook workbook, Drawing<?> drawing) {
         if (value instanceof StringComment) {
-            RichTextString rts = workbook.getCreationHelper().createRichTextString(((StringComment) value).getComment());
+            RichTextString rts = workbook.getCreationHelper().createRichTextString(value.getComment());
             createComment(cell, new RichTextStringComment(rts), anchor, workbook, drawing);
         } else if (value instanceof RichTextStringComment) {
             Comment comment = drawing.createCellComment(anchor);

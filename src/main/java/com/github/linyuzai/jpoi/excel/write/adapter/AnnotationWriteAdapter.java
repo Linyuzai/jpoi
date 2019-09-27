@@ -230,5 +230,13 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
         public void setCombinationFields(List<WriteField> combinationFields) {
             this.combinationFields = combinationFields;
         }
+
+        public boolean isComment() {
+            return commentOfIndex >= 0 || (commentOfField != null && !commentOfField.isEmpty());
+        }
+
+        public boolean isPicture() {
+            return pictureOfIndex >= 0 || (pictureOfField != null && !pictureOfField.isEmpty());
+        }
     }
 }

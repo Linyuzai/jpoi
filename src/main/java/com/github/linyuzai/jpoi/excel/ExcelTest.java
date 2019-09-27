@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel;
 
+import com.github.linyuzai.jpoi.excel.converter.ReadPictureValueConverter;
 import com.github.linyuzai.jpoi.excel.read.annotation.JExcelCellReader;
 import com.github.linyuzai.jpoi.excel.read.annotation.JExcelSheetReader;
 import com.github.linyuzai.jpoi.excel.write.annotation.*;
@@ -16,8 +17,8 @@ public class ExcelTest {
 
     public static void main(String[] args) throws IOException {
         //JExcel.sxlsx(new FileInputStream("C:\\JExcel\\111.xlsx"));
-        //read();
-        write();
+        read();
+        //write();
     }
 
     public static void read() throws IOException {
@@ -114,7 +115,7 @@ public class ExcelTest {
     ))
     public static class TestBean {
 
-        @JExcelCellReader(title = "string11111")
+        //@JExcelCellReader(title = "string11111")
         @JExcelCellWriter(title = "string11111", style = @JExcelCellStyle(
                 horizontalAlignment = HorizontalAlignment.CENTER,
                 verticalAlignment = VerticalAlignment.BOTTOM,
@@ -159,9 +160,11 @@ public class ExcelTest {
         @JExcelCellWriter(pictureOfFiled = "testString")
         private File file;
 
-        @JExcelCellReader(title = "file")
+        //@JExcelCellReader(pictureOfFiled = "testString")
+        @JExcelCellReader(title = "string11111", valueConverter = ReadPictureValueConverter.class)
         private byte[] bytes;
 
+        @JExcelCellReader(commentOfField = "bytes")
         @JExcelCellWriter(commentOfField = "testString")
         private String comment;
 

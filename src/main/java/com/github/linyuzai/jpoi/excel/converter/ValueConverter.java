@@ -27,8 +27,14 @@ public interface ValueConverter extends Ordered {
             return PictureValueConverter.getInstance();
         } else if (cls == PoiValueConverter.class) {
             return PoiValueConverter.getInstance();
+        } else if (cls == ReadCommentValueConverter.class) {
+            return ReadCommentValueConverter.getInstance();
+        } else if (cls == ReadDataValueConverter.class) {
+            return ReadDataValueConverter.getInstance();
         } else if (cls == ReadObjectValueConverter.class) {
             return WriteObjectValueConverter.getInstance();
+        } else if (cls == ReadPictureValueConverter.class) {
+            return ReadPictureValueConverter.getInstance();
         } else if (cls == ReadSupportValueConverter.class) {
             return WriteSupportValueConverter.getInstance();
         } else if (cls == WriteObjectValueConverter.class) {

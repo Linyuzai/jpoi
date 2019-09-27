@@ -47,6 +47,7 @@ public abstract class AnnotationReadAdapter extends ClassReadAdapter {
             readField.setFieldName(field.getName());
             readField.setFieldDescription(title.isEmpty() ? field.getName() : title);
             readField.setIndex(fa.index());
+            readField.setValueConverter(ValueConverter.getWithCache(fa.valueConverter()));
             //readField.setOrder(fa.order());
             //reuseValueConverter(writeField, fa.valueConverter());
             String commentField = fa.commentOfField();
@@ -132,6 +133,14 @@ public abstract class AnnotationReadAdapter extends ClassReadAdapter {
 
         public void setCombinationFields(List<ReadField> combinationFields) {
             this.combinationFields = combinationFields;
+        }
+
+        public boolean isComment() {
+            return commentOfIndex >= 0 || (commentOfField != null && !commentOfField.isEmpty());
+        }
+
+        public boolean isPicture() {
+            return pictureOfIndex >= 0 || (pictureOfField != null && !pictureOfField.isEmpty());
         }
     }
 }

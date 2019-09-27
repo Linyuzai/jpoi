@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.converter;
 
+import com.github.linyuzai.jpoi.excel.value.comment.SupportComment;
 import com.github.linyuzai.jpoi.excel.value.error.SupportErrorValue;
 import com.github.linyuzai.jpoi.excel.value.formula.SupportFormula;
 import com.github.linyuzai.jpoi.excel.value.picture.*;
@@ -34,6 +35,8 @@ public class ReadSupportValueConverter implements ValueConverter {
             return ((SupportErrorValue) value).getErrorValue();
         } else if (value instanceof SupportFormula) {
             return ((SupportFormula) value).getFormula();
+        } else if (value instanceof SupportComment) {
+            return ((SupportComment) value).getComment();
         }
         return null;
     }
