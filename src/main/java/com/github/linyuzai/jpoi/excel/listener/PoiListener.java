@@ -1,6 +1,6 @@
 package com.github.linyuzai.jpoi.excel.listener;
 
-import com.github.linyuzai.jpoi.order.Ordered;
+import com.github.linyuzai.jpoi.support.SupportOrder;
 import org.apache.poi.ss.usermodel.*;
 
 /**
@@ -8,7 +8,7 @@ import org.apache.poi.ss.usermodel.*;
  * <p>
  * end is value set for write or get for read(end of handle)
  */
-public interface PoiListener extends Ordered {
+public interface PoiListener extends SupportOrder {
 
     default void onWorkbookStart(Workbook workbook) {
 

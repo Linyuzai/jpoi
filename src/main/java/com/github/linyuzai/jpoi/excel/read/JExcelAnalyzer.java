@@ -9,7 +9,7 @@ import com.github.linyuzai.jpoi.excel.read.adapter.ObjectReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.ReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.getter.SupportValueGetter;
 import com.github.linyuzai.jpoi.excel.read.getter.ValueGetter;
-import com.github.linyuzai.jpoi.order.Ordered;
+import com.github.linyuzai.jpoi.support.SupportOrder;
 import org.apache.poi.ss.usermodel.*;
 
 import java.util.ArrayList;
@@ -42,13 +42,13 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
 
     public JExcelAnalyzer setPoiListeners(List<PoiListener> poiListeners) {
         this.poiListeners = poiListeners;
-        this.poiListeners.sort(Comparator.comparingInt(Ordered::getOrder));
+        this.poiListeners.sort(Comparator.comparingInt(SupportOrder::getOrder));
         return this;
     }
 
     public JExcelAnalyzer addPoiReadListener(PoiListener poiListener) {
         this.poiListeners.add(poiListener);
-        this.poiListeners.sort(Comparator.comparingInt(Ordered::getOrder));
+        this.poiListeners.sort(Comparator.comparingInt(SupportOrder::getOrder));
         return this;
     }
 
@@ -58,13 +58,13 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
 
     public JExcelAnalyzer setValueConverters(List<ValueConverter> valueConverters) {
         this.valueConverters = valueConverters;
-        this.valueConverters.sort(Comparator.comparingInt(Ordered::getOrder));
+        this.valueConverters.sort(Comparator.comparingInt(SupportOrder::getOrder));
         return this;
     }
 
     public JExcelAnalyzer addValueConverter(ValueConverter valueConverter) {
         this.valueConverters.add(valueConverter);
-        this.valueConverters.sort(Comparator.comparingInt(Ordered::getOrder));
+        this.valueConverters.sort(Comparator.comparingInt(SupportOrder::getOrder));
         return this;
     }
 

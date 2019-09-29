@@ -8,7 +8,7 @@ import com.github.linyuzai.jpoi.excel.write.adapter.WriteAdapter;
 import com.github.linyuzai.jpoi.excel.write.workbook.AutoWorkbook;
 import com.github.linyuzai.jpoi.excel.write.setter.SupportValueSetter;
 import com.github.linyuzai.jpoi.excel.write.setter.ValueSetter;
-import com.github.linyuzai.jpoi.order.Ordered;
+import com.github.linyuzai.jpoi.support.SupportOrder;
 import org.apache.poi.ss.usermodel.*;
 
 import java.util.ArrayList;
@@ -87,13 +87,13 @@ public class JExcelTransfer {
 
     public JExcelTransfer setPoiListeners(List<PoiListener> poiListeners) {
         this.poiListeners = poiListeners;
-        this.poiListeners.sort(Comparator.comparingInt(Ordered::getOrder));
+        this.poiListeners.sort(Comparator.comparingInt(SupportOrder::getOrder));
         return this;
     }
 
     public JExcelTransfer addPoiWriteListener(PoiListener poiListener) {
         this.poiListeners.add(poiListener);
-        this.poiListeners.sort(Comparator.comparingInt(Ordered::getOrder));
+        this.poiListeners.sort(Comparator.comparingInt(SupportOrder::getOrder));
         return this;
     }
 
@@ -103,13 +103,13 @@ public class JExcelTransfer {
 
     public JExcelTransfer setValueConverters(List<ValueConverter> valueConverters) {
         this.valueConverters = valueConverters;
-        this.valueConverters.sort(Comparator.comparingInt(Ordered::getOrder));
+        this.valueConverters.sort(Comparator.comparingInt(SupportOrder::getOrder));
         return this;
     }
 
     public JExcelTransfer addValueConverter(ValueConverter valueConverter) {
         this.valueConverters.add(valueConverter);
-        this.valueConverters.sort(Comparator.comparingInt(Ordered::getOrder));
+        this.valueConverters.sort(Comparator.comparingInt(SupportOrder::getOrder));
         return this;
     }
 

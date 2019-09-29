@@ -82,7 +82,7 @@ public class SupportValueSetter extends PoiValueSetter {
         int type = value.getType();
         if (value instanceof ByteArrayPicture) {
             if (type < Workbook.PICTURE_TYPE_EMF || type > Workbook.PICTURE_TYPE_DIB) {
-                type = Workbook.PICTURE_TYPE_JPEG;
+                throw new IllegalArgumentException("Picture type[" + type + "] is unsupported");
             }
             drawing.createPicture(anchor, workbook.addPicture(((ByteArrayPicture) value).getBytes(), type));
         } else if (value instanceof BufferedImagePicture) {
@@ -121,6 +121,7 @@ public class SupportValueSetter extends PoiValueSetter {
             }
         } else if (value instanceof FilePicture) {
             try {
+                String format;
                 File file = ((FilePicture) value).getFile();
                 Path path = Paths.get(file.getAbsolutePath());
                 String mime = Files.probeContentType(path);
@@ -137,9 +138,11 @@ public class SupportValueSetter extends PoiValueSetter {
                     case "image/jpeg":
                     case "image/pjpeg":
                         type = Workbook.PICTURE_TYPE_JPEG;
+                        format = "jpeg";
                         break;
                     case "image/png":
                         type = Workbook.PICTURE_TYPE_PNG;
+                        format = "png";
                         break;
                     /*case "PICTURE_TYPE_DIB":
                         type = Workbook.PICTURE_TYPE_DIB;
@@ -160,7 +163,7 @@ public class SupportValueSetter extends PoiValueSetter {
                 fis.close();
                 bos.close();
                 createPicture(new ByteArrayPicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
-                        type, value.getFormat(), bos.toByteArray()), anchor, workbook, drawing);
+                        type, format, bos.toByteArray()), anchor, workbook, drawing);
             } catch (IOException e) {
                 e.printStackTrace();
             }

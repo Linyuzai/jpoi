@@ -1,18 +1,17 @@
 package com.github.linyuzai.jpoi.excel.converter;
 
-import com.github.linyuzai.jpoi.order.Ordered;
+import com.github.linyuzai.jpoi.support.SupportCache;
+import com.github.linyuzai.jpoi.support.SupportOrder;
 
+import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public interface ValueConverter extends Ordered {
+public interface ValueConverter extends SupportOrder, SupportCache {
 
     Map<String, ValueConverter> cache = new ConcurrentHashMap<>();
 
     static ValueConverter getWithCache(Class<? extends ValueConverter> cls) {
-        if (cls.isInterface()) {
-            return null;
-        }
         if (cls == CommentValueConverter.class) {
             return CommentValueConverter.getInstance();
         } else if (cls == ErrorValueConverter.class) {
@@ -44,9 +43,14 @@ public interface ValueConverter extends Ordered {
         } else if (ValueConverter.cache.containsKey(cls.getName())) {
             return ValueConverter.cache.get(cls.getName());
         } else {
+            if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers())) {
+                return null;
+            }
             try {
                 ValueConverter valueConverter = cls.newInstance();
-                ValueConverter.cache.put(cls.getName(), valueConverter);
+                if (valueConverter.isCacheEnabled()) {
+                    ValueConverter.cache.put(cls.getName(), valueConverter);
+                }
                 return valueConverter;
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
