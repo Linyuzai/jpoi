@@ -1,6 +1,7 @@
 package com.github.linyuzai.jpoi.excel;
 
 import com.github.linyuzai.jpoi.excel.converter.ReadPictureValueConverter;
+import com.github.linyuzai.jpoi.excel.listener.PoiListener;
 import com.github.linyuzai.jpoi.excel.read.annotation.JExcelCellReader;
 import com.github.linyuzai.jpoi.excel.read.annotation.JExcelSheetReader;
 import com.github.linyuzai.jpoi.excel.write.annotation.*;
@@ -30,8 +31,57 @@ public class ExcelTest {
     }
 
     public static void read2() throws IOException {
-        Object o = JExcel.xlsx(new FileInputStream("C:\\JExcel\\test-bean2.xlsx")).target(TestBean2.class).read().getValue();
+        Object o = JExcel.xlsx(new FileInputStream("C:\\JExcel\\test-bean2.xlsx")).target(TestBean2.class).addPoiReadListener(new PoiListener() {
+            @Override
+            public void onRowStart(int r, int s, Row row, Sheet sheet, Workbook workbook) {
+                System.out.println("onRowStart:getHeight-->" + row.getHeight());
+                System.out.println("onRowStart:getHeightInPoints-->" + row.getHeightInPoints());
+                System.out.println("onRowStart:getZeroHeight-->" + row.getZeroHeight());
+                //printStyle(row.getRowStyle(), workbook);
+            }
+
+            @Override
+            public void onCellStart(int c, int r, int s, Cell cell, Row row, Sheet sheet, Workbook workbook) {
+                printStyle(cell.getCellStyle(), workbook);
+            }
+        }).read().getValue();
         System.out.println(o);
+    }
+
+    private static void printStyle(CellStyle style, Workbook workbook) {
+        System.out.println("getAlignment-->" + style.getAlignment());
+        System.out.println("getBorderBottom-->" + style.getBorderBottom());
+        System.out.println("getBottomBorderColor-->" + style.getBottomBorderColor());
+        System.out.println("getBorderLeft-->" + style.getBorderLeft());
+        System.out.println("getLeftBorderColor-->" + style.getLeftBorderColor());
+        System.out.println("getBorderRight-->" + style.getBorderRight());
+        System.out.println("getRightBorderColor-->" + style.getRightBorderColor());
+        System.out.println("getBorderTop-->" + style.getBorderTop());
+        System.out.println("getTopBorderColor-->" + style.getTopBorderColor());
+        System.out.println("getDataFormat-->" + style.getDataFormat());
+        System.out.println("getDataFormatString-->" + style.getDataFormatString());
+        System.out.println("getFillPattern-->" + style.getFillPattern());
+        System.out.println("getFillBackgroundColor-->" + style.getFillBackgroundColor());
+        System.out.println("getFillForegroundColor-->" + style.getFillForegroundColor());
+        System.out.println("getHidden-->" + style.getHidden());
+        System.out.println("getIndention-->" + style.getIndention());
+        System.out.println("getLocked-->" + style.getLocked());
+        System.out.println("getQuotePrefixed-->" + style.getQuotePrefixed());
+        System.out.println("getRotation-->" + style.getRotation());
+        System.out.println("getShrinkToFit-->" + style.getShrinkToFit());
+        System.out.println("getWrapText-->" + style.getWrapText());
+        System.out.println("getVerticalAlignment-->" + style.getVerticalAlignment());
+        Font font = workbook.getFontAt(style.getFontIndexAsInt());
+        System.out.println("font:getFontName-->" + font.getFontName());
+        System.out.println("font:getBold-->" + font.getBold());
+        System.out.println("font:getCharSet-->" + font.getCharSet());
+        System.out.println("font:getColor-->" + font.getColor());
+        System.out.println("font:getFontHeight-->" + font.getFontHeight());
+        System.out.println("font:getFontHeightInPoints-->" + font.getFontHeightInPoints());
+        System.out.println("font:getItalic-->" + font.getItalic());
+        System.out.println("font:getStrikeout-->" + font.getStrikeout());
+        System.out.println("font:getTypeOffset-->" + font.getTypeOffset());
+        System.out.println("font:getUnderline-->" + font.getUnderline());
     }
 
     public static void write2() throws IOException {

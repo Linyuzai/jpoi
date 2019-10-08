@@ -8,9 +8,9 @@ import java.lang.annotation.RetentionPolicy;
 @Documented
 public @interface JExcelRowStyle {
 
-    short height() default 0;
+    short height() default 300;
 
-    float heightInPoints() default 0f;
+    float heightInPoints() default 15f;
 
     boolean zeroHeight() default false;
 

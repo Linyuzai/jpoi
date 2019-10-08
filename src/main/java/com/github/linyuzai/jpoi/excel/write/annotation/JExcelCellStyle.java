@@ -26,7 +26,7 @@ public @interface JExcelCellStyle {
 
     boolean hidden() default false;
 
-    short indention() default -1;
+    short indention() default 0;
 
     boolean locked() default false;
 

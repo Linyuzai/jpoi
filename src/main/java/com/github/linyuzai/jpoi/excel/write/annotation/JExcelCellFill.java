@@ -12,7 +12,7 @@ public @interface JExcelCellFill {
 
     FillPatternType pattern() default FillPatternType.NO_FILL;
 
-    short foregroundColor() default 0;
+    short foregroundColor() default 64;
 
-    short backgroundColor() default 0;
+    short backgroundColor() default 64;
 }

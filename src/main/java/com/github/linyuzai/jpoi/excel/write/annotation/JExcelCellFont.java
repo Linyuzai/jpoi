@@ -12,13 +12,13 @@ public @interface JExcelCellFont {
 
     int charSet() default 0;
 
-    short color() default 0;
+    short color() default 8;
 
-    short fontHeight() default 0;
+    short fontHeight() default 220;
 
-    short fontHeightInPoints() default 0;
+    short fontHeightInPoints() default 11;
 
-    String fontName() default "";
+    String fontName() default "Calibri";
 
     boolean italic() default false;
 

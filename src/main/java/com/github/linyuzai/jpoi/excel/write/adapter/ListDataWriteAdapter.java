@@ -366,7 +366,11 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
         style.setShrinkToFit(source.isShrinkToFit());
         style.setWrapText(source.isWrapText());
         style.setVerticalAlignment(source.getVerticalAlignment());
-        Font font = workbook.createFont();
+        Font font = workbook.getFontAt(style.getFontIndexAsInt());
+        if (font == null) {
+            font = workbook.createFont();
+        }
+        //Font font = workbook.createFont();
         font.setBold(source.getFont().isBold());
         font.setCharSet(source.getFont().getCharSet());
         //font.setCharSet();

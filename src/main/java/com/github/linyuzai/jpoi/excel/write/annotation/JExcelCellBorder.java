@@ -12,17 +12,17 @@ public @interface JExcelCellBorder {
 
     BorderStyle top() default BorderStyle.NONE;
 
-    short topColor() default 0;
+    short topColor() default 8;
 
     BorderStyle right() default BorderStyle.NONE;
 
-    short rightColor() default 0;
+    short rightColor() default 8;
 
     BorderStyle bottom() default BorderStyle.NONE;
 
-    short bottomColor() default 0;
+    short bottomColor() default 8;
 
     BorderStyle left() default BorderStyle.NONE;
 
-    short leftColor() default 0;
+    short leftColor() default 8;
 }
