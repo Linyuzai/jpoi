@@ -6,5 +6,7 @@ public interface SupportDataFormat extends SupportValue {
 
     double getValue();
 
+    String getFormatValue();
+
     short getDataFormat();
 }

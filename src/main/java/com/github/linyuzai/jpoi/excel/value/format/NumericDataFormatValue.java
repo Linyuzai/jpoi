@@ -4,10 +4,13 @@ public class NumericDataFormatValue implements SupportDataFormat {
 
     private double value;
 
+    private String formatValue;
+
     private short dataFormat;
 
-    public NumericDataFormatValue(double value, short dataFormat) {
+    public NumericDataFormatValue(double value, String formatValue, short dataFormat) {
         this.value = value;
+        this.formatValue = formatValue;
         this.dataFormat = dataFormat;
     }
 
@@ -18,6 +21,15 @@ public class NumericDataFormatValue implements SupportDataFormat {
 
     public void setValue(double value) {
         this.value = value;
+    }
+
+    @Override
+    public String getFormatValue() {
+        return formatValue;
+    }
+
+    public void setFormatValue(String formatValue) {
+        this.formatValue = formatValue;
     }
 
     @Override

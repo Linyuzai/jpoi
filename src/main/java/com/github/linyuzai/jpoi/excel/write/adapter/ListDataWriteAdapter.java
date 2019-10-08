@@ -6,6 +6,8 @@ import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
 import com.github.linyuzai.jpoi.excel.value.combination.ListCombinationValue;
 import com.github.linyuzai.jpoi.excel.value.combination.CombinationValue;
+import com.github.linyuzai.jpoi.excel.write.style.JCellStyle;
+import com.github.linyuzai.jpoi.excel.write.style.JRowStyle;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 
@@ -66,6 +68,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
                 }
             }*/
             listDataList.get(sheet).setAnnotationOnly(((AnnotationWriteField) writeField).isAnnotationOnly());
+            listDataList.get(sheet).setRowStyle(((AnnotationWriteField) writeField).getRowStyle());
             if (writeField.getFieldDescription() != null) {
                 listDataList.get(sheet).setSheetName(writeField.getFieldDescription());
             }
@@ -272,7 +275,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
     }
 
     @Override
-    public void onWorkbookStart(Workbook workbook) {
+    public void onWorkbookStart(Workbook workbook, CreationHelper creationHelper) {
         this.workbook = workbook;
     }
 
@@ -280,6 +283,40 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
     public void onSheetStart(int s, Sheet sheet, Drawing<?> drawing, Workbook workbook) {
         if (sheet instanceof SXSSFSheet) {
             ((SXSSFSheet) sheet).trackAllColumnsForAutoSizing();
+        }
+    }
+
+    @Override
+    public void onRowStart(int r, int s, Row row, Sheet sheet, Workbook workbook) {
+        JRowStyle rs = listDataList.get(s).getRowStyle();
+        if (rs == null) {
+            return;
+        }
+        CellStyle rowStyle = row.getRowStyle();
+        if (rowStyle == null) {
+            rowStyle = workbook.createCellStyle();
+        }
+        row.setHeight(rs.getHeight());
+        row.setHeightInPoints(rs.getHeightInPoints());
+        row.setZeroHeight(rs.isZeroHeight());
+        fillCellStyle(rowStyle, rs.getCellStyle(), workbook);
+        row.setRowStyle(rowStyle);
+    }
+
+    @Override
+    public void onCellStart(int c, int r, int s, Cell cell, Row row, Sheet sheet, Workbook workbook) {
+        WriteField writeField = writeFieldList.get(s).get(c);
+        if (writeField instanceof AnnotationWriteField) {
+            JCellStyle cs = ((AnnotationWriteField) writeField).getCellStyle();
+            if (cs == null) {
+                return;
+            }
+            CellStyle cellStyle = cell.getCellStyle();
+            if (cellStyle == null) {
+                cellStyle = workbook.createCellStyle();
+            }
+            fillCellStyle(cellStyle, cs, workbook);
+            cell.setCellStyle(cellStyle);
         }
     }
 
@@ -307,9 +344,52 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
         }
     }
 
+    private void fillCellStyle(CellStyle style, JCellStyle source, Workbook workbook) {
+        style.setAlignment(source.getHorizontalAlignment());
+        style.setBorderBottom(source.getBorder().getBottom());
+        style.setBottomBorderColor(source.getBorder().getBottomColor());
+        style.setBorderLeft(source.getBorder().getLeft());
+        style.setLeftBorderColor(source.getBorder().getLeftColor());
+        style.setBorderRight(source.getBorder().getRight());
+        style.setRightBorderColor(source.getBorder().getRightColor());
+        style.setBorderTop(source.getBorder().getTop());
+        style.setTopBorderColor(source.getBorder().getTopColor());
+        style.setDataFormat(source.getDataFormat());
+        style.setFillPattern(source.getFill().getPattern());
+        style.setFillBackgroundColor(source.getFill().getBackgroundColor());
+        style.setFillForegroundColor(source.getFill().getForegroundColor());
+        style.setHidden(source.isHidden());
+        style.setIndention(source.getIndention());
+        style.setLocked(source.isLocked());
+        style.setQuotePrefixed(source.isQuotePrefixed());
+        style.setRotation(source.getRotation());
+        style.setShrinkToFit(source.isShrinkToFit());
+        style.setWrapText(source.isWrapText());
+        style.setVerticalAlignment(source.getVerticalAlignment());
+        Font font = workbook.createFont();
+        font.setBold(source.getFont().isBold());
+        font.setCharSet(source.getFont().getCharSet());
+        //font.setCharSet();
+        font.setColor(source.getFont().getColor());
+        font.setFontHeight(source.getFont().getFontHeight());
+        font.setFontHeightInPoints(source.getFont().getFontHeightInPoints());
+        font.setFontName(source.getFont().getFontName());
+        font.setItalic(source.getFont().isItalic());
+        font.setStrikeout(source.getFont().isStrikeout());
+        font.setTypeOffset(source.getFont().getTypeOffset());
+        font.setUnderline(source.getFont().getUnderline());
+        style.setFont(font);
+    }
+
+    @Override
+    public int getOrder() {
+        return Integer.MIN_VALUE;
+    }
+
     public static class ListData {
         private String sheetName;
         private boolean annotationOnly;
+        private JRowStyle rowStyle;
         private List<?> dataList;
 
         public String getSheetName() {
@@ -318,6 +398,14 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
 
         public void setSheetName(String sheetName) {
             this.sheetName = sheetName;
+        }
+
+        public JRowStyle getRowStyle() {
+            return rowStyle;
+        }
+
+        public void setRowStyle(JRowStyle rowStyle) {
+            this.rowStyle = rowStyle;
         }
 
         public boolean isAnnotationOnly() {

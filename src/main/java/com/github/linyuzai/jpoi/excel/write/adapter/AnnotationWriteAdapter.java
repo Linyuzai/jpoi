@@ -1,8 +1,9 @@
 package com.github.linyuzai.jpoi.excel.write.adapter;
 
 import com.github.linyuzai.jpoi.excel.converter.*;
-import com.github.linyuzai.jpoi.excel.write.annotation.JExcelCellWriter;
-import com.github.linyuzai.jpoi.excel.write.annotation.JExcelSheetWriter;
+import com.github.linyuzai.jpoi.excel.write.annotation.*;
+import com.github.linyuzai.jpoi.excel.write.style.*;
+import org.apache.poi.ss.usermodel.BuiltinFormats;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,6 +24,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             writeField.setFieldName(cls.getName());
             writeField.setMethod(false);
             writeField.setAnnotationOnly(ca.annotationOnly());
+            writeField.setRowStyle(getRowStyle(ca.style()));
             String title;
             if ((title = ca.name().trim()).isEmpty()) {
                 writeField.setFieldDescription(null);
@@ -122,8 +124,76 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             writeField.setPictureOfField(pictureField.isEmpty() ? null : pictureField);
             writeField.setPictureOfIndex(annotation.pictureOfIndex());
             //reuseValueConverter(writeField, annotation.valueConverter());
+            writeField.setCellStyle(getCellStyle(annotation.style()));
             return writeField;
         }
+    }
+
+    private JRowStyle getRowStyle(JExcelRowStyle annotation) {
+        JRowStyle rowStyle = new JRowStyle();
+        rowStyle.setHeight(annotation.height());
+        rowStyle.setHeightInPoints(annotation.heightInPoints());
+        rowStyle.setZeroHeight(annotation.zeroHeight());
+        rowStyle.setCellStyle(getCellStyle(annotation.cellStyle()));
+        return rowStyle;
+    }
+
+    private JCellStyle getCellStyle(JExcelCellStyle annotation) {
+        JCellStyle cellStyle = new JCellStyle();
+
+        cellStyle.setHidden(annotation.hidden());
+        cellStyle.setHorizontalAlignment(annotation.horizontalAlignment());
+        cellStyle.setIndention(annotation.indention());
+        cellStyle.setLocked(annotation.locked());
+        cellStyle.setQuotePrefixed(annotation.quotePrefixed());
+        cellStyle.setRotation(annotation.rotation());
+        cellStyle.setShrinkToFit(annotation.shrinkToFit());
+        cellStyle.setVerticalAlignment(annotation.verticalAlignment());
+        cellStyle.setWrapText(annotation.wrapText());
+
+        short dataFormat = annotation.dataFormat();
+        if (dataFormat < 0) {
+            dataFormat = (short) BuiltinFormats.getBuiltinFormat(annotation.dataFormatString());
+            if (dataFormat < 0) {
+                dataFormat = 0;
+            }
+        }
+        cellStyle.setDataFormat(dataFormat);
+
+        JExcelCellBorder border = annotation.border();
+        JCellBorder cellBorder = new JCellBorder();
+        cellBorder.setBottom(border.bottom());
+        cellBorder.setBottomColor(border.bottomColor());
+        cellBorder.setLeft(border.left());
+        cellBorder.setLeftColor(border.leftColor());
+        cellBorder.setRight(border.right());
+        cellBorder.setRightColor(border.rightColor());
+        cellBorder.setTop(border.top());
+        cellBorder.setTopColor(border.topColor());
+        cellStyle.setBorder(cellBorder);
+
+        JExcelCellFill fill = annotation.fill();
+        JCellFill cellFill = new JCellFill();
+        cellFill.setPattern(fill.pattern());
+        cellFill.setBackgroundColor(fill.backgroundColor());
+        cellFill.setForegroundColor(fill.foregroundColor());
+        cellStyle.setFill(cellFill);
+
+        JExcelCellFont font = annotation.font();
+        JCellFont cellFont = new JCellFont();
+        cellFont.setBold(font.bold());
+        cellFont.setCharSet(font.charSet());
+        cellFont.setColor(font.color());
+        cellFont.setFontHeight(font.fontHeight());
+        cellFont.setFontHeightInPoints(font.fontHeightInPoints());
+        cellFont.setFontName(font.fontName());
+        cellFont.setItalic(font.italic());
+        cellFont.setStrikeout(font.strikeout());
+        cellFont.setTypeOffset(font.typeOffset());
+        cellFont.setUnderline(font.underline());
+        cellStyle.setFont(cellFont);
+
+        return cellStyle;
     }
 
     private void reuseValueConverter(AnnotationWriteField writeField, Class<? extends ValueConverter> cls) {
@@ -165,6 +235,8 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
         private int commentOfIndex;
         private String pictureOfField;
         private int pictureOfIndex;
+        private JRowStyle rowStyle;
+        private JCellStyle cellStyle;
         private List<WriteField> combinationFields = new ArrayList<>();
 
         public boolean isMethod() {
@@ -221,6 +293,22 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
 
         public void setPictureOfIndex(int pictureOfIndex) {
             this.pictureOfIndex = pictureOfIndex;
+        }
+
+        public JRowStyle getRowStyle() {
+            return rowStyle;
+        }
+
+        public void setRowStyle(JRowStyle rowStyle) {
+            this.rowStyle = rowStyle;
+        }
+
+        public JCellStyle getCellStyle() {
+            return cellStyle;
+        }
+
+        public void setCellStyle(JCellStyle cellStyle) {
+            this.cellStyle = cellStyle;
         }
 
         public List<WriteField> getCombinationFields() {

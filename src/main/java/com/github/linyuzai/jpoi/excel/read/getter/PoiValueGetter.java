@@ -21,7 +21,6 @@ public class PoiValueGetter implements ValueGetter {
             case BOOLEAN:
                 return cell.getBooleanCellValue();
             case NUMERIC:
-                //TODO 判断格式 DateUtil.getJavaDate();cell.getCellStyle().getDataFormat()
                 return cell.getNumericCellValue();
             case FORMULA:
                 return cell.getCellFormula();
