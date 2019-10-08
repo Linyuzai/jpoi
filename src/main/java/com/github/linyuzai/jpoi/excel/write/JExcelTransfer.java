@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.write;
 
+import com.github.linyuzai.jpoi.excel.JExcelBase;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
 import com.github.linyuzai.jpoi.excel.write.adapter.SimpleDataWriteAdapter;
@@ -15,11 +16,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class JExcelTransfer {
+public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
 
     private Workbook workbook;
     private Workbook real;
-    private List<com.github.linyuzai.jpoi.excel.listener.PoiListener> poiListeners;
+    private List<PoiListener> poiListeners;
     private List<ValueConverter> valueConverters;
     private ValueSetter valueSetter;
     private WriteAdapter writeAdapter;
@@ -191,7 +192,7 @@ public class JExcelTransfer {
                         poiListener.onCellStart(c, r, s, cell, row, sheet, workbook);
                     }
                     Object o = writeAdapter.getData(s, r, c);
-                    ValueConverter valueConverter = null;
+                    /*ValueConverter valueConverter = null;
                     for (ValueConverter vc : valueConverters) {
                         if (vc.supportValue(s, r, c, o)) {
                             valueConverter = vc;
@@ -201,7 +202,8 @@ public class JExcelTransfer {
                     if (valueConverter == null) {
                         throw new RuntimeException("No value converter matched");
                     }
-                    Object value = valueConverter.convertValue(s, r, c, o);
+                    Object value = valueConverter.convertValue(s, r, c, o);*/
+                    Object value = convertValue(valueConverters, s, r, c, o);
                     valueSetter.setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
                     for (PoiListener poiListener : poiListeners) {
                         poiListener.onCellEnd(c, r, s, cell, row, sheet, workbook);

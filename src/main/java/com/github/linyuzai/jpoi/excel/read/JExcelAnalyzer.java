@@ -99,18 +99,15 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
     }
 
     public JExcelAnalyzer target(Class<?>... classes) {
-        setReadAdapter(new ObjectReadAdapter(classes));
-        return this;
+        return setReadAdapter(new ObjectReadAdapter(classes));
     }
 
     public JExcelAnalyzer toMap() {
-        setReadAdapter(new MapReadAdapter());
-        return this;
+        return setReadAdapter(new MapReadAdapter());
     }
 
     public JExcelAnalyzer direct() {
-        setReadAdapter(new DirectListReadAdapter());
-        return this;
+        return setReadAdapter(new DirectListReadAdapter());
     }
 
     public JExcelReader read() {
@@ -157,7 +154,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                         poiListener.onCellStart(c, r, s, cell, row, sheet, workbook);
                     }
                     Object o = valueGetter.getValue(s, r, c, cell, row, sheet, drawing, workbook, null);
-                    ValueConverter valueConverter = null;
+                    /*ValueConverter valueConverter = null;
                     for (ValueConverter vc : valueConverters) {
                         if (vc.supportValue(s, r, c, o)) {
                             valueConverter = vc;
@@ -167,7 +164,8 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                     if (valueConverter == null) {
                         throw new RuntimeException("No value converter matched");
                     }
-                    Object cellValue = valueConverter.convertValue(s, r, c, o);
+                    Object cellValue = valueConverter.convertValue(s, r, c, o);*/
+                    Object cellValue = convertValue(valueConverters, s, r, c, o);
                     readAdapter.readCell(cellValue, s, r, c, sCount, rCount, cCount);
                     for (PoiListener poiListener : poiListeners) {
                         poiListener.onCellEnd(c, r, s, cell, row, sheet, workbook);
