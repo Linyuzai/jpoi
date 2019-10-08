@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.*;
  */
 public interface PoiListener extends SupportOrder {
 
-    default void onWorkbookStart(Workbook workbook) {
+    default void onWorkbookStart(Workbook workbook, CreationHelper creationHelper) {
 
     }
 
@@ -38,7 +38,7 @@ public interface PoiListener extends SupportOrder {
 
     }
 
-    default void onWorkbookEnd(Workbook workbook) {
+    default void onWorkbookEnd(Workbook workbook, CreationHelper creationHelper) {
 
     }
 }

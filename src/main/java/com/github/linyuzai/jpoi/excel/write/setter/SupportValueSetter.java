@@ -27,15 +27,15 @@ public class SupportValueSetter extends PoiValueSetter {
     }
 
     @Override
-    public void setValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, Object value) {
+    public void setValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) {
         if (value instanceof SupportValue) {
-            setSupportValue(s, r, c, cell, row, sheet, drawing, workbook, value);
+            setSupportValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
             return;
         }
-        super.setValue(s, r, c, cell, row, sheet, drawing, workbook, value);
+        super.setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
     }
 
-    public void setSupportValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, Object value) {
+    public void setSupportValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) {
         if (value instanceof SupportPicture) {
             SupportPicture.Location location = ((SupportPicture) value).getLocation();
             SupportPicture.Padding padding = ((SupportPicture) value).getPadding();
@@ -59,10 +59,10 @@ public class SupportValueSetter extends PoiValueSetter {
             Object combinationValue = ((CombinationValue) value).getValue();
             if (combinationValue instanceof Collection) {
                 for (Object o : (Collection) combinationValue) {
-                    setValue(s, r, c, cell, row, sheet, drawing, workbook, o);
+                    setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, o);
                 }
             } else {
-                setValue(s, r, c, cell, row, sheet, drawing, workbook, combinationValue);
+                setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, combinationValue);
             }
         }
     }

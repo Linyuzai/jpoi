@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,13 +18,28 @@ public class ExcelTest {
 
     public static void main(String[] args) throws IOException {
         //JExcel.sxlsx(new FileInputStream("C:\\JExcel\\111.xlsx"));
-        read();
+        //read();
         //write();
+        //write2();
+        read2();
     }
 
     public static void read() throws IOException {
         Object o = JExcel.xlsx(new FileInputStream("C:\\JExcel\\111.xlsx")).target(TestBean.class).read().getValue();
         System.out.println(o);
+    }
+
+    public static void read2() throws IOException {
+        Object o = JExcel.xlsx(new FileInputStream("C:\\JExcel\\test-bean2.xlsx")).target(TestBean2.class).read().getValue();
+        System.out.println(o);
+    }
+
+    public static void write2() throws IOException {
+        List<TestBean2> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            list.add(new TestBean2(String.valueOf(i), i * 1.0, new Date()));
+        }
+        JExcel.sxlsx().data(list).write().to(new File("C:\\JExcel\\test-bean2.xlsx"));
     }
 
     public static void write() throws IOException {
@@ -104,6 +120,56 @@ public class ExcelTest {
                 .data(list)
                 .write().to(new File("C:\\JExcel\\111.xlsx"));
         System.out.println("-------------------------------------------");
+    }
+
+    @JExcelSheetReader
+    @JExcelSheetWriter(name = "test-bean2")
+    public static class TestBean2 {
+
+        @JExcelCellReader(title = "Test String")
+        @JExcelCellWriter(title = "Test String")
+        private String testString;
+
+        @JExcelCellReader(title = "Test Double")
+        @JExcelCellWriter(title = "Test Double")
+        private Double testDouble;
+
+        @JExcelCellReader(title = "Test Date")
+        @JExcelCellWriter(title = "Test Date")
+        private Date testDate;
+
+        public TestBean2() {
+        }
+
+        public TestBean2(String testString, Double testDouble, Date testDate) {
+            this.testString = testString;
+            this.testDouble = testDouble;
+            this.testDate = testDate;
+        }
+
+        public String getTestString() {
+            return testString;
+        }
+
+        public void setTestString(String testString) {
+            this.testString = testString;
+        }
+
+        public Double getTestDouble() {
+            return testDouble;
+        }
+
+        public void setTestDouble(Double testDouble) {
+            this.testDouble = testDouble;
+        }
+
+        public Date getTestDate() {
+            return testDate;
+        }
+
+        public void setTestDate(Date testDate) {
+            this.testDate = testDate;
+        }
     }
 
     @JExcelSheetReader(annotationOnly = true)

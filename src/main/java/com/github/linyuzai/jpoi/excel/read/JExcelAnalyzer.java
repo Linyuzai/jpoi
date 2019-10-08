@@ -135,7 +135,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
     private static Object analyze(Workbook workbook, ReadAdapter readAdapter, List<PoiListener> poiListeners,
                                   List<ValueConverter> valueConverters, ValueGetter valueGetter) {
         for (PoiListener poiListener : poiListeners) {
-            poiListener.onWorkbookStart(workbook);
+            poiListener.onWorkbookStart(workbook, null);
         }
         int sCount = workbook.getNumberOfSheets();
         for (int s = 0; s < sCount; s++) {
@@ -156,7 +156,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                     for (PoiListener poiListener : poiListeners) {
                         poiListener.onCellStart(c, r, s, cell, row, sheet, workbook);
                     }
-                    Object o = valueGetter.getValue(s, r, c, cell, row, sheet, drawing, workbook);
+                    Object o = valueGetter.getValue(s, r, c, cell, row, sheet, drawing, workbook, null);
                     ValueConverter valueConverter = null;
                     for (ValueConverter vc : valueConverters) {
                         if (vc.supportValue(s, r, c, o)) {
@@ -182,7 +182,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
             }
         }
         for (PoiListener poiListener : poiListeners) {
-            poiListener.onWorkbookEnd(workbook);
+            poiListener.onWorkbookEnd(workbook, null);
         }
         return readAdapter.getValue();
     }

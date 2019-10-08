@@ -3,7 +3,7 @@ package com.github.linyuzai.jpoi.excel;
 import com.github.linyuzai.jpoi.excel.read.JExcelAnalyzer;
 import com.github.linyuzai.jpoi.excel.read.sax.SaxWorkbook;
 import com.github.linyuzai.jpoi.excel.write.JExcelTransfer;
-import com.github.linyuzai.jpoi.excel.write.workbook.AutoWorkbook;
+import com.github.linyuzai.jpoi.excel.write.auto.AutoWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;

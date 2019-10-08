@@ -14,9 +14,9 @@ public class PoiValueSetter implements ValueSetter {
     }
 
     @Override
-    public void setValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, Object value) {
+    public void setValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) {
         if (value == null) {
-            value = getNullValue(s, r, c, cell, row, sheet, drawing, workbook);
+            value = getNullValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
             if (value == null) {
                 return;
             }
@@ -42,7 +42,7 @@ public class PoiValueSetter implements ValueSetter {
         }
     }
 
-    String getNullValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook) {
+    String getNullValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper) {
         return null;
     }
 }

@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SupportValueGetter extends PoiValueGetter {
+public class SupportValueGetter extends DataFormatGetter {
 
     public static SupportValueGetter sInstance = new SupportValueGetter();
 
@@ -25,7 +25,7 @@ public class SupportValueGetter extends PoiValueGetter {
     private Map<Integer, Map<Integer, ByteArrayPicture>> pictureMap = null;
 
     @Override
-    public Object getValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook) {
+    public Object getValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper) {
         if (pictureMap == null) {
             synchronized (this) {
                 if (pictureMap == null) {
@@ -67,7 +67,7 @@ public class SupportValueGetter extends PoiValueGetter {
                 cellData = new ByteError(cell.getErrorCellValue());
                 break;
             default:
-                cellData = super.getValue(s, r, c, cell, row, sheet, drawing, workbook);
+                cellData = super.getValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
                 break;
         }
         if (picture != null || comment != null) {

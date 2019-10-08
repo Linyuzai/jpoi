@@ -1,4 +1,4 @@
-package com.github.linyuzai.jpoi.excel.write.workbook;
+package com.github.linyuzai.jpoi.excel.write.auto;
 
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.formula.udf.UDFFinder;

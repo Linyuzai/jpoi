@@ -11,7 +11,7 @@ public class PoiValueGetter implements ValueGetter {
     }
 
     @Override
-    public Object getValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook) {
+    public Object getValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper) {
         switch (cell.getCellType()) {
             case _NONE:
             case BLANK:

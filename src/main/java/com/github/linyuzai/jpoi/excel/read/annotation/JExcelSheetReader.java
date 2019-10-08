@@ -9,7 +9,7 @@ public @interface JExcelSheetReader {
 
     String name() default "";
 
-    boolean annotationOnly() default false;
+    boolean annotationOnly() default true;
 
     boolean toMap() default false;
 }
