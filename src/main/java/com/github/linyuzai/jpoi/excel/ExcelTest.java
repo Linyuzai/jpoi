@@ -21,8 +21,8 @@ public class ExcelTest {
         //JExcel.sxlsx(new FileInputStream("C:\\JExcel\\111.xlsx"));
         //read();
         //write();
-        //write2();
-        read2();
+        write2();
+        //read2();
     }
 
     public static void read() throws IOException {
@@ -173,15 +173,18 @@ public class ExcelTest {
     }
 
     @JExcelSheetReader
-    @JExcelSheetWriter(name = "test-bean2")
+    @JExcelSheetWriter(name = "test-bean2", style = @JExcelRowStyle(height = 1200,
+            cellStyle = @JExcelCellStyle(horizontalAlignment = HorizontalAlignment.RIGHT,
+                    border = @JExcelCellBorder(top = BorderStyle.DOUBLE),
+                    font = @JExcelCellFont(color = Font.COLOR_RED))))
     public static class TestBean2 {
 
         @JExcelCellReader(title = "Test String")
-        @JExcelCellWriter(title = "Test String")
+        @JExcelCellWriter(title = "Test String", style = @JExcelCellStyle(horizontalAlignment = HorizontalAlignment.LEFT))
         private String testString;
 
         @JExcelCellReader(title = "Test Double")
-        @JExcelCellWriter(title = "Test Double")
+        @JExcelCellWriter(title = "Test Double", style = @JExcelCellStyle(border = @JExcelCellBorder(top = BorderStyle.DOUBLE)))
         private Double testDouble;
 
         @JExcelCellReader(title = "Test Date")

@@ -139,6 +139,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
     }
 
     private JCellStyle getCellStyle(JExcelCellStyle annotation) {
+
         JCellStyle cellStyle = new JCellStyle();
 
         cellStyle.setHidden(annotation.hidden());
@@ -194,36 +195,6 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
         cellStyle.setFont(cellFont);
 
         return cellStyle;
-    }
-
-    private void reuseValueConverter(AnnotationWriteField writeField, Class<? extends ValueConverter> cls) {
-        if (!cls.isInterface()) {
-            try {
-                if (cls == ErrorValueConverter.class) {
-                    writeField.setValueConverter(ErrorValueConverter.getInstance());
-                } else if (cls == FormulaValueConverter.class) {
-                    writeField.setValueConverter(FormulaValueConverter.getInstance());
-                } else if (cls == NullValueConverter.class) {
-                    writeField.setValueConverter(NullValueConverter.getInstance());
-                } else if (cls == WriteObjectValueConverter.class) {
-                    writeField.setValueConverter(WriteObjectValueConverter.getInstance());
-                } else if (cls == PictureValueConverter.class) {
-                    writeField.setValueConverter(PictureValueConverter.getInstance());
-                } else if (cls == PoiValueConverter.class) {
-                    writeField.setValueConverter(PoiValueConverter.getInstance());
-                } else if (cls == WriteSupportValueConverter.class) {
-                    writeField.setValueConverter(WriteSupportValueConverter.getInstance());
-                } else if (ValueConverter.cache.containsKey(cls.getName())) {
-                    writeField.setValueConverter(ValueConverter.cache.get(cls.getName()));
-                } else {
-                    ValueConverter valueConverter = cls.newInstance();
-                    ValueConverter.cache.put(cls.getName(), valueConverter);
-                    writeField.setValueConverter(valueConverter);
-                }
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public static class AnnotationWriteField extends WriteField {

@@ -6,6 +6,7 @@ import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
 import com.github.linyuzai.jpoi.excel.value.combination.ListCombinationValue;
 import com.github.linyuzai.jpoi.excel.value.combination.CombinationValue;
+import com.github.linyuzai.jpoi.excel.write.style.JCellBorder;
 import com.github.linyuzai.jpoi.excel.write.style.JCellStyle;
 import com.github.linyuzai.jpoi.excel.write.style.JRowStyle;
 import org.apache.poi.ss.usermodel.*;
@@ -292,15 +293,16 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
         if (rs == null) {
             return;
         }
-        CellStyle rowStyle = row.getRowStyle();
-        if (rowStyle == null) {
-            rowStyle = workbook.createCellStyle();
+        CellStyle cellStyle = workbook.createCellStyle();
+        CellStyle old = row.getRowStyle();
+        if (old != null) {
+            cellStyle.cloneStyleFrom(old);
         }
-        row.setHeight(rs.getHeight());
-        row.setHeightInPoints(rs.getHeightInPoints());
+        fillCellStyle(cellStyle, rs.getCellStyle(), workbook);
+        row.setRowStyle(cellStyle);
         row.setZeroHeight(rs.isZeroHeight());
-        fillCellStyle(rowStyle, rs.getCellStyle(), workbook);
-        row.setRowStyle(rowStyle);
+        row.setHeightInPoints(rs.getHeightInPoints());
+        row.setHeight(rs.getHeight());
     }
 
     @Override
@@ -311,9 +313,10 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
             if (cs == null) {
                 return;
             }
-            CellStyle cellStyle = cell.getCellStyle();
-            if (cellStyle == null) {
-                cellStyle = workbook.createCellStyle();
+            CellStyle cellStyle = workbook.createCellStyle();
+            CellStyle old = cell.getCellStyle();
+            if (old != null) {
+                cellStyle.cloneStyleFrom(old);
             }
             fillCellStyle(cellStyle, cs, workbook);
             cell.setCellStyle(cellStyle);
@@ -366,11 +369,11 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
         style.setShrinkToFit(source.isShrinkToFit());
         style.setWrapText(source.isWrapText());
         style.setVerticalAlignment(source.getVerticalAlignment());
-        Font font = workbook.getFontAt(style.getFontIndexAsInt());
+        /*Font font = workbook.getFontAt(style.getFontIndexAsInt());
         if (font == null) {
             font = workbook.createFont();
-        }
-        //Font font = workbook.createFont();
+        }*/
+        Font font = workbook.createFont();
         font.setBold(source.getFont().isBold());
         font.setCharSet(source.getFont().getCharSet());
         //font.setCharSet();

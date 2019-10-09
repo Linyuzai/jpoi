@@ -14,5 +14,11 @@ public @interface JExcelRowStyle {
 
     boolean zeroHeight() default false;
 
+    /**
+     * Covered by column annotation style
+     *
+     * @return
+     */
+    @Deprecated
     JExcelCellStyle cellStyle() default @JExcelCellStyle;
 }
