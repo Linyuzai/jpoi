@@ -16,7 +16,7 @@ public @interface JExcelCellStyle {
 
     JExcelCellBorder border() default @JExcelCellBorder;
 
-    short dataFormat() default 0;
+    short dataFormat() default -1;
 
     String dataFormatString() default "";
 

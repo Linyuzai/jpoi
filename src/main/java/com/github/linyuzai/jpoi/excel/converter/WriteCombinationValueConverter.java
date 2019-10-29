@@ -1,18 +1,18 @@
 package com.github.linyuzai.jpoi.excel.converter;
 
-import com.github.linyuzai.jpoi.support.SupportValue;
+import com.github.linyuzai.jpoi.excel.value.combination.CombinationValue;
 
-public class WriteSupportValueConverter implements ValueConverter {
+public class WriteCombinationValueConverter implements ValueConverter {
 
-    private static WriteSupportValueConverter sInstance = new WriteSupportValueConverter();
+    private static WriteCombinationValueConverter sInstance = new WriteCombinationValueConverter();
 
-    public static WriteSupportValueConverter getInstance() {
+    public static WriteCombinationValueConverter getInstance() {
         return sInstance;
     }
 
     @Override
     public boolean supportValue(int sheet, int row, int cell, Object value) {
-        return value instanceof SupportValue;
+        return value instanceof CombinationValue;
     }
 
     @Override

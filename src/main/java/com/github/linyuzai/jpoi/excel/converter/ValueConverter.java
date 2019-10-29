@@ -22,8 +22,8 @@ public interface ValueConverter extends SupportOrder, SupportCache {
             return FormulaValueConverter.getInstance();
         } else if (cls == NullValueConverter.class) {
             return NullValueConverter.getInstance();
-        } else if (cls == PictureValueConverter.class) {
-            return PictureValueConverter.getInstance();
+        } else if (cls == WritePictureValueConverter.class) {
+            return WritePictureValueConverter.getInstance();
         } else if (cls == PoiValueConverter.class) {
             return PoiValueConverter.getInstance();
         } else if (cls == ReadCommentValueConverter.class) {
@@ -35,7 +35,9 @@ public interface ValueConverter extends SupportOrder, SupportCache {
         } else if (cls == ReadPictureValueConverter.class) {
             return ReadPictureValueConverter.getInstance();
         } else if (cls == ReadSupportValueConverter.class) {
-            return WriteSupportValueConverter.getInstance();
+            return ReadSupportValueConverter.getInstance();
+        } else if (cls == WriteCombinationValueConverter.class) {
+            return WriteCombinationValueConverter.getInstance();
         } else if (cls == WriteObjectValueConverter.class) {
             return WriteObjectValueConverter.getInstance();
         } else if (cls == WriteSupportValueConverter.class) {

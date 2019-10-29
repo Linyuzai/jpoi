@@ -3,7 +3,7 @@ package com.github.linyuzai.jpoi.excel.converter;
 import java.io.File;
 import java.net.URI;
 
-public class FilePictureValueConverter extends PictureValueConverter {
+public class FilePictureValueConverter extends WritePictureValueConverter {
 
     private static FilePictureValueConverter sInstance = new FilePictureValueConverter();
 

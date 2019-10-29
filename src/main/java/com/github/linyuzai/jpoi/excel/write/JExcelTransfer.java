@@ -7,7 +7,7 @@ import com.github.linyuzai.jpoi.excel.write.adapter.SimpleDataWriteAdapter;
 import com.github.linyuzai.jpoi.excel.write.adapter.TitleIndexDataWriteAdapter;
 import com.github.linyuzai.jpoi.excel.write.adapter.WriteAdapter;
 import com.github.linyuzai.jpoi.excel.write.auto.AutoWorkbook;
-import com.github.linyuzai.jpoi.excel.write.setter.SupportValueSetter;
+import com.github.linyuzai.jpoi.excel.write.setter.CombinationValueSetter;
 import com.github.linyuzai.jpoi.excel.write.setter.ValueSetter;
 import com.github.linyuzai.jpoi.support.SupportOrder;
 import org.apache.poi.ss.usermodel.*;
@@ -19,38 +19,22 @@ import java.util.List;
 public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
 
     private Workbook workbook;
-    private Workbook real;
     private List<PoiListener> poiListeners;
     private List<ValueConverter> valueConverters;
     private ValueSetter valueSetter;
     private WriteAdapter writeAdapter;
 
-    private boolean transferred = false;
-
     public JExcelTransfer(Workbook workbook) {
         this.workbook = workbook;
         this.poiListeners = new ArrayList<>();
         this.valueConverters = new ArrayList<>();
-        setValueSetter(SupportValueSetter.getInstance());
+        setValueSetter(CombinationValueSetter.getInstance());
         addValueConverter(NullValueConverter.getInstance());
-        //addValueConverter(PictureValueConverter.getInstance());
+        //addValueConverter(WritePictureValueConverter.getInstance());
         addValueConverter(PoiValueConverter.getInstance());
+        addValueConverter(WriteCombinationValueConverter.getInstance());
         addValueConverter(WriteSupportValueConverter.getInstance());
         addValueConverter(WriteObjectValueConverter.getInstance());
-    }
-
-    public JExcelTransfer(Workbook workbook, List<PoiListener> poiListeners, List<ValueConverter> valueConverters, ValueSetter valueSetter, WriteAdapter writeAdapter) {
-        this.workbook = workbook;
-        this.poiListeners = poiListeners;
-        this.valueConverters = valueConverters;
-        this.valueSetter = valueSetter;
-        if (writeAdapter instanceof PoiListener && poiListeners != null) {
-            poiListeners.remove(writeAdapter);
-        }
-    }
-
-    public boolean isTransferred() {
-        return transferred;
     }
 
     public List<PoiListener> getPoiListeners() {
@@ -139,7 +123,7 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
         if (poiListeners == null) {
             throw new RuntimeException("PoiWriteListeners is null");
         }
-        real = workbook;
+        Workbook real = workbook;
         if (workbook instanceof AutoWorkbook) {
             int count = 0;
             for (int i = 0; i < writeAdapter.getSheetCount(); i++) {
@@ -148,7 +132,6 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
             real = AutoWorkbook.getWorkbook(count);
         }
         transfer(real, writeAdapter, poiListeners, valueConverters, valueSetter);
-        transferred = true;
         return new JExcelWriter(real);
     }
 
@@ -219,21 +202,6 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
         }
         for (PoiListener poiListener : poiListeners) {
             poiListener.onWorkbookEnd(workbook, creationHelper);
-        }
-    }
-
-    public JExcelTransfer append() {
-        return append(true);
-    }
-
-    public JExcelTransfer append(boolean exd) {
-        if (!transferred) {
-            write();
-        }
-        if (exd) {
-            return new JExcelTransfer(real, poiListeners, valueConverters, valueSetter, writeAdapter);
-        } else {
-            return new JExcelTransfer(real);
         }
     }
 }

@@ -1,12 +1,11 @@
 package com.github.linyuzai.jpoi.excel.write.adapter;
 
 import com.github.linyuzai.jpoi.excel.converter.CommentValueConverter;
-import com.github.linyuzai.jpoi.excel.converter.PictureValueConverter;
+import com.github.linyuzai.jpoi.excel.converter.WritePictureValueConverter;
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
 import com.github.linyuzai.jpoi.excel.value.combination.ListCombinationValue;
 import com.github.linyuzai.jpoi.excel.value.combination.CombinationValue;
-import com.github.linyuzai.jpoi.excel.write.style.JCellBorder;
 import com.github.linyuzai.jpoi.excel.write.style.JCellStyle;
 import com.github.linyuzai.jpoi.excel.write.style.JRowStyle;
 import org.apache.poi.ss.usermodel.*;
@@ -109,7 +108,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
                 int pictureIndex = ((AnnotationWriteField) writeField).getPictureOfIndex();
                 if (isPicture) {
                     if (valueConverter == null) {
-                        ((AnnotationWriteField) writeField).setValueConverter(PictureValueConverter.getInstance());
+                        ((AnnotationWriteField) writeField).setValueConverter(WritePictureValueConverter.getInstance());
                     }
                 }
                 if (isComment && isPicture) {

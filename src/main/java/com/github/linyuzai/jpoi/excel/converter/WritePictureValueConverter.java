@@ -1,17 +1,16 @@
 package com.github.linyuzai.jpoi.excel.converter;
 
 import com.github.linyuzai.jpoi.excel.value.picture.*;
-import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-public class PictureValueConverter extends ClientAnchorValueConverter {
+public class WritePictureValueConverter extends ClientAnchorValueConverter {
 
-    private static PictureValueConverter sInstance = new PictureValueConverter();
+    private static WritePictureValueConverter sInstance = new WritePictureValueConverter();
 
-    public static PictureValueConverter getInstance() {
+    public static WritePictureValueConverter getInstance() {
         return sInstance;
     }
 

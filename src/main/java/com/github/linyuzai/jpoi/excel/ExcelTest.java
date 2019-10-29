@@ -1,19 +1,15 @@
 package com.github.linyuzai.jpoi.excel;
 
-import com.github.linyuzai.jpoi.excel.converter.ReadPictureValueConverter;
+import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
 import com.github.linyuzai.jpoi.excel.read.annotation.JExcelCellReader;
 import com.github.linyuzai.jpoi.excel.read.annotation.JExcelSheetReader;
+import com.github.linyuzai.jpoi.excel.write.adapter.WriteAdapter;
 import com.github.linyuzai.jpoi.excel.write.annotation.*;
 import org.apache.poi.ss.usermodel.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.io.*;
+import java.util.*;
 
 public class ExcelTest {
 
@@ -21,8 +17,340 @@ public class ExcelTest {
         //JExcel.sxlsx(new FileInputStream("C:\\JExcel\\111.xlsx"));
         //read();
         //write();
-        write2();
+        //write2();
         //read2();
+        mainWrite();
+    }
+
+    private static void mainWrite() throws IOException {
+        JExcel.sxlsx().data(Collections.singletonList(getExcelBean())).write().to(new File("C:\\JExcel\\Excel-Bean.xlsx"));
+    }
+
+    private static ExcelBean getExcelBean() {
+        File file = new File("C:\\Users\\tangh\\Desktop\\image-nova2.jpg");
+        byte[] buffer = null;
+        try (FileInputStream fis = new FileInputStream(file);
+             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            byte[] b = new byte[1024];
+            int n;
+            while ((n = fis.read(b)) != -1) {
+                bos.write(b, 0, n);
+            }
+            fis.close();
+            bos.close();
+            buffer = bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ExcelBean excelBean = new ExcelBean();
+        excelBean._int = 101;
+        excelBean._Integer = 102;
+        excelBean._double = 1001.1;
+        excelBean._Double = 1002.2;
+        excelBean._short = 11;
+        excelBean._Short = 12;
+        excelBean._byte = 1;
+        excelBean._Byte = 2;
+        excelBean._long = 10001L;
+        excelBean._Long = 10002L;
+        excelBean._float = 100001f;
+        excelBean._Float = 100002f;
+        excelBean._char = 'a';
+        excelBean._Character = 'b';
+        excelBean._boolean = true;
+        excelBean._Boolean = false;
+        excelBean._String = "str";
+        excelBean._Date = new Date();
+        excelBean.comment = "Comment";
+        excelBean.picture = buffer;
+        excelBean.commentOfField = "Comment of field";
+        excelBean.pictureOfField = buffer;
+        excelBean.commentOfIndex = "Comment of index";
+        String base64 = Base64.getEncoder().encodeToString(buffer);
+        excelBean.pictureOfIndex = base64;
+        excelBean.error = FormulaError.NA.getCode();
+        excelBean.formula = "SUM(A2+B2)";
+        excelBean.annotation = "annotation";
+        return excelBean;
+    }
+
+    @JExcelSheetWriter(name = "Excel-Bean", annotationOnly = false)
+    public static class ExcelBean {
+        @JExcelCellWriter(title = "basic-int")
+        private int _int;
+        @JExcelCellWriter(title = "wrapper-integer")
+        private Integer _Integer;
+        @JExcelCellWriter(title = "basic-double")
+        private double _double;
+        @JExcelCellWriter(title = "wrapper-double")
+        private Double _Double;
+        @JExcelCellWriter(title = "basic-short")
+        private short _short;
+        @JExcelCellWriter(title = "wrapper-short")
+        private Short _Short;
+        @JExcelCellWriter(title = "basic-byte")
+        private byte _byte;
+        @JExcelCellWriter(title = "wrapper-byte")
+        private Byte _Byte;
+        @JExcelCellWriter(title = "basic-long")
+        private long _long;
+        @JExcelCellWriter(title = "wrapper-long")
+        private Long _Long;
+        @JExcelCellWriter(title = "basic-float")
+        private float _float;
+        @JExcelCellWriter(title = "wrapper-float")
+        private Float _Float;
+        @JExcelCellWriter(title = "basic-char")
+        private char _char;
+        @JExcelCellWriter(title = "wrapper-character")
+        private Character _Character;
+        @JExcelCellWriter(title = "basic-boolean")
+        private boolean _boolean;
+        @JExcelCellWriter(title = "wrapper-boolean")
+        private Boolean _Boolean;
+        @JExcelCellWriter(title = "class-string")
+        private String _String;
+        @JExcelCellWriter(title = "class-date", style = @JExcelCellStyle(dataFormatString = "m/d/yy"))
+        private Date _Date;
+        @JExcelCellWriter(title = "object-comment", valueConverter = CommentValueConverter.class)
+        private String comment;//注解的形式
+        @JExcelCellWriter(title = "object-picture", valueConverter = WritePictureValueConverter.class)
+        private byte[] picture;//图片
+        @JExcelCellWriter(commentOfField = "_int")
+        private String commentOfField;//注释，到某个字段的单元格上
+        @JExcelCellWriter(pictureOfFiled = "_Integer")
+        private byte[] pictureOfField;//图片，到某个字段的单元格上
+        @JExcelCellWriter(commentOfIndex = 3)
+        private String commentOfIndex;//注释，到某一列的单元格上
+        @JExcelCellWriter(pictureOfIndex = 4)
+        private String pictureOfIndex;//base64图片，到某一列的单元格上
+        @JExcelCellWriter(title = "value-error", valueConverter = ErrorValueConverter.class)
+        private byte error;//错误类型
+        @JExcelCellWriter(title = "value-formula", valueConverter = FormulaValueConverter.class)
+        private String formula;//公式类型
+
+        private String annotation;//测试annotationOnly属性
+
+        public int get_int() {
+            return _int;
+        }
+
+        public void set_int(int _int) {
+            this._int = _int;
+        }
+
+        public Integer get_Integer() {
+            return _Integer;
+        }
+
+        public void set_Integer(Integer _Integer) {
+            this._Integer = _Integer;
+        }
+
+        public double get_double() {
+            return _double;
+        }
+
+        public void set_double(double _double) {
+            this._double = _double;
+        }
+
+        public Double get_Double() {
+            return _Double;
+        }
+
+        public void set_Double(Double _Double) {
+            this._Double = _Double;
+        }
+
+        public short get_short() {
+            return _short;
+        }
+
+        public void set_short(short _short) {
+            this._short = _short;
+        }
+
+        public Short get_Short() {
+            return _Short;
+        }
+
+        public void set_Short(Short _Short) {
+            this._Short = _Short;
+        }
+
+        public byte get_byte() {
+            return _byte;
+        }
+
+        public void set_byte(byte _byte) {
+            this._byte = _byte;
+        }
+
+        public Byte get_Byte() {
+            return _Byte;
+        }
+
+        public void set_Byte(Byte _Byte) {
+            this._Byte = _Byte;
+        }
+
+        public long get_long() {
+            return _long;
+        }
+
+        public void set_long(long _long) {
+            this._long = _long;
+        }
+
+        public Long get_Long() {
+            return _Long;
+        }
+
+        public void set_Long(Long _Long) {
+            this._Long = _Long;
+        }
+
+        public float get_float() {
+            return _float;
+        }
+
+        public void set_float(float _float) {
+            this._float = _float;
+        }
+
+        public Float get_Float() {
+            return _Float;
+        }
+
+        public void set_Float(Float _Float) {
+            this._Float = _Float;
+        }
+
+        public char get_char() {
+            return _char;
+        }
+
+        public void set_char(char _char) {
+            this._char = _char;
+        }
+
+        public Character get_Character() {
+            return _Character;
+        }
+
+        public void set_Character(Character _Character) {
+            this._Character = _Character;
+        }
+
+        public boolean is_boolean() {
+            return _boolean;
+        }
+
+        public void set_boolean(boolean _boolean) {
+            this._boolean = _boolean;
+        }
+
+        public Boolean get_Boolean() {
+            return _Boolean;
+        }
+
+        public void set_Boolean(Boolean _Boolean) {
+            this._Boolean = _Boolean;
+        }
+
+        public String get_String() {
+            return _String;
+        }
+
+        public void set_String(String _String) {
+            this._String = _String;
+        }
+
+        public Date get_Date() {
+            return _Date;
+        }
+
+        public void set_Date(Date _Date) {
+            this._Date = _Date;
+        }
+
+        public byte[] getPicture() {
+            return picture;
+        }
+
+        public void setPicture(byte[] picture) {
+            this.picture = picture;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
+        }
+
+        public String getCommentOfField() {
+            return commentOfField;
+        }
+
+        public void setCommentOfField(String commentOfField) {
+            this.commentOfField = commentOfField;
+        }
+
+        public byte[] getPictureOfField() {
+            return pictureOfField;
+        }
+
+        public void setPictureOfField(byte[] pictureOfField) {
+            this.pictureOfField = pictureOfField;
+        }
+
+        public String getCommentOfIndex() {
+            return commentOfIndex;
+        }
+
+        public void setCommentOfIndex(String commentOfIndex) {
+            this.commentOfIndex = commentOfIndex;
+        }
+
+        public String getPictureOfIndex() {
+            return pictureOfIndex;
+        }
+
+        public void setPictureOfIndex(String pictureOfIndex) {
+            this.pictureOfIndex = pictureOfIndex;
+        }
+
+        public byte getError() {
+            return error;
+        }
+
+        public void setError(byte error) {
+            this.error = error;
+        }
+
+        public String getFormula() {
+            return formula;
+        }
+
+        public void setFormula(String formula) {
+            this.formula = formula;
+        }
+
+        public String getAnnotation() {
+            return annotation;
+        }
+
+        public void setAnnotation(String annotation) {
+            this.annotation = annotation;
+        }
+
+        @JExcelCellWriter(commentOfField = "formula")
+        public String testMethod() {
+            return get_String();
+        }
     }
 
     public static void read() throws IOException {
@@ -90,6 +418,49 @@ public class ExcelTest {
             list.add(new TestBean2(String.valueOf(i), i * 1.0, new Date()));
         }
         JExcel.sxlsx().data(list).write().to(new File("C:\\JExcel\\test-bean2.xlsx"));
+        JExcel.sxlsx().setWriteAdapter(new WriteAdapter() {
+            @Override
+            public Object getData(int sheet, int row, int cell) {
+                if (row == 0) {
+                    if (cell == 0) {
+                        return "Test String";
+                    } else if (cell == 1) {
+                        return "Test Double";
+                    } else if (cell == 2) {
+                        return "Test Date";
+                    }
+                } else {
+                    if (cell == 0) {
+                        return list.get(row).getTestString();
+                    } else if (cell == 1) {
+                        return list.get(row).getTestDouble();
+                    } else if (cell == 2) {
+                        return list.get(row).getTestDate();
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public String getSheetName(int sheet) {
+                return "Sheet1";
+            }
+
+            @Override
+            public int getSheetCount() {
+                return 1;
+            }
+
+            @Override
+            public int getRowCount(int sheet) {
+                return list.size() + 1;
+            }
+
+            @Override
+            public int getCellCount(int sheet, int row) {
+                return 3;
+            }
+        }).write().to(new File("C:\\JExcel\\test-bean2.xlsx"));
     }
 
     public static void write() throws IOException {
@@ -275,7 +646,7 @@ public class ExcelTest {
 
         private Double testDouble;
 
-        //@JExcelCellWriter(autoSize = false, valueConverter = PictureValueConverter.class)
+        //@JExcelCellWriter(autoSize = false, valueConverter = WritePictureValueConverter.class)
         @JExcelCellWriter(pictureOfFiled = "testString")
         private File file;
 

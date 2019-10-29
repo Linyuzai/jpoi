@@ -1,6 +1,5 @@
 package com.github.linyuzai.jpoi.excel.write.setter;
 
-import com.github.linyuzai.jpoi.excel.value.combination.CombinationValue;
 import com.github.linyuzai.jpoi.excel.value.comment.RichTextStringComment;
 import com.github.linyuzai.jpoi.excel.value.comment.StringComment;
 import com.github.linyuzai.jpoi.excel.value.comment.SupportComment;
@@ -55,15 +54,6 @@ public class SupportValueSetter extends PoiValueSetter {
                     padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom(),
                     location.getStartCell(), location.getStartRow(), location.getEndCell(), location.getEndRow());
             createComment(cell, (SupportComment) value, anchor, workbook, drawing);
-        } else if (value instanceof CombinationValue) {
-            Object combinationValue = ((CombinationValue) value).getValue();
-            if (combinationValue instanceof Collection) {
-                for (Object o : (Collection) combinationValue) {
-                    setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, o);
-                }
-            } else {
-                setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, combinationValue);
-            }
         }
     }
 
