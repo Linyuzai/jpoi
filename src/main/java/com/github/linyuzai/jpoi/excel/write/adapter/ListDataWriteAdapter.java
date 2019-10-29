@@ -1,6 +1,6 @@
 package com.github.linyuzai.jpoi.excel.write.adapter;
 
-import com.github.linyuzai.jpoi.excel.converter.CommentValueConverter;
+import com.github.linyuzai.jpoi.excel.converter.WriteCommentValueConverter;
 import com.github.linyuzai.jpoi.excel.converter.WritePictureValueConverter;
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.listener.PoiListener;
@@ -101,7 +101,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
                 ValueConverter valueConverter = ((AnnotationWriteField) writeField).getValueConverter();
                 if (isComment) {
                     if (valueConverter == null) {
-                        ((AnnotationWriteField) writeField).setValueConverter(CommentValueConverter.getInstance());
+                        ((AnnotationWriteField) writeField).setValueConverter(WriteCommentValueConverter.getInstance());
                     }
                 }
                 String pictureField = ((AnnotationWriteField) writeField).getPictureOfField();

@@ -32,6 +32,7 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
         addValueConverter(NullValueConverter.getInstance());
         //addValueConverter(WritePictureValueConverter.getInstance());
         addValueConverter(PoiValueConverter.getInstance());
+        addValueConverter(BaseTypeValueConverter.getInstance());
         addValueConverter(WriteCombinationValueConverter.getInstance());
         addValueConverter(WriteSupportValueConverter.getInstance());
         addValueConverter(WriteObjectValueConverter.getInstance());

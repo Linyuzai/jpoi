@@ -20,10 +20,16 @@ public class ExcelTest {
         //write2();
         //read2();
         mainWrite();
+        //mainRead();
     }
 
     private static void mainWrite() throws IOException {
         JExcel.sxlsx().data(Collections.singletonList(getExcelBean())).write().to(new File("C:\\JExcel\\Excel-Bean.xlsx"));
+    }
+
+    private static void mainRead() throws IOException {
+        Object o = JExcel.xlsx(new FileInputStream("C:\\JExcel\\Excel-Bean.xlsx")).target(ExcelBean.class).read().getValue();
+        System.out.println(o);
     }
 
     private static ExcelBean getExcelBean() {
@@ -74,58 +80,85 @@ public class ExcelTest {
         return excelBean;
     }
 
-    @JExcelSheetWriter(name = "Excel-Bean", annotationOnly = false)
+    @JExcelSheetReader
+    @JExcelSheetWriter(name = "Excel-Bean")
     public static class ExcelBean {
+        @JExcelCellReader(title = "basic-int")
         @JExcelCellWriter(title = "basic-int")
         private int _int;
+        @JExcelCellReader(title = "wrapper-integer")
         @JExcelCellWriter(title = "wrapper-integer")
         private Integer _Integer;
+        @JExcelCellReader(title = "basic-double")
         @JExcelCellWriter(title = "basic-double")
         private double _double;
+        @JExcelCellReader(title = "wrapper-double")
         @JExcelCellWriter(title = "wrapper-double")
         private Double _Double;
+        @JExcelCellReader(title = "basic-short")
         @JExcelCellWriter(title = "basic-short")
         private short _short;
+        @JExcelCellReader(title = "wrapper-short")
         @JExcelCellWriter(title = "wrapper-short")
         private Short _Short;
+        @JExcelCellReader(title = "basic-byte")
         @JExcelCellWriter(title = "basic-byte")
         private byte _byte;
+        @JExcelCellReader(title = "wrapper-byte")
         @JExcelCellWriter(title = "wrapper-byte")
         private Byte _Byte;
+        @JExcelCellReader(title = "basic-long")
         @JExcelCellWriter(title = "basic-long")
         private long _long;
+        @JExcelCellReader(title = "wrapper-long")
         @JExcelCellWriter(title = "wrapper-long")
         private Long _Long;
+        @JExcelCellReader(title = "basic-float")
         @JExcelCellWriter(title = "basic-float")
         private float _float;
+        @JExcelCellReader(title = "wrapper-float")
         @JExcelCellWriter(title = "wrapper-float")
         private Float _Float;
+        @JExcelCellReader(title = "basic-char")
         @JExcelCellWriter(title = "basic-char")
         private char _char;
+        @JExcelCellReader(title = "wrapper-character")
         @JExcelCellWriter(title = "wrapper-character")
         private Character _Character;
+        @JExcelCellReader(title = "basic-boolean")
         @JExcelCellWriter(title = "basic-boolean")
         private boolean _boolean;
+        @JExcelCellReader(title = "wrapper-boolean")
         @JExcelCellWriter(title = "wrapper-boolean")
         private Boolean _Boolean;
+        @JExcelCellReader(title = "class-string")
         @JExcelCellWriter(title = "class-string")
         private String _String;
+        @JExcelCellReader(title = "class-date")
         @JExcelCellWriter(title = "class-date", style = @JExcelCellStyle(dataFormatString = "m/d/yy"))
         private Date _Date;
-        @JExcelCellWriter(title = "object-comment", valueConverter = CommentValueConverter.class)
+        @JExcelCellReader(title = "object-comment", valueConverter = ReadCommentValueConverter.class)
+        @JExcelCellWriter(title = "object-comment", valueConverter = WriteCommentValueConverter.class)
         private String comment;//注解的形式
+        @JExcelCellReader(title = "object-picture", valueConverter = ReadPictureValueConverter.class)
         @JExcelCellWriter(title = "object-picture", valueConverter = WritePictureValueConverter.class)
         private byte[] picture;//图片
+        @JExcelCellReader(commentOfField = "_int")
         @JExcelCellWriter(commentOfField = "_int")
         private String commentOfField;//注释，到某个字段的单元格上
+        @JExcelCellReader(pictureOfFiled = "_Integer")
         @JExcelCellWriter(pictureOfFiled = "_Integer")
         private byte[] pictureOfField;//图片，到某个字段的单元格上
+        @JExcelCellReader(commentOfIndex = 3)
         @JExcelCellWriter(commentOfIndex = 3)
         private String commentOfIndex;//注释，到某一列的单元格上
+        @JExcelCellReader(pictureOfIndex = 4)
         @JExcelCellWriter(pictureOfIndex = 4)
         private String pictureOfIndex;//base64图片，到某一列的单元格上
+        @JExcelCellReader(title = "value-error")
         @JExcelCellWriter(title = "value-error", valueConverter = ErrorValueConverter.class)
         private byte error;//错误类型
+        @JExcelCellReader(title = "value-formula")
         @JExcelCellWriter(title = "value-formula", valueConverter = FormulaValueConverter.class)
         private String formula;//公式类型
 

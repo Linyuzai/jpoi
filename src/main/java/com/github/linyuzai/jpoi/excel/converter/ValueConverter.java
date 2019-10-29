@@ -12,8 +12,8 @@ public interface ValueConverter extends SupportOrder, SupportCache {
     Map<String, ValueConverter> cache = new ConcurrentHashMap<>();
 
     static ValueConverter getWithCache(Class<? extends ValueConverter> cls) {
-        if (cls == CommentValueConverter.class) {
-            return CommentValueConverter.getInstance();
+        if (cls == BaseTypeValueConverter.class) {
+            return BaseTypeValueConverter.getInstance();
         } else if (cls == ErrorValueConverter.class) {
             return ErrorValueConverter.getInstance();
         } else if (cls == FilePictureValueConverter.class) {
@@ -22,8 +22,6 @@ public interface ValueConverter extends SupportOrder, SupportCache {
             return FormulaValueConverter.getInstance();
         } else if (cls == NullValueConverter.class) {
             return NullValueConverter.getInstance();
-        } else if (cls == WritePictureValueConverter.class) {
-            return WritePictureValueConverter.getInstance();
         } else if (cls == PoiValueConverter.class) {
             return PoiValueConverter.getInstance();
         } else if (cls == ReadCommentValueConverter.class) {
@@ -38,8 +36,12 @@ public interface ValueConverter extends SupportOrder, SupportCache {
             return ReadSupportValueConverter.getInstance();
         } else if (cls == WriteCombinationValueConverter.class) {
             return WriteCombinationValueConverter.getInstance();
+        } else if (cls == WriteCommentValueConverter.class) {
+            return WriteCommentValueConverter.getInstance();
         } else if (cls == WriteObjectValueConverter.class) {
             return WriteObjectValueConverter.getInstance();
+        } else if (cls == WritePictureValueConverter.class) {
+            return WritePictureValueConverter.getInstance();
         } else if (cls == WriteSupportValueConverter.class) {
             return WriteSupportValueConverter.getInstance();
         } else if (ValueConverter.cache.containsKey(cls.getName())) {

@@ -2,11 +2,11 @@ package com.github.linyuzai.jpoi.excel.converter;
 
 import com.github.linyuzai.jpoi.excel.value.comment.StringComment;
 
-public class CommentValueConverter extends ClientAnchorValueConverter {
+public class WriteCommentValueConverter extends ClientAnchorValueConverter {
 
-    private static CommentValueConverter sInstance = new CommentValueConverter();
+    private static WriteCommentValueConverter sInstance = new WriteCommentValueConverter();
 
-    public static CommentValueConverter getInstance() {
+    public static WriteCommentValueConverter getInstance() {
         return sInstance;
     }
 

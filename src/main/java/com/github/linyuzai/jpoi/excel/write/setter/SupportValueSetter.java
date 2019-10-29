@@ -15,9 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
-import java.util.Collection;
 
-public class SupportValueSetter extends PoiValueSetter {
+public class SupportValueSetter extends BaseTypeValueSetter {
 
     private static SupportValueSetter sInstance = new SupportValueSetter();
 

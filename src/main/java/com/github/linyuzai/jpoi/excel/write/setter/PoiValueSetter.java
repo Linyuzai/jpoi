@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.*;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.IllegalFormatException;
 
 public class PoiValueSetter implements ValueSetter {
 
@@ -16,10 +17,7 @@ public class PoiValueSetter implements ValueSetter {
     @Override
     public void setValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) {
         if (value == null) {
-            value = getNullValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
-            if (value == null) {
-                return;
-            }
+            return;
         }
         if (value.getClass() == boolean.class) {
             cell.setCellValue((boolean) value);
@@ -38,11 +36,7 @@ public class PoiValueSetter implements ValueSetter {
         } else if (value instanceof RichTextString) {
             cell.setCellValue((RichTextString) value);
         } else {
-            cell.setCellValue(String.valueOf(value));
+            throw new IllegalArgumentException(value.getClass() + " is not support");
         }
-    }
-
-    String getNullValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper) {
-        return null;
     }
 }

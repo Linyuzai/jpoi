@@ -34,7 +34,11 @@ public class CombinationValueGetter extends SupportValueGetter {
                     if (drawing != null) {
                         for (Shape shape : drawing) {
                             if (shape instanceof Picture) {
-                                ByteArrayPicture bap = new ByteArrayPicture(((Picture) shape).getPictureData().getData());
+                                PictureData pictureData = ((Picture) shape).getPictureData();
+                                if (pictureData == null) {
+                                    continue;
+                                }
+                                ByteArrayPicture bap = new ByteArrayPicture(pictureData.getData());
                                 bap.setFormat(((Picture) shape).getPictureData().getMimeType());
                                 bap.setType(((Picture) shape).getPictureData().getPictureType());
                                 ClientAnchor anchor = ((Picture) shape).getClientAnchor();
