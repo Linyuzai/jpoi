@@ -13,6 +13,7 @@ public @interface JExcelCellReader {
 
     Class<? extends ValueConverter> valueConverter() default ValueConverter.class;
 
+    @Deprecated
     int index() default -1;
 
     String commentOfField() default "";

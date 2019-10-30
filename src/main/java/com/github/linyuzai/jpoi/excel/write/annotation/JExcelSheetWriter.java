@@ -9,6 +9,7 @@ public @interface JExcelSheetWriter {
 
     String name() default "";
 
+    @Deprecated
     boolean annotationOnly() default true;
 
     JExcelRowStyle style() default @JExcelRowStyle;

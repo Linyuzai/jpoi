@@ -6,5 +6,5 @@ public interface SupportErrorValue extends SupportValue {
 
     byte getErrorValue();
 
-    void setErrorValue(byte value);
+    //void setErrorValue(byte value);
 }

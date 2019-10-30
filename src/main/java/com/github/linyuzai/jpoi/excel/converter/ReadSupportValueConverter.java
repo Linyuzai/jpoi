@@ -34,7 +34,8 @@ public class ReadSupportValueConverter implements ValueConverter {
         } else if (value instanceof SupportErrorValue) {
             return ((SupportErrorValue) value).getErrorValue();
         } else if (value instanceof SupportFormula) {
-            return ((SupportFormula) value).getFormula();
+            //return ((SupportFormula) value).getValue();
+            return value;
         } else if (value instanceof SupportComment) {
             return ((SupportComment) value).getComment();
         }

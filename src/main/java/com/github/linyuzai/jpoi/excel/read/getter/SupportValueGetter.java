@@ -1,7 +1,7 @@
 package com.github.linyuzai.jpoi.excel.read.getter;
 
 import com.github.linyuzai.jpoi.excel.value.error.ByteError;
-import com.github.linyuzai.jpoi.excel.value.formula.StringFormula;
+import com.github.linyuzai.jpoi.excel.value.formula.FormulaValue;
 import org.apache.poi.ss.usermodel.*;
 
 public class SupportValueGetter extends DataFormatGetter {
@@ -17,7 +17,9 @@ public class SupportValueGetter extends DataFormatGetter {
         Object cellData;
         switch (cell.getCellType()) {
             case FORMULA:
-                cellData = new StringFormula(cell.getCellFormula());
+                FormulaEvaluator formulaEvaluator = creationHelper.createFormulaEvaluator();
+                CellValue cellValue = formulaEvaluator.evaluate(cell);
+                cellData = new FormulaValue(cell.getCellFormula(), cellValue.getCellType() == CellType.NUMERIC ? cellValue.getNumberValue() : cellValue.getStringValue());
                 break;
             case ERROR:
                 cellData = new ByteError(cell.getErrorCellValue());

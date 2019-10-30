@@ -6,5 +6,6 @@ public interface SupportFormula extends SupportValue {
 
     String getFormula();
 
-    void setFormula(String formula);
+    Object getValue();
+    //void setFormula(String formula);
 }

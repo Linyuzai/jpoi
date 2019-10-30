@@ -13,7 +13,7 @@ public class IntError implements SupportErrorValue {
         return (byte) intErrorValue;
     }
 
-    @Override
+    //@Override
     public void setErrorValue(byte value) {
         this.intErrorValue = value;
     }

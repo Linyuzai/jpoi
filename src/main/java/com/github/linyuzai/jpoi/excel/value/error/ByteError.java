@@ -13,7 +13,7 @@ public class ByteError implements SupportErrorValue {
         return errorValue;
     }
 
-    @Override
+    //@Override
     public void setErrorValue(byte value) {
         this.errorValue = value;
     }

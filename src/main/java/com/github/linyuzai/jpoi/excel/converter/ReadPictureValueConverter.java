@@ -15,7 +15,7 @@ public class ReadPictureValueConverter implements ValueConverter {
 
     @Override
     public boolean supportValue(int sheet, int row, int cell, Object value) {
-        return value instanceof CombinationValue;
+        return value instanceof CombinationValue || value instanceof SupportPicture;
     }
 
     @Override

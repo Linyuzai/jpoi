@@ -12,6 +12,7 @@ import com.github.linyuzai.jpoi.excel.read.getter.ValueGetter;
 import com.github.linyuzai.jpoi.support.SupportOrder;
 import org.apache.poi.ss.usermodel.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -33,6 +34,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         //addValueConverter(WritePictureValueConverter.getInstance());
         addValueConverter(PoiValueConverter.getInstance());
         addValueConverter(ReadSupportValueConverter.getInstance());
+        //addValueConverter(ReadDataValueConverter.getInstance());
         addValueConverter(ReadObjectValueConverter.getInstance());
     }
 
@@ -110,7 +112,11 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         return setReadAdapter(new DirectListReadAdapter());
     }
 
-    public JExcelReader read() {
+    public JExcelReader read() throws IOException {
+        return read(true);
+    }
+
+    public JExcelReader read(boolean close) throws IOException {
         if (workbook == null) {
             throw new RuntimeException("No source to transfer");
         }
@@ -126,13 +132,14 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         if (poiListeners == null) {
             throw new RuntimeException("PoiReadListeners is null");
         }
-        return new JExcelReader(analyze(workbook, readAdapter, poiListeners, valueConverters, valueGetter));
+        return new JExcelReader(analyze(workbook, readAdapter, poiListeners, valueConverters, valueGetter, close));
     }
 
     private static Object analyze(Workbook workbook, ReadAdapter readAdapter, List<PoiListener> poiListeners,
-                                  List<ValueConverter> valueConverters, ValueGetter valueGetter) {
+                                  List<ValueConverter> valueConverters, ValueGetter valueGetter, boolean close) throws IOException {
+        CreationHelper creationHelper = workbook.getCreationHelper();
         for (PoiListener poiListener : poiListeners) {
-            poiListener.onWorkbookStart(workbook, null);
+            poiListener.onWorkbookStart(workbook, creationHelper);
         }
         int sCount = workbook.getNumberOfSheets();
         for (int s = 0; s < sCount; s++) {
@@ -153,7 +160,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                     for (PoiListener poiListener : poiListeners) {
                         poiListener.onCellStart(c, r, s, cell, row, sheet, workbook);
                     }
-                    Object o = valueGetter.getValue(s, r, c, cell, row, sheet, drawing, workbook, null);
+                    Object o = valueGetter.getValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
                     /*ValueConverter valueConverter = null;
                     for (ValueConverter vc : valueConverters) {
                         if (vc.supportValue(s, r, c, o)) {
@@ -180,7 +187,10 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
             }
         }
         for (PoiListener poiListener : poiListeners) {
-            poiListener.onWorkbookEnd(workbook, null);
+            poiListener.onWorkbookEnd(workbook, creationHelper);
+        }
+        if (close) {
+            workbook.close();
         }
         return readAdapter.getValue();
     }

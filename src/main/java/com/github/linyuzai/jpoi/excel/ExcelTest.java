@@ -19,8 +19,8 @@ public class ExcelTest {
         //write();
         //write2();
         //read2();
-        mainWrite();
-        //mainRead();
+        //mainWrite();
+        mainRead();
     }
 
     private static void mainWrite() throws IOException {
@@ -152,15 +152,17 @@ public class ExcelTest {
         @JExcelCellReader(commentOfIndex = 3)
         @JExcelCellWriter(commentOfIndex = 3)
         private String commentOfIndex;//注释，到某一列的单元格上
-        @JExcelCellReader(pictureOfIndex = 4)
+        @JExcelCellReader(pictureOfIndex = 4, valueConverter = ReadBase64PictureValueConverter.class)
         @JExcelCellWriter(pictureOfIndex = 4)
         private String pictureOfIndex;//base64图片，到某一列的单元格上
         @JExcelCellReader(title = "value-error")
         @JExcelCellWriter(title = "value-error", valueConverter = ErrorValueConverter.class)
         private byte error;//错误类型
-        @JExcelCellReader(title = "value-formula")
-        @JExcelCellWriter(title = "value-formula", valueConverter = FormulaValueConverter.class)
+
+        @JExcelCellWriter(title = "value-formula", valueConverter = WriteFormulaValueConverter.class)
         private String formula;//公式类型
+        @JExcelCellReader(title = "value-formula", valueConverter = ReadFormulaValueConverter.class)
+        private Double formulaValue;//公式类型
 
         private String annotation;//测试annotationOnly属性
 
@@ -370,6 +372,14 @@ public class ExcelTest {
 
         public void setFormula(String formula) {
             this.formula = formula;
+        }
+
+        public Double getFormulaValue() {
+            return formulaValue;
+        }
+
+        public void setFormulaValue(Double formulaValue) {
+            this.formulaValue = formulaValue;
         }
 
         public String getAnnotation() {

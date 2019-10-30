@@ -3,6 +3,7 @@ package com.github.linyuzai.jpoi.excel.read.adapter;
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MapReadAdapter extends AnnotationReadAdapter {
@@ -79,6 +80,7 @@ public class MapReadAdapter extends AnnotationReadAdapter {
         private String sheetName;
         private boolean toMap;
         private Map<Integer, ReadField> readFieldMap;
+        private List<ReadField> readFields;
 
         public String getSheetName() {
             return sheetName;
@@ -102,6 +104,14 @@ public class MapReadAdapter extends AnnotationReadAdapter {
 
         public void setReadFieldMap(Map<Integer, ReadField> readFieldMap) {
             this.readFieldMap = readFieldMap;
+        }
+
+        public List<ReadField> getReadFields() {
+            return readFields;
+        }
+
+        public void setReadFields(List<ReadField> readFields) {
+            this.readFields = readFields;
         }
     }
 }

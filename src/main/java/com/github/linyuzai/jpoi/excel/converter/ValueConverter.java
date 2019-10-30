@@ -14,22 +14,26 @@ public interface ValueConverter extends SupportOrder, SupportCache {
     static ValueConverter getWithCache(Class<? extends ValueConverter> cls) {
         if (cls == BaseTypeValueConverter.class) {
             return BaseTypeValueConverter.getInstance();
+        } else if (cls == DefaultReadValueConverter.class) {
+            return DefaultReadValueConverter.getInstance();
         } else if (cls == ErrorValueConverter.class) {
             return ErrorValueConverter.getInstance();
         } else if (cls == FilePictureValueConverter.class) {
             return FilePictureValueConverter.getInstance();
-        } else if (cls == FormulaValueConverter.class) {
-            return FormulaValueConverter.getInstance();
         } else if (cls == NullValueConverter.class) {
             return NullValueConverter.getInstance();
         } else if (cls == PoiValueConverter.class) {
             return PoiValueConverter.getInstance();
+        } else if (cls == ReadBase64PictureValueConverter.class) {
+            return ReadBase64PictureValueConverter.getInstance();
         } else if (cls == ReadCommentValueConverter.class) {
             return ReadCommentValueConverter.getInstance();
         } else if (cls == ReadDataValueConverter.class) {
             return ReadDataValueConverter.getInstance();
+        } else if (cls == ReadFormulaValueConverter.class) {
+            return ReadFormulaValueConverter.getInstance();
         } else if (cls == ReadObjectValueConverter.class) {
-            return WriteObjectValueConverter.getInstance();
+            return ReadObjectValueConverter.getInstance();
         } else if (cls == ReadPictureValueConverter.class) {
             return ReadPictureValueConverter.getInstance();
         } else if (cls == ReadSupportValueConverter.class) {
@@ -38,6 +42,8 @@ public interface ValueConverter extends SupportOrder, SupportCache {
             return WriteCombinationValueConverter.getInstance();
         } else if (cls == WriteCommentValueConverter.class) {
             return WriteCommentValueConverter.getInstance();
+        } else if (cls == WriteFormulaValueConverter.class) {
+            return WriteFormulaValueConverter.getInstance();
         } else if (cls == WriteObjectValueConverter.class) {
             return WriteObjectValueConverter.getInstance();
         } else if (cls == WritePictureValueConverter.class) {

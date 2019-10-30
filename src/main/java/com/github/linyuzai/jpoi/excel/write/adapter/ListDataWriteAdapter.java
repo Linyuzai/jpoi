@@ -8,6 +8,7 @@ import com.github.linyuzai.jpoi.excel.value.combination.ListCombinationValue;
 import com.github.linyuzai.jpoi.excel.value.combination.CombinationValue;
 import com.github.linyuzai.jpoi.excel.write.style.JCellStyle;
 import com.github.linyuzai.jpoi.excel.write.style.JRowStyle;
+import com.github.linyuzai.jpoi.util.ClassUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 
@@ -73,7 +74,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
                 listDataList.get(sheet).setSheetName(writeField.getFieldDescription());
             }
         }
-        if (cls != null && !cls.isInterface() && !cls.isArray() && !cls.isPrimitive() && !isWrapClass(cls) && cls != String.class) {
+        if (cls != null && !cls.isInterface() && !cls.isArray() && !cls.isPrimitive() && !ClassUtils.isWrapClass(cls) && cls != String.class) {
             writeFieldList.add(sheet, getWriteFieldList(sheet, cls));
         } else {
             if (dataList.size() > 0) {
@@ -167,15 +168,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
     }
 
     public boolean illegalWriteFieldClass(Class<?> cls) {
-        return cls == null || cls.isInterface() || cls.isArray() || cls.isPrimitive() || isWrapClass(cls) || cls == String.class;
-    }
-
-    public static boolean isWrapClass(Class<?> clz) {
-        try {
-            return ((Class) clz.getField("TYPE").get(null)).isPrimitive();
-        } catch (Exception e) {
-            return false;
-        }
+        return cls == null || cls.isInterface() || cls.isArray() || cls.isPrimitive() || ClassUtils.isWrapClass(cls) || cls == String.class;
     }
 
     @Override
