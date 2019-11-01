@@ -206,7 +206,8 @@ public class ObjectReadAdapter extends MapReadAdapter {
         if (fieldName != null) {
             try {
                 if (readField instanceof AnnotationReadField &&
-                        (valueConverter = ((AnnotationReadField) readField).getValueConverter()) != null) {
+                        (valueConverter = ((AnnotationReadField) readField).getValueConverter()) != null &&
+                        valueConverter.supportValue(s, r, c, value)) {
                     val = valueConverter.convertValue(s, r, c, value);
                 }
                 Field field = classes[s].getDeclaredField(fieldName);

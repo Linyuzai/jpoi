@@ -24,7 +24,7 @@ public class CombinationValueSetter extends SupportValueSetter {
 
     public void setCombinationValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) {
         if (value instanceof CombinationValue) {
-            Object combinationValue = ((CombinationValue) value).getValue();
+            Object combinationValue = ((CombinationValue) value).getValue(null);
             if (combinationValue instanceof Collection) {
                 for (Object o : (Collection) combinationValue) {
                     setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, o);

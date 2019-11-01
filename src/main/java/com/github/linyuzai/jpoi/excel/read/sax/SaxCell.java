@@ -150,7 +150,7 @@ public class SaxCell implements Cell {
 
     @Override
     public CellStyle getCellStyle() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     @Override
@@ -170,7 +170,7 @@ public class SaxCell implements Cell {
 
     @Override
     public Comment getCellComment() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     @Override

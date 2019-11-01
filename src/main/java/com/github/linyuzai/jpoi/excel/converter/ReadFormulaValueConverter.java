@@ -20,8 +20,8 @@ public class ReadFormulaValueConverter implements ValueConverter {
 
     @Override
     public Object convertValue(int sheet, int row, int cell, Object value) {
-        if (((CombinationValue) value).getValue() instanceof Collection) {
-            for (Object o : ((Collection) ((CombinationValue) value).getValue())) {
+        if (((CombinationValue) value).getValue(null) instanceof Collection) {
+            for (Object o : ((Collection) ((CombinationValue) value).getValue(null))) {
                 if (o instanceof SupportFormula) {
                     return getFormula(sheet, row, cell, (SupportFormula) o);
                 }
@@ -29,8 +29,8 @@ public class ReadFormulaValueConverter implements ValueConverter {
         } else {
             if (value instanceof SupportFormula) {
                 return getFormula(sheet, row, cell, (SupportFormula) value);
-            } else if (((CombinationValue) value).getValue() instanceof SupportFormula) {
-                return getFormula(sheet, row, cell, (SupportFormula) ((CombinationValue) value).getValue());
+            } else if (((CombinationValue) value).getValue(null) instanceof SupportFormula) {
+                return getFormula(sheet, row, cell, (SupportFormula) ((CombinationValue) value).getValue(null));
             }
         }
         return null;

@@ -233,7 +233,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
             val = valueConverter.convertValue(sheet, realRow, realCell, val);
         }
         if (writeField instanceof AnnotationWriteField && ((AnnotationWriteField) writeField).getCombinationFields().size() > 0) {
-            CombinationValue combinationValue = new ListCombinationValue();
+            ListCombinationValue combinationValue = new ListCombinationValue();
             combinationValue.addValue(val);
             for (WriteField combinationField : ((AnnotationWriteField) writeField).getCombinationFields()) {
                 combinationValue.addValue(getValueFromEntity(sheet, row, cell, realRow, realCell, combinationField, entity));

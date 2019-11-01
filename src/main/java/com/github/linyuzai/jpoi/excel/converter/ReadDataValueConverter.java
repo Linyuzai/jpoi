@@ -22,14 +22,14 @@ public class ReadDataValueConverter implements ValueConverter {
 
     @Override
     public Object convertValue(int sheet, int row, int cell, Object value) {
-        if (((CombinationValue) value).getValue() instanceof Collection) {
-            for (Object o : ((Collection) ((CombinationValue) value).getValue())) {
+        if (((CombinationValue) value).getValue(null) instanceof Collection) {
+            for (Object o : ((Collection) ((CombinationValue) value).getValue(null))) {
                 if (!(o instanceof SupportPicture) && !(o instanceof SupportComment)) {
                     return getData(sheet, row, cell, o);
                 }
             }
         } else {
-            return getData(sheet, row, cell, ((CombinationValue) value).getValue());
+            return getData(sheet, row, cell, ((CombinationValue) value).getValue(null));
         }
         return null;
     }

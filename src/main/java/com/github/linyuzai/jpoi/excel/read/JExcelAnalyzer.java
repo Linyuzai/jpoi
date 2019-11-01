@@ -161,17 +161,6 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                         poiListener.onCellStart(c, r, s, cell, row, sheet, workbook);
                     }
                     Object o = valueGetter.getValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
-                    /*ValueConverter valueConverter = null;
-                    for (ValueConverter vc : valueConverters) {
-                        if (vc.supportValue(s, r, c, o)) {
-                            valueConverter = vc;
-                            break;
-                        }
-                    }
-                    if (valueConverter == null) {
-                        throw new RuntimeException("No value converter matched");
-                    }
-                    Object cellValue = valueConverter.convertValue(s, r, c, o);*/
                     Object cellValue = convertValue(valueConverters, s, r, c, o);
                     readAdapter.readCell(cellValue, s, r, c, sCount, rCount, cCount);
                     for (PoiListener poiListener : poiListeners) {

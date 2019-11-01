@@ -20,8 +20,8 @@ public class ReadPictureValueConverter implements ValueConverter {
 
     @Override
     public Object convertValue(int sheet, int row, int cell, Object value) {
-        if (((CombinationValue) value).getValue() instanceof Collection) {
-            for (Object o : ((Collection) ((CombinationValue) value).getValue())) {
+        if (((CombinationValue) value).getValue(null) instanceof Collection) {
+            for (Object o : ((Collection) ((CombinationValue) value).getValue(null))) {
                 if (o instanceof SupportPicture) {
                     return getPicture(sheet, row, cell, (SupportPicture) o);
                 }
@@ -29,8 +29,8 @@ public class ReadPictureValueConverter implements ValueConverter {
         } else {
             if (value instanceof SupportPicture) {
                 return getPicture(sheet, row, cell, (SupportPicture) value);
-            } else if (((CombinationValue) value).getValue() instanceof SupportPicture) {
-                return getPicture(sheet, row, cell, (SupportPicture) ((CombinationValue) value).getValue());
+            } else if (((CombinationValue) value).getValue(null) instanceof SupportPicture) {
+                return getPicture(sheet, row, cell, (SupportPicture) ((CombinationValue) value).getValue(null));
             }
         }
         return null;

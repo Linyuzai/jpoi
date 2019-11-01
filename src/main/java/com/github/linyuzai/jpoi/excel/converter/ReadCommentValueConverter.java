@@ -20,8 +20,8 @@ public class ReadCommentValueConverter implements ValueConverter {
 
     @Override
     public Object convertValue(int sheet, int row, int cell, Object value) {
-        if (((CombinationValue) value).getValue() instanceof Collection) {
-            for (Object o : ((Collection) ((CombinationValue) value).getValue())) {
+        if (((CombinationValue) value).getValue(null) instanceof Collection) {
+            for (Object o : ((Collection) ((CombinationValue) value).getValue(null))) {
                 if (o instanceof SupportComment) {
                     return getComment(sheet, row, cell, (SupportComment) o);
                 }
@@ -29,8 +29,8 @@ public class ReadCommentValueConverter implements ValueConverter {
         } else {
             if (value instanceof SupportComment) {
                 return getComment(sheet, row, cell, (SupportComment) value);
-            } else if (((CombinationValue) value).getValue() instanceof SupportComment) {
-                return getComment(sheet, row, cell, (SupportComment) ((CombinationValue) value).getValue());
+            } else if (((CombinationValue) value).getValue(null) instanceof SupportComment) {
+                return getComment(sheet, row, cell, (SupportComment) ((CombinationValue) value).getValue(null));
             }
         }
         return null;

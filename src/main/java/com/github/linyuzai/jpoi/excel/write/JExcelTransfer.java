@@ -176,17 +176,6 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
                         poiListener.onCellStart(c, r, s, cell, row, sheet, workbook);
                     }
                     Object o = writeAdapter.getData(s, r, c);
-                    /*ValueConverter valueConverter = null;
-                    for (ValueConverter vc : valueConverters) {
-                        if (vc.supportValue(s, r, c, o)) {
-                            valueConverter = vc;
-                            break;
-                        }
-                    }
-                    if (valueConverter == null) {
-                        throw new RuntimeException("No value converter matched");
-                    }
-                    Object value = valueConverter.convertValue(s, r, c, o);*/
                     Object value = convertValue(valueConverters, s, r, c, o);
                     valueSetter.setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
                     for (PoiListener poiListener : poiListeners) {

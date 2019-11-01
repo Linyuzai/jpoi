@@ -62,7 +62,7 @@ public class CombinationValueGetter extends SupportValueGetter {
         }
         Object cellData = super.getValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
         if (picture != null || comment != null) {
-            CombinationValue combinationValue = new ListCombinationValue();
+            ListCombinationValue combinationValue = new ListCombinationValue();
             combinationValue.addValue(cellData);
             if (comment != null) {
                 combinationValue.addValue(comment);

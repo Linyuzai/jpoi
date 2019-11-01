@@ -2,6 +2,9 @@ package com.github.linyuzai.jpoi.excel.read.sax;
 
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackagePart;
+import org.apache.poi.openxml4j.opc.PackageRelationship;
+import org.apache.poi.openxml4j.opc.ZipPackagePart;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.formula.udf.UDFFinder;
 import org.apache.poi.ss.usermodel.*;
@@ -10,10 +13,7 @@ import org.apache.poi.util.POILogFactory;
 import org.apache.poi.util.POILogger;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.model.*;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFComment;
-import org.apache.poi.xssf.usermodel.XSSFRelation;
-import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.apache.poi.xssf.usermodel.*;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -25,11 +25,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class SaxWorkbook implements Workbook {
 
     private List<Sheet> sheets = new ArrayList<>();
     private SaxSheet tempSheet;
+
+    private SaxCreationHelper creationHelper = new SaxCreationHelper();
 
     public SaxWorkbook(InputStream is) throws IOException {
         try {
@@ -42,6 +45,14 @@ public class SaxWorkbook implements Workbook {
             parser.setContentHandler(new SaxHandler(st, sst, false));
             //XSSFSheetXMLHandler.SheetContentsHandler
             XSSFReader.SheetIterator xsi = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
+            List<PackagePart> packageParts = pkg.getPartsByName(Pattern.compile("/xl/media/.*?"));
+            //packageParts.get(0).getInputStream()
+            //Map<String, >
+            for (PackagePart packagePart : packageParts) {
+                //packagePart.getRelationship("")
+                packagePart.getPartName().getName();
+                //((ZipPackagePart)packagePart).getZipArchive().get
+            }
             while (xsi.hasNext()) { //遍历sheet
                 tempSheet = new SaxSheet();
                 sheets.add(tempSheet);
@@ -49,6 +60,22 @@ public class SaxWorkbook implements Workbook {
                 //sheetIndex++;
                 InputStream sheet = xsi.next(); //sheets.next()和sheets.getSheetName()不能换位置，否则sheetName报错
                 tempSheet.setName(xsi.getSheetName());
+                List<XSSFShape> shapes = xsi.getShapes();
+                CommentsTable commentsTable = xsi.getSheetComments();
+                //xsi.getSheetPart().getRelationships()
+                for (XSSFShape shape : shapes) {
+                    //shape.getDrawing().getPackagePart().getRelationships().getRelationship(0).getId();
+                    //shape.getDrawing().addRelation()
+                    //String blipId = shape.getBlipFill().getBlip().getEmbed();
+                    if (shape instanceof XSSFPicture) {
+                        String blipId = ((XSSFPicture) shape).getCTPicture().getBlipFill().getBlip().getEmbed();
+                        PackageRelationship packageRelationship = shape.getDrawing().getPackagePart().getRelationships().getRelationshipByID(blipId);
+                        packageRelationship.getTargetURI();
+                        //XSSFPicture
+                        PictureData pictureData = ((Picture) shape).getPictureData();
+                        System.out.println(pictureData);
+                    }
+                }
                 tempSheet.setDrawing(new SaxDrawing(xsi.getShapes()));
                 InputSource sheetSource = new InputSource(sheet);
                 parser.parse(sheetSource); //解析excel的每条记录，在这个过程中startElement()、characters()、endElement()这三个函数会依次执行
@@ -333,7 +360,7 @@ public class SaxWorkbook implements Workbook {
 
     @Override
     public CreationHelper getCreationHelper() {
-        throw new UnsupportedOperationException();
+        return creationHelper;
     }
 
     @Override
@@ -678,7 +705,7 @@ public class SaxWorkbook implements Workbook {
                         break;
 
                     case FORMULA:
-                        if (formulasNotResults) {
+                        /*if (formulasNotResults) {
                             thisStr = formula.toString();
                         } else {
                             String fv = value.toString();
@@ -698,9 +725,26 @@ public class SaxWorkbook implements Workbook {
                             }
                         }
                         saxCell.setCellFormula(thisStr);
+                        saxCell.setCellType(CellType.FORMULA);*/
+
+                        String fv = value.toString();
+                        if (this.formatString != null) {
+                            try {
+                                // Try to use the value as a formattable number
+                                double d = Double.parseDouble(fv);
+                                thisStr = formatter.formatRawCellContents(d, this.formatIndex, this.formatString);
+                            } catch (NumberFormatException e) {
+                                // Formula is a String result not a Numeric one
+                                thisStr = fv;
+                            }
+                        } else {
+                            // No formatting applied, just do raw value in all cases
+                            thisStr = fv;
+                        }
+                        saxCell.setCellFormula(formula.toString());
+                        saxCell.setCellValue(thisStr);
                         saxCell.setCellType(CellType.FORMULA);
                         break;
-
                     case INLINE_STRING:
                         // TODO: Can these ever have formatting on them?
                         XSSFRichTextString rtsi = new XSSFRichTextString(value.toString());

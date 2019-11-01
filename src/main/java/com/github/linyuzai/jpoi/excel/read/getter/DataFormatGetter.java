@@ -18,7 +18,8 @@ public class DataFormatGetter extends PoiValueGetter {
             if (DateUtil.isCellDateFormatted(cell)) {
                 return cell.getDateCellValue();
             } else {
-                short dataFormat = cell.getCellStyle().getDataFormat();
+                CellStyle cellStyle = cell.getCellStyle();
+                short dataFormat = cellStyle == null ? 0 : cellStyle.getDataFormat();
                 if (dataFormat == 0) {
                     return cell.getNumericCellValue();
                 } else {
