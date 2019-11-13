@@ -10,6 +10,9 @@ public class BaseTypeValueConverter implements ValueConverter {
 
     @Override
     public boolean supportValue(int sheet, int row, int cell, Object value) {
+        if (value == null) {
+            return false;
+        }
         return value.getClass() == int.class || value instanceof Integer || value.getClass() == short.class || value instanceof Short
                 || value.getClass() == byte.class || value instanceof Byte || value.getClass() == long.class || value instanceof Long
                 || value.getClass() == float.class || value instanceof Float || value.getClass() == char.class || value instanceof Character;

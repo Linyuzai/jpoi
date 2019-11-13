@@ -15,6 +15,9 @@ public class PoiValueConverter implements ValueConverter {
 
     @Override
     public boolean supportValue(int sheet, int row, int cell, Object value) {
+        if (value == null) {
+            return false;
+        }
         return value.getClass() == boolean.class || value.getClass() == double.class || value instanceof Boolean
                 || value instanceof Double || value instanceof String || value instanceof Date || value instanceof Calendar
                 || value instanceof RichTextString;
