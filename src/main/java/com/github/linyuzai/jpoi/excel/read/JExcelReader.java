@@ -10,8 +10,9 @@ public class JExcelReader {
         this.value = value;
     }
 
-    public Object getValue() {
-        return value;
+    @SuppressWarnings("unchecked")
+    public <T> T getValue() {
+        return (T) value;
     }
 
     public Object first() {
