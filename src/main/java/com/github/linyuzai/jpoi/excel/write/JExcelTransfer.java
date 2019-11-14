@@ -48,7 +48,7 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
         return this;
     }
 
-    public JExcelTransfer addPoiWriteListener(PoiListener poiListener) {
+    public JExcelTransfer addPoiListener(PoiListener poiListener) {
         this.poiListeners.add(poiListener);
         this.poiListeners.sort(Comparator.comparingInt(SupportOrder::getOrder));
         return this;
@@ -80,7 +80,7 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
         }
         this.valueSetter = valueSetter;
         if (valueSetter instanceof PoiListener) {
-            addPoiWriteListener((PoiListener) valueSetter);
+            addPoiListener((PoiListener) valueSetter);
         }
         return this;
     }
@@ -95,7 +95,7 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
         }
         this.writeAdapter = writeAdapter;
         if (writeAdapter instanceof PoiListener) {
-            addPoiWriteListener((PoiListener) writeAdapter);
+            addPoiListener((PoiListener) writeAdapter);
         }
         return this;
     }

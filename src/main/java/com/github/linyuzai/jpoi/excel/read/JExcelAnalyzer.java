@@ -48,7 +48,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         return this;
     }
 
-    public JExcelAnalyzer addPoiReadListener(PoiListener poiListener) {
+    public JExcelAnalyzer addPoiListener(PoiListener poiListener) {
         this.poiListeners.add(poiListener);
         this.poiListeners.sort(Comparator.comparingInt(SupportOrder::getOrder));
         return this;
@@ -80,7 +80,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         }
         this.valueGetter = valueGetter;
         if (valueGetter instanceof PoiListener) {
-            addPoiReadListener((PoiListener) valueGetter);
+            addPoiListener((PoiListener) valueGetter);
         }
         return this;
     }
@@ -95,7 +95,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         }
         this.readAdapter = readAdapter;
         if (readAdapter instanceof PoiListener) {
-            addPoiReadListener((PoiListener) readAdapter);
+            addPoiListener((PoiListener) readAdapter);
         }
         return this;
     }
