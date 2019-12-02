@@ -1,5 +1,10 @@
 # jpoi
 
+### 依赖
+```java
+implementation 'com.github.linyuzai:jpoi:0.1.0'
+```
+
 ### 基本用法
 ```java
 JExcel.xlsx().setWriteAdapter(WriteAdapter).write().to(File/OutputStream);//写
