@@ -55,7 +55,7 @@ public class CombinationValueGetter extends SupportValueGetter {
         if (fromRow != null) {
             picture = fromRow.get(c);
         }
-        Comment cellComment = cell.getCellComment();
+        Comment cellComment = cell == null ? null : cell.getCellComment();
         SupportComment comment = null;
         if (cellComment != null) {
             comment = new StringComment(cellComment.getString().getString());

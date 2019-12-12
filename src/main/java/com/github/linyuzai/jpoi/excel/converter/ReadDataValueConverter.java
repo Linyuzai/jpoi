@@ -22,8 +22,9 @@ public class ReadDataValueConverter implements ValueConverter {
 
     @Override
     public Object convertValue(int sheet, int row, int cell, Object value) {
-        if (((CombinationValue) value).getValue(null) instanceof Collection) {
-            for (Object o : ((Collection) ((CombinationValue) value).getValue(null))) {
+        Object cValue = ((CombinationValue) value).getValue(null);
+        if (cValue instanceof Collection) {
+            for (Object o : ((Collection) cValue)) {
                 if (!(o instanceof SupportPicture) && !(o instanceof SupportComment)) {
                     return getData(sheet, row, cell, o);
                 }

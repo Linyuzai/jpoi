@@ -14,6 +14,9 @@ public class SupportValueGetter extends DataFormatGetter {
 
     @Override
     public Object getValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper) {
+        if (cell == null) {
+            return null;
+        }
         Object cellData;
         switch (cell.getCellType()) {
             case FORMULA:
