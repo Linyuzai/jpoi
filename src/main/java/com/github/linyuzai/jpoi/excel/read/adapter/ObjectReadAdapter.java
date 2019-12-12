@@ -148,6 +148,29 @@ public class ObjectReadAdapter extends MapReadAdapter {
     public void readRowHeaderCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
         if (Map.class.isAssignableFrom(classes[s])) {
             super.readRowHeaderCell(value, s, r, c, sCount, rCount, cCount);
+        } else {
+            if (value != null) {
+                List<ReadField> readFields = getFieldDataMap().get(s).getReadFields();
+                if (value instanceof CombinationValue) {
+                    value = ReadDataValueConverter.getInstance().convertValue(s, r, c, value);
+                }
+                String title = String.valueOf(value);
+                int index1 = -1;
+                int index2 = -1;
+                for (int i = 0; i < readFields.size(); i++) {
+                    ReadField readField = readFields.get(i);
+                    if (title.equals(readField.getFieldDescription())) {
+                        if (c != i) {
+                            index1 = c;
+                            index2 = i;
+                            break;
+                        }
+                    }
+                }
+                if (index1 != -1) {
+                    Collections.swap(readFields, index1, index2);
+                }
+            }
         }
     }
 
