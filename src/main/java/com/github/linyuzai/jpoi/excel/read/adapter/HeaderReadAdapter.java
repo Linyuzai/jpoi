@@ -3,7 +3,7 @@ package com.github.linyuzai.jpoi.excel.read.adapter;
 public abstract class HeaderReadAdapter implements ReadAdapter {
 
     @Override
-    public void readCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+    public void readCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) throws Throwable {
         int headerCellCount = getHeaderCellCount(s, r);
         int headerRowCount = getHeaderRowCount(s);
         if (c < headerCellCount && r < headerRowCount) {
@@ -23,7 +23,7 @@ public abstract class HeaderReadAdapter implements ReadAdapter {
 
     public abstract void readRowHeaderCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount);
 
-    public abstract void readDataCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount);
+    public abstract void readDataCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) throws Throwable;
 
     public abstract int getHeaderRowCount(int sheet);
 

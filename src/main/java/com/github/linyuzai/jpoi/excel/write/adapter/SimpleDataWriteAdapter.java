@@ -13,7 +13,7 @@ public class SimpleDataWriteAdapter extends TitleIndexDataWriteAdapter {
     }
 
     @SafeVarargs
-    public <T> SimpleDataWriteAdapter(List<?> dataList, LambdaMethod<T, ?>... lambdaMethods) {
+    public <T> SimpleDataWriteAdapter(List<?> dataList, LambdaMethod<T, ?>... lambdaMethods) throws Throwable {
         addListData(dataList, lambdaMethods);
     }
 
@@ -26,7 +26,7 @@ public class SimpleDataWriteAdapter extends TitleIndexDataWriteAdapter {
     }
 
     @SafeVarargs
-    public <T> SimpleDataWriteAdapter(String sheetName, List<?> dataList, LambdaMethod<T, ?>... lambdaMethods) {
+    public <T> SimpleDataWriteAdapter(String sheetName, List<?> dataList, LambdaMethod<T, ?>... lambdaMethods) throws Throwable {
         addListData(sheetName, dataList, lambdaMethods);
     }
 }

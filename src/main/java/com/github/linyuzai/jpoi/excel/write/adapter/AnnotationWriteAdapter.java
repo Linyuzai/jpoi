@@ -37,26 +37,6 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
 
     public WriteField getWriteFieldIncludeAnnotation(Field field) {
         JExcelCellWriter fa = field.getAnnotation(JExcelCellWriter.class);
-        /*if (fa == null) {
-            WriteField writeField = new WriteField();
-            writeField.setFieldName(field.getName());
-            writeField.setFieldDescription(field.getName());
-            writeField.setAutoSize(true);
-            writeField.setWidth(0);
-            writeField.setOrder(Integer.MAX_VALUE);
-            return writeField;
-        } else {
-            String title = fa.title().trim();
-            AnnotationWriteField writeField = new AnnotationWriteField();
-            writeField.setFieldName(field.getName());
-            writeField.setFieldDescription(title.isEmpty() ? field.getName() : title);
-            writeField.setAutoSize(fa.autoSize());
-            writeField.setWidth(fa.width());
-            writeField.setMethod(false);
-            writeField.setOrder(fa.order());
-            reuseValueConverter(writeField, fa.valueConverter());
-            return writeField;
-        }*/
         WriteField writeField = getWriteFieldIncludeAnnotation(field.getName(), fa);
         if (writeField instanceof AnnotationWriteField) {
             ((AnnotationWriteField) writeField).setMethod(false);
@@ -66,29 +46,6 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
 
     public WriteField getWriteFieldIncludeAnnotation(Method method) {
         JExcelCellWriter ma = method.getAnnotation(JExcelCellWriter.class);
-        /*if (ma == null) {
-            WriteField writeField = new WriteField();
-            writeField.setFieldName(method.getName());
-            writeField.setFieldDescription(method.getName());
-            writeField.setAutoSize(true);
-            writeField.setWidth(0);
-            writeField.setOrder(Integer.MAX_VALUE);
-            return writeField;
-        } else {
-            String title = ma.title().trim();
-            AnnotationWriteField writeField = new AnnotationWriteField();
-            writeField.setFieldName(method.getName());
-            writeField.setFieldDescription(title.isEmpty() ? method.getName() : title);
-            writeField.setAutoSize(ma.autoSize());
-            writeField.setWidth(ma.width());
-            writeField.setMethod(true);
-            writeField.setOrder(ma.order());
-            if (method.getParameterTypes().length > 0) {
-                throw new RuntimeException("Only support no args method");
-            }
-            reuseValueConverter(writeField, ma.valueConverter());
-            return writeField;
-        }*/
         WriteField writeField = getWriteFieldIncludeAnnotation(method.getName(), ma);
         if (writeField instanceof AnnotationWriteField) {
             ((AnnotationWriteField) writeField).setMethod(true);
@@ -296,6 +253,19 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
 
         public boolean isPicture() {
             return pictureOfIndex >= 0 || (pictureOfField != null && !pictureOfField.isEmpty());
+        }
+
+        @Override
+        public AnnotationWriteField newField(String fieldDescription) {
+            AnnotationWriteField field = new AnnotationWriteField();
+            field.setFieldName(fieldDescription);
+            field.setFieldDescription(fieldDescription);
+            field.setOrder(getOrder());
+            field.setWidth(getWidth());
+            field.setAutoSize(isAutoSize());
+            field.setRowStyle(rowStyle);
+            field.setCellStyle(cellStyle);
+            return field;
         }
     }
 }

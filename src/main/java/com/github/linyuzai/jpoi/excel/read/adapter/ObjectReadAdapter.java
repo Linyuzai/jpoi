@@ -189,7 +189,7 @@ public class ObjectReadAdapter extends MapReadAdapter {
     }
 
     @Override
-    public void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+    public void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) throws Throwable {
         FieldData fieldData = getFieldDataMap().get(s);
         boolean toMap = fieldData != null && fieldData.isToMap();
         if (toMap) {
@@ -222,23 +222,19 @@ public class ObjectReadAdapter extends MapReadAdapter {
         }
     }
 
-    public void setFieldValue(Object cellContainer, Object value, int s, int r, int c, ReadField readField) {
+    public void setFieldValue(Object cellContainer, Object value, int s, int r, int c, ReadField readField) throws Throwable {
         ValueConverter valueConverter;
         Object val = value;
         String fieldName = readField.getFieldName();
         if (fieldName != null) {
-            try {
-                if (readField instanceof AnnotationReadField &&
-                        (valueConverter = ((AnnotationReadField) readField).getValueConverter()) != null &&
-                        valueConverter.supportValue(s, r, c, value)) {
-                    val = valueConverter.convertValue(s, r, c, value);
-                }
-                Field field = classes[s].getDeclaredField(fieldName);
-                field.setAccessible(true);
-                field.set(cellContainer, baseConvert(field.getType(), val));
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (readField instanceof AnnotationReadField &&
+                    (valueConverter = ((AnnotationReadField) readField).getValueConverter()) != null &&
+                    valueConverter.supportValue(s, r, c, value)) {
+                val = valueConverter.convertValue(s, r, c, value);
             }
+            Field field = classes[s].getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(cellContainer, baseConvert(field.getType(), val));
         }
     }
 

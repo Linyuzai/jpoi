@@ -38,6 +38,10 @@ public interface ValueConverter extends SupportOrder, SupportCache {
             return ReadPictureValueConverter.getInstance();
         } else if (cls == ReadSupportValueConverter.class) {
             return ReadSupportValueConverter.getInstance();
+        } else if (cls == StringNumberValueConverter.class) {
+            return StringNumberValueConverter.getInstance();
+        } else if (cls == StringValueConverter.class) {
+            return StringValueConverter.getInstance();
         } else if (cls == WriteCombinationValueConverter.class) {
             return WriteCombinationValueConverter.getInstance();
         } else if (cls == WriteCommentValueConverter.class) {

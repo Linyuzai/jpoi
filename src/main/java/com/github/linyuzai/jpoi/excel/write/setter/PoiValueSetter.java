@@ -15,7 +15,7 @@ public class PoiValueSetter implements ValueSetter {
     }
 
     @Override
-    public void setValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) {
+    public void setValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) throws Throwable {
         if (value == null) {
             return;
         }

@@ -31,7 +31,7 @@ public abstract class ListReadAdapter extends HeaderReadAdapter {
     }
 
     @Override
-    public void readDataCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+    public void readDataCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) throws Throwable {
         Map<Integer, Object> rowMap = readMap.computeIfAbsent(s, k -> createMap(s));
         Object cellContainer = rowMap.get(r);
         if (cellContainer == null) {
@@ -43,7 +43,7 @@ public abstract class ListReadAdapter extends HeaderReadAdapter {
 
     public abstract Object createContainer(Object value, int s, int r, int c, int sCount, int rCount, int cCount);
 
-    public abstract void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount);
+    public abstract void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) throws Throwable;
 
     @Override
     public int getHeaderRowCount(int sheet) {

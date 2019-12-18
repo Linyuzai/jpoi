@@ -9,7 +9,7 @@ import java.util.List;
 public class LambdaFieldDataWriteAdapter extends ListDataWriteAdapter {
 
     @SafeVarargs
-    public final <T> void addListData(ListData listData, LambdaMethod<T, ?>... lambdaMethods) {
+    public final <T> void addListData(ListData listData, LambdaMethod<T, ?>... lambdaMethods) throws Throwable {
         int sheet = getListDataList().size();
         getListDataList().add(sheet, listData);
         List<WriteField> writeFieldList = new ArrayList<>();
@@ -129,13 +129,8 @@ public class LambdaFieldDataWriteAdapter extends ListDataWriteAdapter {
          *
          * @return 实现类
          */
-        public Class<?> getImplClass() {
-            try {
-                return Class.forName(getImplClassName());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                return null;
-            }
+        public Class<?> getImplClass() throws Throwable {
+            return Class.forName(getImplClassName());
         }
 
         /**
@@ -171,9 +166,13 @@ public class LambdaFieldDataWriteAdapter extends ListDataWriteAdapter {
          */
         @Override
         public String toString() {
-            return String.format("%s -> %s::%s", getFunctionalInterfaceClassName(), getImplClass().getSimpleName(),
-                    implMethodName);
+            try {
+                return String.format("%s -> %s::%s", getFunctionalInterfaceClassName(), getImplClass().getSimpleName(),
+                        implMethodName);
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+                return null;
+            }
         }
-
     }
 }

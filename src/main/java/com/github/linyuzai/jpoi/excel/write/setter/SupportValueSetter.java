@@ -25,7 +25,7 @@ public class SupportValueSetter extends BaseTypeValueSetter {
     }
 
     @Override
-    public void setValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) {
+    public void setValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) throws Throwable {
         if (value instanceof SupportValue) {
             setSupportValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
             return;
@@ -33,7 +33,7 @@ public class SupportValueSetter extends BaseTypeValueSetter {
         super.setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
     }
 
-    public void setSupportValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) {
+    public void setSupportValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) throws Throwable {
         if (value instanceof SupportPicture) {
             SupportPicture.Location location = ((SupportPicture) value).getLocation();
             SupportPicture.Padding padding = ((SupportPicture) value).getPadding();
@@ -67,7 +67,7 @@ public class SupportValueSetter extends BaseTypeValueSetter {
         }
     }
 
-    private void createPicture(SupportPicture value, ClientAnchor anchor, Workbook workbook, Drawing<?> drawing) {
+    private void createPicture(SupportPicture value, ClientAnchor anchor, Workbook workbook, Drawing<?> drawing) throws Throwable {
         int type = value.getType();
         if (value instanceof ByteArrayPicture) {
             if (type < Workbook.PICTURE_TYPE_EMF || type > Workbook.PICTURE_TYPE_DIB) {
@@ -75,10 +75,9 @@ public class SupportValueSetter extends BaseTypeValueSetter {
             }
             drawing.createPicture(anchor, workbook.addPicture(((ByteArrayPicture) value).getBytes(), type));
         } else if (value instanceof BufferedImagePicture) {
-            try {
-                String format = value.getFormat();
-                if (format == null) {
-                    switch (type) {
+            String format = value.getFormat();
+            if (format == null) {
+                switch (type) {
                         /*case Workbook.PICTURE_TYPE_EMF:
                             format = "emf";
                             break;
@@ -88,33 +87,29 @@ public class SupportValueSetter extends BaseTypeValueSetter {
                         case Workbook.PICTURE_TYPE_PICT:
                             format = "pict";
                             break;*/
-                        case Workbook.PICTURE_TYPE_JPEG:
-                            format = "jpeg";
-                            break;
-                        case Workbook.PICTURE_TYPE_PNG:
-                            format = "png";
-                            break;
+                    case Workbook.PICTURE_TYPE_JPEG:
+                        format = "jpeg";
+                        break;
+                    case Workbook.PICTURE_TYPE_PNG:
+                        format = "png";
+                        break;
                         /*case Workbook.PICTURE_TYPE_DIB:
                             format = "dib";
                             break;*/
-                        default:
-                            throw new IllegalArgumentException("Picture type[" + type + "] is unsupported");
-                    }
+                    default:
+                        throw new IllegalArgumentException("Picture type[" + type + "] is unsupported");
                 }
-                ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
-                ImageIO.write(((BufferedImagePicture) value).getBufferedImage(), format, byteArrayOut);
-                createPicture(new ByteArrayPicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
-                        type, value.getFormat(), byteArrayOut.toByteArray()), anchor, workbook, drawing);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
+            ImageIO.write(((BufferedImagePicture) value).getBufferedImage(), format, byteArrayOut);
+            createPicture(new ByteArrayPicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
+                    type, value.getFormat(), byteArrayOut.toByteArray()), anchor, workbook, drawing);
         } else if (value instanceof FilePicture) {
-            try {
-                String format;
-                File file = ((FilePicture) value).getFile();
-                Path path = Paths.get(file.getAbsolutePath());
-                String mime = Files.probeContentType(path);
-                switch (mime) {
+            String format;
+            File file = ((FilePicture) value).getFile();
+            Path path = Paths.get(file.getAbsolutePath());
+            String mime = Files.probeContentType(path);
+            switch (mime) {
                     /*case "PICTURE_TYPE_EMF":
                         type = Workbook.PICTURE_TYPE_EMF;
                         break;
@@ -124,38 +119,36 @@ public class SupportValueSetter extends BaseTypeValueSetter {
                     case "PICTURE_TYPE_PICT":
                         type = Workbook.PICTURE_TYPE_PICT;
                         break;*/
-                    case "image/jpeg":
-                    case "image/pjpeg":
-                        type = Workbook.PICTURE_TYPE_JPEG;
-                        format = "jpeg";
-                        break;
-                    case "image/png":
-                        type = Workbook.PICTURE_TYPE_PNG;
-                        format = "png";
-                        break;
+                case "image/jpeg":
+                case "image/pjpeg":
+                    type = Workbook.PICTURE_TYPE_JPEG;
+                    format = "jpeg";
+                    break;
+                case "image/png":
+                    type = Workbook.PICTURE_TYPE_PNG;
+                    format = "png";
+                    break;
                     /*case "PICTURE_TYPE_DIB":
                         type = Workbook.PICTURE_TYPE_DIB;
                         break;*/
-                    default:
-                        throw new IllegalArgumentException("Mime type[" + type + "] is unsupported");
-                }
+                default:
+                    throw new IllegalArgumentException("Mime type[" + type + "] is unsupported");
+            }
                 /*BufferedImage bufferedImage = ImageIO.read(file);
                 createPicture(new BufferedImagePicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
                         type, value.getFormat(), bufferedImage), anchor, workbook, drawing);*/
-                FileInputStream fis = new FileInputStream(file);
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                byte[] b = new byte[1024];
-                int n;
-                while ((n = fis.read(b)) != -1) {
-                    bos.write(b, 0, n);
-                }
-                fis.close();
-                bos.close();
-                createPicture(new ByteArrayPicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
-                        type, format, bos.toByteArray()), anchor, workbook, drawing);
-            } catch (IOException e) {
-                e.printStackTrace();
+            FileInputStream fis = new FileInputStream(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] b = new byte[1024];
+            int n;
+            while ((n = fis.read(b)) != -1) {
+                bos.write(b, 0, n);
             }
+            fis.close();
+            bos.close();
+            createPicture(new ByteArrayPicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
+                    type, format, bos.toByteArray()), anchor, workbook, drawing);
+
         } else if (value instanceof Base64Picture) {
             String format = value.getFormat();
             String jpeg = "data:image/jpeg;base64,";

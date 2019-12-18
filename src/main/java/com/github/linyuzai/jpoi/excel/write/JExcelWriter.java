@@ -5,15 +5,13 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
+import java.util.List;
 
 public class JExcelWriter {
-    private Workbook workbook;
+    private JExcelTransfer.Values values;
 
-    public JExcelWriter(Workbook workbook) {
-        if (workbook == null) {
-            throw new RuntimeException("Workbook is null");
-        }
-        this.workbook = workbook;
+    public JExcelWriter(JExcelTransfer.Values values) {
+        this.values = values;
     }
 
     public void to(OutputStream outputStream) throws IOException {
@@ -21,6 +19,7 @@ public class JExcelWriter {
     }
 
     public void to(OutputStream outputStream, boolean close) throws IOException {
+        Workbook workbook = values.getWorkbook();
         workbook.write(outputStream);
         if (close) {
             workbook.close();
@@ -28,6 +27,7 @@ public class JExcelWriter {
     }
 
     public void to(File file) throws IOException {
+        Workbook workbook = values.getWorkbook();
         String path = file.getAbsolutePath();
         if (workbook instanceof HSSFWorkbook && !path.endsWith(".xls")) {
             file = new File(path + ".xls");
@@ -48,5 +48,9 @@ public class JExcelWriter {
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         to(fileOutputStream);
         fileOutputStream.close();
+    }
+
+    public List<Throwable> getThrowableRecords() {
+        return values.getThrowableRecords();
     }
 }

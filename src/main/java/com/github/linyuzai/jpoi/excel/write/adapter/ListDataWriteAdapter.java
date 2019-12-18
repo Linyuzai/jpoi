@@ -3,9 +3,8 @@ package com.github.linyuzai.jpoi.excel.write.adapter;
 import com.github.linyuzai.jpoi.excel.converter.WriteCommentValueConverter;
 import com.github.linyuzai.jpoi.excel.converter.WritePictureValueConverter;
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
-import com.github.linyuzai.jpoi.excel.listener.PoiListener;
+import com.github.linyuzai.jpoi.excel.listener.ExcelListener;
 import com.github.linyuzai.jpoi.excel.value.combination.ListCombinationValue;
-import com.github.linyuzai.jpoi.excel.value.combination.CombinationValue;
 import com.github.linyuzai.jpoi.excel.write.style.JCellStyle;
 import com.github.linyuzai.jpoi.excel.write.style.JRowStyle;
 import com.github.linyuzai.jpoi.util.ClassUtils;
@@ -17,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiListener {
+public class ListDataWriteAdapter extends AnnotationWriteAdapter implements ExcelListener {
 
     private List<ListData> listDataList = new ArrayList<>();
     private List<List<WriteField>> writeFieldList = new ArrayList<>();
@@ -56,6 +55,16 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements PoiL
 
     public List<List<WriteField>> getWriteFieldList() {
         return writeFieldList;
+    }
+
+    public WriteField getWriteField(int s, int c) {
+        return writeFieldList.get(s).get(c);
+    }
+
+    public void addWriteFieldOrdered(int sheet, WriteField writeField) {
+        final List<WriteField> writeFields = writeFieldList.get(sheet);
+        writeField.setOrder(writeFields.size());
+        writeFields.add(writeField);
     }
 
     public void cellFields(int sheet, List<?> dataList, Class<?> cls) {

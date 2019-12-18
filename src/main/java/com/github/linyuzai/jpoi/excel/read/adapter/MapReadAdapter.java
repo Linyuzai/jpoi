@@ -55,7 +55,7 @@ public class MapReadAdapter extends AnnotationReadAdapter {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+    public void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) throws Throwable {
         FieldData fieldData = fieldDataMap.get(s);
         if (fieldData != null) {
             ReadField readField = fieldData.getReadFieldMap().get(c);

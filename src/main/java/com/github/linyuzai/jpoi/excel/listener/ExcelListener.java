@@ -8,7 +8,7 @@ import org.apache.poi.ss.usermodel.*;
  * <p>
  * end is value set for write or get for read(end of handle)
  */
-public interface PoiListener extends SupportOrder {
+public interface ExcelListener extends SupportOrder {
 
     default void onWorkbookStart(Workbook workbook, CreationHelper creationHelper) {
 

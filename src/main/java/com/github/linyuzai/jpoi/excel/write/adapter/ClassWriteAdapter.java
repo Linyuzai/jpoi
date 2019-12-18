@@ -48,5 +48,15 @@ public abstract class ClassWriteAdapter extends HeaderWriteAdapter {
         public void setOrder(int order) {
             this.order = order;
         }
+
+        public WriteField newField(String fieldDescription) {
+            WriteField field = new WriteField();
+            field.setFieldName(fieldDescription);
+            field.setFieldDescription(fieldDescription);
+            field.setOrder(order);
+            field.setWidth(width);
+            field.setAutoSize(autoSize);
+            return field;
+        }
     }
 }

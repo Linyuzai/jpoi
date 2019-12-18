@@ -2,17 +2,18 @@ package com.github.linyuzai.jpoi.excel.read;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public class JExcelReader {
-    private Object value;
+    private JExcelAnalyzer.Values values;
 
-    public JExcelReader(Object value) {
-        this.value = value;
+    public JExcelReader(JExcelAnalyzer.Values values) {
+        this.values = values;
     }
 
     @SuppressWarnings("unchecked")
     public <T> T getValue() {
-        return (T) value;
+        return (T) values.getValue();
     }
 
     public Object first() {
@@ -20,10 +21,11 @@ public class JExcelReader {
     }
 
     public JExcelReader firstReader() {
-        return new JExcelReader(first());
+        return new JExcelReader(new JExcelAnalyzer.Values(first(), values.getThrowableRecords()));
     }
 
     public Object last() {
+        Object value = values.getValue();
         if (value instanceof Collection) {
             return index(((Collection) value).size() - 1);
         } else {
@@ -32,10 +34,11 @@ public class JExcelReader {
     }
 
     public JExcelReader lastReader() {
-        return new JExcelReader(last());
+        return new JExcelReader(new JExcelAnalyzer.Values(last(), values.getThrowableRecords()));
     }
 
     public Object index(int index) {
+        Object value = values.getValue();
         if (value instanceof Collection) {
             Iterator iterator = ((Collection) value).iterator();
             for (int i = 0; iterator.hasNext(); i++) {
@@ -51,6 +54,10 @@ public class JExcelReader {
     }
 
     public JExcelReader indexReader(int index) {
-        return new JExcelReader(index(index));
+        return new JExcelReader(new JExcelAnalyzer.Values(index(index), values.getThrowableRecords()));
+    }
+
+    public List<Throwable> getThrowableRecords() {
+        return values.getThrowableRecords();
     }
 }

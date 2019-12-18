@@ -14,7 +14,7 @@ public class CombinationValueSetter extends SupportValueSetter {
     }
 
     @Override
-    public void setValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) {
+    public void setValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) throws Throwable {
         if (value instanceof CombinationValue) {
             setCombinationValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
             return;
@@ -22,7 +22,7 @@ public class CombinationValueSetter extends SupportValueSetter {
         super.setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
     }
 
-    public void setCombinationValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) {
+    public void setCombinationValue(int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper, Object value) throws Throwable {
         if (value instanceof CombinationValue) {
             Object combinationValue = ((CombinationValue) value).getValue(null);
             if (combinationValue instanceof Collection) {
