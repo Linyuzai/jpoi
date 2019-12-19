@@ -343,8 +343,12 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements Exce
             if (writeField.isAutoSize()) {
                 sheet.autoSizeColumn(columnNum);
             }
-            if (writeField.getWidth() > 0) {
-                sheet.setColumnWidth(columnNum, writeField.getWidth() * 256 + 200);
+            if (writeField.getWidth() > 0) {//255*256
+                int w = writeField.getWidth() * 256 + 200;
+                if (w > 255 * 256) {
+                    w = 255 * 256;
+                }
+                sheet.setColumnWidth(columnNum, w);
             }
         }
     }
