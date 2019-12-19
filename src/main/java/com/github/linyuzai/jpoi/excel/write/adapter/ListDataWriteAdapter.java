@@ -154,7 +154,8 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements Exce
         if (illegalWriteFieldClass(cls)) {
             return Collections.emptyList();
         }
-        Field[] fields = cls.getDeclaredFields();
+        //Field[] fields = cls.getDeclaredFields();
+        List<Field> fields = ClassUtils.getFields(cls);
         List<WriteField> writeFieldList = new ArrayList<>();
         for (Field field : fields) {
             WriteField writeField = getWriteFieldIncludeAnnotation(field);

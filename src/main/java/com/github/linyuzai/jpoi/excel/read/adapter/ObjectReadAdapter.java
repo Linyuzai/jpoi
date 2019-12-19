@@ -42,9 +42,10 @@ public class ObjectReadAdapter extends MapReadAdapter {
         }
         List<ReadField> rfs = new ArrayList<>();
         List<Integer> indexes = new ArrayList<>();
-        Field[] fields = cls.getDeclaredFields();
-        for (int f = 0; f < fields.length; f++) {
-            ReadField frf = getReadFieldIncludeAnnotation(fields[f]);
+        //Field[] fields = cls.getDeclaredFields();
+        List<Field> fields = ClassUtils.getFields(cls);
+        for (int f = 0; f < fields.size(); f++) {
+            ReadField frf = getReadFieldIncludeAnnotation(fields.get(f));
             if (annotationOnly) {
                 if (frf instanceof AnnotationReadField) {
                     ((AnnotationReadField) frf).setToMap(toMap);
