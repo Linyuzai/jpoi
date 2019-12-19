@@ -230,7 +230,8 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements Exce
             }
         } else {
             try {
-                Field field = entity.getClass().getDeclaredField(fieldName);
+                //Field field = entity.getClass().getDeclaredField(fieldName);
+                Field field = ClassUtils.getField(entity.getClass(), fieldName);
                 field.setAccessible(true);
                 val = field.get(entity);
             } catch (NoSuchFieldException | IllegalAccessException e) {

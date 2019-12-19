@@ -31,4 +31,20 @@ public class ClassUtils {
         }
         return fields;
     }
+
+    public static Field getField(Class<?> cls, String name) throws NoSuchFieldException {
+        Field field = null;
+        while (cls != null) {//当父类为null的时候说明到达了最上层的父类(Object类).
+            try {
+                field = cls.getDeclaredField(name);
+                break;
+            } catch (NoSuchFieldException ignore) {
+                cls = cls.getSuperclass(); //得到父类,然后赋给自己
+            }
+        }
+        if (field == null) {
+            throw new NoSuchFieldException(name);
+        }
+        return field;
+    }
 }

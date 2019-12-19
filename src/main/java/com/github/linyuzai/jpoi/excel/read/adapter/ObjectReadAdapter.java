@@ -233,7 +233,8 @@ public class ObjectReadAdapter extends MapReadAdapter {
                     valueConverter.supportValue(s, r, c, value)) {
                 val = valueConverter.convertValue(s, r, c, value);
             }
-            Field field = classes[s].getDeclaredField(fieldName);
+            //Field field = classes[s].getDeclaredField(fieldName);
+            Field field = ClassUtils.getField(classes[s], fieldName);
             field.setAccessible(true);
             field.set(cellContainer, baseConvert(field.getType(), val));
         }
