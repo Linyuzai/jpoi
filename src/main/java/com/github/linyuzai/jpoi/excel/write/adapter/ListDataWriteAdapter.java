@@ -167,7 +167,8 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements Exce
                 writeFieldList.add(writeField);
             }
         }
-        Method[] methods = cls.getDeclaredMethods();
+        //Method[] methods = cls.getDeclaredMethods();
+        List<Method> methods = ClassUtils.getMethods(cls);
         for (Method method : methods) {
             WriteField writeField = getWriteFieldIncludeAnnotation(method);
             if (writeField instanceof AnnotationWriteField) {
@@ -222,7 +223,8 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements Exce
         Object val;
         if (writeField instanceof AnnotationWriteField && ((AnnotationWriteField) writeField).isMethod()) {
             try {
-                Method method = entity.getClass().getMethod(fieldName);
+                //Method method = entity.getClass().getDeclaredMethod(fieldName);
+                Method method = ClassUtils.getMethod(entity.getClass(), fieldName);
                 method.setAccessible(true);
                 val = method.invoke(entity);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {

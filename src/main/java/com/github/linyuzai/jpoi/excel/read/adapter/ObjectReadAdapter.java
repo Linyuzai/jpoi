@@ -158,6 +158,7 @@ public class ObjectReadAdapter extends MapReadAdapter {
                 String title = String.valueOf(value);
                 int index1 = -1;
                 int index2 = -1;
+
                 for (int i = 0; i < readFields.size(); i++) {
                     ReadField readField = readFields.get(i);
                     if (title.equals(readField.getFieldDescription())) {
@@ -199,7 +200,11 @@ public class ObjectReadAdapter extends MapReadAdapter {
             if (fieldData != null) {
                 //List<ReadField> rfs = new ArrayList<>(fieldData.getReadFieldMap().values());
                 //ReadField readField = rfs.get(c);
-                ReadField readField = fieldData.getReadFields().get(c);
+                List<ReadField> readFields = fieldData.getReadFields();
+                if (c >= readFields.size()) {
+                    return;
+                }
+                ReadField readField = readFields.get(c);
                 if (readField != null) {
                     setFieldValue(cellContainer, value, s, r, c, readField);
                     if (value instanceof CombinationValue ||
