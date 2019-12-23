@@ -18,7 +18,7 @@ public class StringNumberValueConverter implements ValueConverter {
         if (value instanceof Double) {
             return String.valueOf(((Double) value).longValue());
         } else {
-            return String.valueOf(value);
+            return StringValueConverter.getInstance().convertValue(sheet, row, cell, value);
         }
     }
 }

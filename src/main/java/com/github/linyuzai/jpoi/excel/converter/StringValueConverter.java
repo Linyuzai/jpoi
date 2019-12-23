@@ -15,6 +15,6 @@ public class StringValueConverter implements ValueConverter {
 
     @Override
     public Object convertValue(int sheet, int row, int cell, Object value) {
-        return String.valueOf(value);
+        return value == null ? null : String.valueOf(value);
     }
 }
