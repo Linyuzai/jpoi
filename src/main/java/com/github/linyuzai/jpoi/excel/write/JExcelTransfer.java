@@ -10,6 +10,7 @@ import com.github.linyuzai.jpoi.excel.write.adapter.WriteAdapter;
 import com.github.linyuzai.jpoi.excel.write.auto.AutoWorkbook;
 import com.github.linyuzai.jpoi.excel.write.setter.CombinationValueSetter;
 import com.github.linyuzai.jpoi.excel.write.setter.ValueSetter;
+import com.github.linyuzai.jpoi.exception.JPoiException;
 import org.apache.poi.ss.usermodel.*;
 
 import java.util.ArrayList;
@@ -72,19 +73,19 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
 
     public JExcelWriter write() {
         if (workbook == null) {
-            throw new RuntimeException("No source to transfer");
+            throw new JPoiException("No source to transfer");
         }
         if (writeAdapter == null) {
-            throw new RuntimeException("WriteAdapter is null");
+            throw new JPoiException("WriteAdapter is null");
         }
         if (valueConverters == null) {
-            throw new RuntimeException("ValueConverter is null");
+            throw new JPoiException("ValueConverter is null");
         }
         if (valueSetter == null) {
-            throw new RuntimeException("ValueSetter is null");
+            throw new JPoiException("ValueSetter is null");
         }
         if (excelListeners == null) {
-            throw new RuntimeException("PoiWriteListeners is null");
+            throw new JPoiException("PoiWriteListeners is null");
         }
         Workbook real = workbook;
         if (workbook instanceof AutoWorkbook) {

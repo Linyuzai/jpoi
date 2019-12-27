@@ -1,5 +1,9 @@
 package com.github.linyuzai.jpoi.excel.write.adapter;
 
+import com.github.linyuzai.jpoi.excel.converter.WriteCommentValueConverter;
+import com.github.linyuzai.jpoi.excel.value.combination.ListCombinationValue;
+import com.github.linyuzai.jpoi.excel.value.comment.StringComment;
+
 import java.util.List;
 
 public class TitleIndexDataWriteAdapter extends MultiListWriteAdapter {
@@ -44,7 +48,18 @@ public class TitleIndexDataWriteAdapter extends MultiListWriteAdapter {
         if (!titleEnable || cell < 0) {
             return null;
         }
-        return getWriteFieldList().get(sheet).get(cell).getFieldDescription();
+        WriteField writeField = getWriteFieldList().get(sheet).get(cell);
+        String fieldDescription = writeField.getFieldDescription();
+        if (writeField instanceof AnnotationWriteField) {
+            String tc = ((AnnotationWriteField) writeField).getTitleComment();
+            if (tc != null) {
+                ListCombinationValue combinationValue = new ListCombinationValue();
+                combinationValue.addValue(fieldDescription);
+                combinationValue.addValue(WriteCommentValueConverter.getInstance().convertValue(sheet, realRow, realCell, tc));
+                return combinationValue;
+            }
+        }
+        return fieldDescription;
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.github.linyuzai.jpoi.excel.read.JExcelAnalyzer;
 import com.github.linyuzai.jpoi.excel.read.sax.SaxWorkbook;
 import com.github.linyuzai.jpoi.excel.write.JExcelTransfer;
 import com.github.linyuzai.jpoi.excel.write.auto.AutoWorkbook;
+import com.github.linyuzai.jpoi.exception.JPoiException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -44,14 +45,14 @@ public class JExcel {
 
     public static JExcelTransfer of(Workbook workbook) {
         if (workbook == null) {
-            throw new RuntimeException("workbook is null");
+            throw new JPoiException("workbook is null");
         }
         return new JExcelTransfer(workbook);
     }
 
     public static JExcelAnalyzer from(Workbook workbook) {
         if (workbook == null) {
-            throw new RuntimeException("workbook is null");
+            throw new JPoiException("workbook is null");
         }
         return new JExcelAnalyzer(workbook);
     }

@@ -4,6 +4,7 @@ import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
 import com.github.linyuzai.jpoi.excel.handler.InterruptedExceptionHandler;
 import com.github.linyuzai.jpoi.excel.listener.ExcelListener;
+import com.github.linyuzai.jpoi.exception.JPoiException;
 import com.github.linyuzai.jpoi.support.SupportOrder;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -90,7 +91,7 @@ public abstract class JExcelBase<T extends JExcelBase<T>> {
             }
         }
         if (valueConverter == null) {
-            throw new RuntimeException("No value converter matched");
+            throw new JPoiException("No value converter matched");
         }
         return valueConverter.convertValue(s, r, c, o);
     }

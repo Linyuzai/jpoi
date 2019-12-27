@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.write.setter;
 
+import com.github.linyuzai.jpoi.exception.JPoiException;
 import org.apache.poi.ss.usermodel.*;
 
 import java.util.Calendar;
@@ -36,7 +37,7 @@ public class PoiValueSetter implements ValueSetter {
         } else if (value instanceof RichTextString) {
             cell.setCellValue((RichTextString) value);
         } else {
-            throw new IllegalArgumentException(value.getClass() + " is not support");
+            throw new JPoiException(value.getClass() + " is not support");
         }
     }
 }

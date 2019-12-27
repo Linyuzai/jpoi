@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.read.sax;
 
+import com.github.linyuzai.jpoi.exception.JPoiException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackagePart;
@@ -83,7 +84,7 @@ public class SaxWorkbook implements Workbook {
             }
             is.close();
         } catch (OpenXML4JException | SAXException e) {
-            throw new RuntimeException(e);
+            throw new JPoiException(e);
         }
     }
 
@@ -866,7 +867,7 @@ public class SaxWorkbook implements Workbook {
                         }
                         return;
                     } else {
-                        throw new IllegalStateException("Cell ref should be null only if there are only empty cells in the row; rowNum: " + rowNum);
+                        throw new JPoiException("Cell ref should be null only if there are only empty cells in the row; rowNum: " + rowNum);
                     }
                 }
 

@@ -7,6 +7,7 @@ import com.github.linyuzai.jpoi.excel.listener.ExcelListener;
 import com.github.linyuzai.jpoi.excel.value.combination.ListCombinationValue;
 import com.github.linyuzai.jpoi.excel.write.style.JCellStyle;
 import com.github.linyuzai.jpoi.excel.write.style.JRowStyle;
+import com.github.linyuzai.jpoi.exception.JPoiException;
 import com.github.linyuzai.jpoi.util.ClassUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -28,7 +29,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements Exce
 
     public ListDataWriteAdapter(List<ListData> listDataList) {
         if (listDataList == null) {
-            throw new RuntimeException("ListDataList is null");
+            throw new JPoiException("ListDataList is null");
         }
         for (ListData listData : listDataList) {
             addListData(listData);
@@ -41,7 +42,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements Exce
 
     public void addListData(ListData listData, Class<?> cls) {
         if (listData == null) {
-            throw new RuntimeException("ListData is null");
+            throw new JPoiException("ListData is null");
         }
         int sheet = listDataList.size();
         listDataList.add(sheet, listData);
@@ -122,7 +123,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements Exce
                     }
                 }
                 if (isComment && isPicture) {
-                    throw new IllegalArgumentException("Can't set comments and pictures at the same time on the field '" + writeField.getFieldName() + "'");
+                    throw new JPoiException("Can't set comments and pictures at the same time on the field '" + writeField.getFieldName() + "'");
                 } else if (isComment || isPicture) {
                     int index = commentIndex >= 0 ? commentIndex : pictureIndex;
                     if (index >= 0) {
@@ -228,7 +229,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements Exce
                 method.setAccessible(true);
                 val = method.invoke(entity);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
+                throw new JPoiException(e);
             }
         } else {
             try {
@@ -237,7 +238,7 @@ public class ListDataWriteAdapter extends AnnotationWriteAdapter implements Exce
                 field.setAccessible(true);
                 val = field.get(entity);
             } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException(e);
+                throw new JPoiException(e);
             }
         }
         ValueConverter valueConverter;

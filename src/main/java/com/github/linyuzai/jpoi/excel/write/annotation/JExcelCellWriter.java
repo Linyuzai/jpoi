@@ -57,6 +57,13 @@ public @interface JExcelCellWriter {
     String standbyFor() default "";
 
     /**
+     * title指定注释
+     *
+     * @return 注释
+     */
+    String titleComment() default "";
+
+    /**
      * @return 样式
      */
     JExcelCellStyle style() default @JExcelCellStyle;

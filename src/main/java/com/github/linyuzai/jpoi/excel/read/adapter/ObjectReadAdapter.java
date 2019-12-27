@@ -2,6 +2,7 @@ package com.github.linyuzai.jpoi.excel.read.adapter;
 
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.value.combination.CombinationValue;
+import com.github.linyuzai.jpoi.exception.JPoiException;
 import com.github.linyuzai.jpoi.util.ClassUtils;
 
 import java.lang.reflect.Field;
@@ -111,7 +112,7 @@ public class ObjectReadAdapter extends MapReadAdapter {
                 }
 
                 if (isComment && isPicture) {
-                    throw new IllegalArgumentException("Can't set comments and pictures at the same time on the field '" + readField.getFieldName() + "'");
+                    throw new JPoiException("Can't set comments and pictures at the same time on the field '" + readField.getFieldName() + "'");
                 } else if (isComment || isPicture) {
                     int index = commentIndex >= 0 ? commentIndex : pictureIndex;
                     if (index >= 0) {
@@ -151,7 +152,11 @@ public class ObjectReadAdapter extends MapReadAdapter {
             super.readRowHeaderCell(value, s, r, c, sCount, rCount, cCount);
         } else {
             if (value != null) {
-                List<ReadField> readFields = getFieldDataMap().get(s).getReadFields();
+                FieldData fd = getFieldDataMap().get(s);
+                if (fd == null) {
+                    return;
+                }
+                List<ReadField> readFields = fd.getReadFields();
                 if (value instanceof CombinationValue) {
                     value = ReadDataValueConverter.getInstance().convertValue(s, r, c, value);
                 }
@@ -186,7 +191,7 @@ public class ObjectReadAdapter extends MapReadAdapter {
         try {
             return classes[s].newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new JPoiException(e);
         }
     }
 
@@ -249,8 +254,18 @@ public class ObjectReadAdapter extends MapReadAdapter {
         if (value == null || value.getClass() == cls) {
             return value;
         }
-        if (cls.isPrimitive() || ClassUtils.isWrapClass(cls)) {
-            if (cls == int.class || cls == Integer.class) {
+        if (cls.isPrimitive() || ClassUtils.isWrapClass(cls) || cls == String.class) {
+            if (cls == String.class) {
+                if (value instanceof Double) {
+                    if ((double) value % 1.0 == 0) {
+                        return String.valueOf(((Double) value).longValue());
+                    } else {
+                        return String.valueOf(value);
+                    }
+                } else {
+                    return value.toString();
+                }
+            } else if (cls == int.class || cls == Integer.class) {
                 return Double.valueOf(value.toString()).intValue();
             } else if (cls == short.class || cls == Short.class) {
                 return Double.valueOf(value.toString()).shortValue();

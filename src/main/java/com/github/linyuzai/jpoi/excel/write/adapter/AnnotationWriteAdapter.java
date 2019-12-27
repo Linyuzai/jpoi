@@ -3,6 +3,7 @@ package com.github.linyuzai.jpoi.excel.write.adapter;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.write.annotation.*;
 import com.github.linyuzai.jpoi.excel.write.style.*;
+import com.github.linyuzai.jpoi.exception.JPoiException;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
 
 import java.lang.reflect.Field;
@@ -50,7 +51,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
         if (writeField instanceof AnnotationWriteField) {
             ((AnnotationWriteField) writeField).setMethod(true);
             if (method.getParameterTypes().length > 0) {
-                throw new RuntimeException("Only support no args method");
+                throw new JPoiException("Only support no args method");
             }
         }
         return writeField;
@@ -81,6 +82,8 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
             writeField.setPictureOfField(pictureField.isEmpty() ? null : pictureField);
             writeField.setPictureOfIndex(annotation.pictureOfIndex());
             //reuseValueConverter(writeField, annotation.valueConverter());
+            String titleComment = annotation.titleComment();
+            writeField.setTitleComment(titleComment.isEmpty() ? null : titleComment);
             writeField.setCellStyle(getCellStyle(annotation.style()));
             return writeField;
         }
@@ -163,6 +166,7 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
         private int commentOfIndex;
         private String pictureOfField;
         private int pictureOfIndex;
+        private String titleComment;
         private JRowStyle rowStyle;
         private JCellStyle cellStyle;
         private List<WriteField> combinationFields = new ArrayList<>();
@@ -221,6 +225,14 @@ public abstract class AnnotationWriteAdapter extends ClassWriteAdapter {
 
         public void setPictureOfIndex(int pictureOfIndex) {
             this.pictureOfIndex = pictureOfIndex;
+        }
+
+        public String getTitleComment() {
+            return titleComment;
+        }
+
+        public void setTitleComment(String titleComment) {
+            this.titleComment = titleComment;
         }
 
         public JRowStyle getRowStyle() {

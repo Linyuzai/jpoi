@@ -1,5 +1,7 @@
 package com.github.linyuzai.jpoi.excel.write.adapter;
 
+import com.github.linyuzai.jpoi.exception.JPoiException;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class MultiListWriteAdapter extends LambdaFieldDataWriteAdapter {
 
     public MultiListWriteAdapter(List<List<?>> dataList) {
         if (dataList == null) {
-            throw new RuntimeException("DataList is null");
+            throw new JPoiException("DataList is null");
         }
         for (List<?> data : dataList) {
             addListData(data);
@@ -36,7 +38,7 @@ public class MultiListWriteAdapter extends LambdaFieldDataWriteAdapter {
 
     public void addListData(String sheetName, List<?> dataList, Class<?> cls) {
         if (dataList == null) {
-            throw new RuntimeException("DataList is null");
+            throw new JPoiException("DataList is null");
         }
         ListData listData = new ListData();
         listData.setDataList(dataList);

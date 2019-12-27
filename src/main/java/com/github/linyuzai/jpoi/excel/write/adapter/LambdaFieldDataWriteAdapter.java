@@ -1,5 +1,7 @@
 package com.github.linyuzai.jpoi.excel.write.adapter;
 
+import com.github.linyuzai.jpoi.exception.JPoiException;
+
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -21,7 +23,7 @@ public class LambdaFieldDataWriteAdapter extends ListDataWriteAdapter {
             try {
                 method = cls.getMethod(methodName);
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
+                throw new JPoiException(e);
             }
             WriteField writeField = getWriteFieldIncludeAnnotation(method);
             if (writeField instanceof AnnotationWriteField) {
@@ -85,7 +87,7 @@ public class LambdaFieldDataWriteAdapter extends ListDataWriteAdapter {
          */
         public static SerializedLambda resolve(Object lambda) {
             if (!lambda.getClass().isSynthetic()) {
-                throw new RuntimeException("该方法仅能传入 lambda 表达式产生的合成类");
+                throw new JPoiException("该方法仅能传入 lambda 表达式产生的合成类");
             }
             try (ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(serialize(lambda))) {
                 @Override
@@ -96,7 +98,7 @@ public class LambdaFieldDataWriteAdapter extends ListDataWriteAdapter {
             }) {
                 return (SerializedLambda) objIn.readObject();
             } catch (ClassNotFoundException | IOException e) {
-                throw new RuntimeException("This is impossible to happen", e);
+                throw new JPoiException("This is impossible to happen", e);
             }
         }
 
@@ -109,7 +111,7 @@ public class LambdaFieldDataWriteAdapter extends ListDataWriteAdapter {
                     oos.writeObject(object);
                     oos.flush();
                 } catch (IOException e) {
-                    throw new IllegalArgumentException("Failed to serialize object of type: " + object.getClass(), e);
+                    throw new JPoiException("Failed to serialize object of type: " + object.getClass(), e);
                 }
                 return baos.toByteArray();
             }

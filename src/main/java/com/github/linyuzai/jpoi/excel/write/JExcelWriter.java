@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.write;
 
+import com.github.linyuzai.jpoi.exception.JPoiException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -37,12 +38,12 @@ public class JExcelWriter {
         File p = file.getParentFile();
         if (!p.exists()) {
             if (!p.mkdirs()) {
-                throw new RuntimeException(p.getAbsolutePath() + " mkdirs failure");
+                throw new JPoiException(p.getAbsolutePath() + " mkdirs failure");
             }
         }
         if (!file.exists()) {
             if (!file.createNewFile()) {
-                throw new RuntimeException(file.getAbsolutePath() + " create failure");
+                throw new JPoiException(file.getAbsolutePath() + " create failure");
             }
         }
         FileOutputStream fileOutputStream = new FileOutputStream(file);

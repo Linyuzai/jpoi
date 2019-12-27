@@ -6,6 +6,7 @@ import com.github.linyuzai.jpoi.excel.value.comment.SupportComment;
 import com.github.linyuzai.jpoi.excel.value.error.SupportErrorValue;
 import com.github.linyuzai.jpoi.excel.value.formula.SupportFormula;
 import com.github.linyuzai.jpoi.excel.value.picture.*;
+import com.github.linyuzai.jpoi.exception.JPoiException;
 import com.github.linyuzai.jpoi.support.SupportValue;
 import org.apache.poi.ss.usermodel.*;
 
@@ -71,7 +72,7 @@ public class SupportValueSetter extends BaseTypeValueSetter {
         int type = value.getType();
         if (value instanceof ByteArrayPicture) {
             if (type < Workbook.PICTURE_TYPE_EMF || type > Workbook.PICTURE_TYPE_DIB) {
-                throw new IllegalArgumentException("Picture type[" + type + "] is unsupported");
+                throw new JPoiException("Picture type[" + type + "] is unsupported");
             }
             drawing.createPicture(anchor, workbook.addPicture(((ByteArrayPicture) value).getBytes(), type));
         } else if (value instanceof BufferedImagePicture) {
@@ -97,7 +98,7 @@ public class SupportValueSetter extends BaseTypeValueSetter {
                             format = "dib";
                             break;*/
                     default:
-                        throw new IllegalArgumentException("Picture type[" + type + "] is unsupported");
+                        throw new JPoiException("Picture type[" + type + "] is unsupported");
                 }
             }
             ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
@@ -132,7 +133,7 @@ public class SupportValueSetter extends BaseTypeValueSetter {
                         type = Workbook.PICTURE_TYPE_DIB;
                         break;*/
                 default:
-                    throw new IllegalArgumentException("Mime type[" + type + "] is unsupported");
+                    throw new JPoiException("Mime type[" + type + "] is unsupported");
             }
                 /*BufferedImage bufferedImage = ImageIO.read(file);
                 createPicture(new BufferedImagePicture(value.getPadding(), value.getLocation(), value.getAnchorType(),
