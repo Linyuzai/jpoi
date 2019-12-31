@@ -4,6 +4,8 @@ import com.github.linyuzai.jpoi.excel.JExcelBase;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
 import com.github.linyuzai.jpoi.excel.listener.ExcelListener;
+import com.github.linyuzai.jpoi.excel.processor.PostProcessor;
+import com.github.linyuzai.jpoi.excel.value.post.PostValue;
 import com.github.linyuzai.jpoi.excel.write.adapter.SimpleDataWriteAdapter;
 import com.github.linyuzai.jpoi.excel.write.adapter.TitleIndexDataWriteAdapter;
 import com.github.linyuzai.jpoi.excel.write.adapter.WriteAdapter;
@@ -72,20 +74,12 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
     }
 
     public JExcelWriter write() {
-        if (workbook == null) {
-            throw new JPoiException("No source to transfer");
-        }
+        check();
         if (writeAdapter == null) {
             throw new JPoiException("WriteAdapter is null");
         }
-        if (valueConverters == null) {
-            throw new JPoiException("ValueConverter is null");
-        }
         if (valueSetter == null) {
             throw new JPoiException("ValueSetter is null");
-        }
-        if (excelListeners == null) {
-            throw new JPoiException("PoiWriteListeners is null");
         }
         Workbook real = workbook;
         if (workbook instanceof AutoWorkbook) {
@@ -95,11 +89,13 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
             }
             real = AutoWorkbook.getWorkbook(count);
         }
-        return new JExcelWriter(transfer(real, writeAdapter, excelListeners, valueConverters, valueSetter, excelExceptionHandler));
+        return new JExcelWriter(transfer(real, writeAdapter, excelListeners, valueConverters,
+                valueSetter, postProcessor, excelExceptionHandler));
     }
 
     private static Values transfer(Workbook workbook, WriteAdapter writeAdapter, List<ExcelListener> excelListeners,
-                                   List<ValueConverter> valueConverters, ValueSetter valueSetter, ExcelExceptionHandler exceptionHandler) {
+                                   List<ValueConverter> valueConverters, ValueSetter valueSetter,
+                                   PostProcessor postProcessor, ExcelExceptionHandler exceptionHandler) {
         /*real = workbook;
         if (workbook instanceof AutoWorkbook) {
             int count = 0;
@@ -109,6 +105,7 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
             real = AutoWorkbook.getWorkbook(count);
         }*/
         boolean forceBreak = false;
+        List<PostValue> postValues = new ArrayList<>();
         List<Throwable> throwableRecords = new ArrayList<>();
         for (int w = 0; w < 1; w++) {
             CreationHelper creationHelper = workbook.getCreationHelper();
@@ -143,7 +140,13 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
                         try {
                             Object o = writeAdapter.getData(s, r, c);
                             Object value = convertValue(valueConverters, s, r, c, o);
-                            valueSetter.setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
+                            if (value instanceof PostValue) {
+                                PostValue postValue = (PostValue) value;
+                                fillPostValue(postValue, s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
+                                postValues.add(postValue);
+                            } else {
+                                valueSetter.setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
+                            }
                         } catch (Throwable e) {
                             throwableRecords.add(e);
                             forceBreak = exceptionHandler.handle(s, r, c, cell, row, sheet, workbook, e);
@@ -174,6 +177,29 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
             }
             for (ExcelListener excelListener : excelListeners) {
                 excelListener.onWorkbookEnd(workbook, creationHelper);
+            }
+        }
+        List<Throwable> postThrowableRecords = postProcessor.processPost(postValues);
+        for (Throwable postThrowableRecord : postThrowableRecords) {
+            exceptionHandler.handle(-1, -1, -1, null, null, null, workbook, postThrowableRecord);
+        }
+        throwableRecords.addAll(postThrowableRecords);
+        for (PostValue pv : postValues) {
+            int s = pv.getSheetIndex();
+            int r = pv.getRowIndex();
+            int c = pv.getCellIndex();
+            Cell cell = pv.getCell();
+            Row row = pv.getRow();
+            Sheet sheet = pv.getSheet();
+            try {
+                valueSetter.setValue(s, r, c, cell, row, sheet,
+                        pv.getDrawing(), workbook, pv.getCreationHelper(), pv.getValue());
+            } catch (Throwable e) {
+                throwableRecords.add(e);
+                forceBreak = exceptionHandler.handle(s, r, c, cell, row, sheet, workbook, e);
+            }
+            if (forceBreak) {
+                break;
             }
         }
         return new Values(workbook, throwableRecords);

@@ -4,9 +4,12 @@ import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
 import com.github.linyuzai.jpoi.excel.handler.InterruptedExceptionHandler;
 import com.github.linyuzai.jpoi.excel.listener.ExcelListener;
+import com.github.linyuzai.jpoi.excel.processor.EmptyPostProcessor;
+import com.github.linyuzai.jpoi.excel.processor.PostProcessor;
+import com.github.linyuzai.jpoi.excel.value.post.PostValue;
 import com.github.linyuzai.jpoi.exception.JPoiException;
 import com.github.linyuzai.jpoi.support.SupportOrder;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,12 +21,14 @@ public abstract class JExcelBase<T extends JExcelBase<T>> {
     protected Workbook workbook;
     protected List<ExcelListener> excelListeners;
     protected List<ValueConverter> valueConverters;
+    protected PostProcessor postProcessor;
     protected ExcelExceptionHandler excelExceptionHandler;
 
     public JExcelBase(Workbook workbook) {
         this.workbook = workbook;
         this.excelListeners = new ArrayList<>();
         this.valueConverters = new ArrayList<>();
+        this.postProcessor = EmptyPostProcessor.getInstance();
         this.excelExceptionHandler = InterruptedExceptionHandler.getInstance();
     }
 
@@ -73,6 +78,15 @@ public abstract class JExcelBase<T extends JExcelBase<T>> {
         return (T) this;
     }
 
+    public PostProcessor getPostProcessor() {
+        return postProcessor;
+    }
+
+    public T setPostProcessor(PostProcessor postProcessor) {
+        this.postProcessor = postProcessor;
+        return (T) this;
+    }
+
     public ExcelExceptionHandler getExceptionHandler() {
         return excelExceptionHandler;
     }
@@ -80,6 +94,35 @@ public abstract class JExcelBase<T extends JExcelBase<T>> {
     public T setExceptionHandler(ExcelExceptionHandler excelExceptionHandler) {
         this.excelExceptionHandler = excelExceptionHandler;
         return (T) this;
+    }
+
+    public void check() {
+        if (workbook == null) {
+            throw new JPoiException("No source to transfer");
+        }
+        if (excelListeners == null) {
+            throw new JPoiException("ExcelListeners is null");
+        }
+        if (valueConverters == null) {
+            throw new JPoiException("ValueConverter is null");
+        }
+        if (postProcessor == null) {
+            throw new JPoiException("PostProcessor is null");
+        }
+        if (excelExceptionHandler == null) {
+            throw new JPoiException("ExcelExceptionHandler is null");
+        }
+    }
+
+    public static void fillPostValue(PostValue postValue, int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper) {
+        postValue.setSheet(sheet);
+        postValue.setRow(row);
+        postValue.setCell(cell);
+        postValue.setSheetIndex(s);
+        postValue.setRowIndex(r);
+        postValue.setCellIndex(c);
+        postValue.setDrawing(drawing);
+        postValue.setCreationHelper(creationHelper);
     }
 
     public static Object convertValue(List<ValueConverter> valueConverters, int s, int r, int c, Object o) {

@@ -4,12 +4,14 @@ import com.github.linyuzai.jpoi.excel.JExcelBase;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
 import com.github.linyuzai.jpoi.excel.listener.ExcelListener;
+import com.github.linyuzai.jpoi.excel.processor.PostProcessor;
 import com.github.linyuzai.jpoi.excel.read.adapter.DirectListReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.MapReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.ObjectReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.ReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.getter.CombinationValueGetter;
 import com.github.linyuzai.jpoi.excel.read.getter.ValueGetter;
+import com.github.linyuzai.jpoi.excel.value.post.PostValue;
 import com.github.linyuzai.jpoi.exception.JPoiException;
 import org.apache.poi.ss.usermodel.*;
 
@@ -80,31 +82,23 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
     }
 
     public JExcelReader read(boolean close) throws IOException {
-        if (workbook == null) {
-            throw new JPoiException("No source to transfer");
-        }
+        check();
         if (readAdapter == null) {
             throw new JPoiException("ReadAdapter is null");
-        }
-        if (valueConverters == null) {
-            throw new JPoiException("ValueConverter is null");
         }
         if (valueGetter == null) {
             throw new JPoiException("ValueGetter is null");
         }
-        if (excelListeners == null) {
-            throw new JPoiException("Listeners is null");
-        }
-        if (excelExceptionHandler == null) {
-            throw new JPoiException("ExceptionHandler is null");
-        }
-        return new JExcelReader(analyze(workbook, readAdapter, excelListeners, valueConverters, valueGetter, excelExceptionHandler, close));
+        return new JExcelReader(analyze(workbook, readAdapter, excelListeners, valueConverters,
+                valueGetter, postProcessor, excelExceptionHandler, close));
     }
 
     private static Values analyze(Workbook workbook, ReadAdapter readAdapter, List<ExcelListener> listeners,
                                   List<ValueConverter> valueConverters, ValueGetter valueGetter,
-                                  ExcelExceptionHandler exceptionHandler, boolean close) throws IOException {
+                                  PostProcessor postProcessor, ExcelExceptionHandler exceptionHandler,
+                                  boolean close) throws IOException {
         boolean forceBreak = false;
+        List<PostValue> postValues = new ArrayList<>();
         List<Throwable> throwableRecords = new ArrayList<>();
         for (int w = 0; w < 1; w++) {
             CreationHelper creationHelper = workbook.getCreationHelper();
@@ -133,7 +127,13 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                         try {
                             Object o = valueGetter.getValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
                             Object cellValue = convertValue(valueConverters, s, r, c, o);
-                            readAdapter.readCell(cellValue, s, r, c, sCount, rCount, cCount);
+                            if (cellValue instanceof PostValue) {
+                                PostValue postValue = (PostValue) cellValue;
+                                fillPostValue(postValue, s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
+                                postValues.add(postValue);
+                            } else {
+                                readAdapter.readCell(cellValue, s, r, c, sCount, rCount, cCount);
+                            }
                         } catch (Throwable e) {
                             throwableRecords.add(e);
                             forceBreak = exceptionHandler.handle(s, r, c, cell, row, sheet, workbook, e);
@@ -164,6 +164,28 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
             }
             for (ExcelListener excelListener : listeners) {
                 excelListener.onWorkbookEnd(workbook, creationHelper);
+            }
+        }
+        List<Throwable> postThrowableRecords = postProcessor.processPost(postValues);
+        for (Throwable postThrowableRecord : postThrowableRecords) {
+            exceptionHandler.handle(-1, -1, -1, null, null, null, workbook, postThrowableRecord);
+        }
+        throwableRecords.addAll(postThrowableRecords);
+        for (PostValue pv : postValues) {
+            int s = pv.getSheetIndex();
+            int r = pv.getRowIndex();
+            int c = pv.getCellIndex();
+            Cell cell = pv.getCell();
+            Row row = pv.getRow();
+            Sheet sheet = pv.getSheet();
+            try {
+                readAdapter.readCell(pv.getValue(), s, r, c, -1, -1, -1);
+            } catch (Throwable e) {
+                throwableRecords.add(e);
+                forceBreak = exceptionHandler.handle(s, r, c, cell, row, sheet, workbook, e);
+            }
+            if (forceBreak) {
+                break;
             }
         }
         if (close) {
