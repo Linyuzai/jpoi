@@ -129,7 +129,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                             Object cellValue = convertValue(valueConverters, s, r, c, o);
                             if (cellValue instanceof PostValue) {
                                 PostValue postValue = (PostValue) cellValue;
-                                fillPostValue(postValue, s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
+                                fillPostValue(postValue, w, s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
                                 postValues.add(postValue);
                             } else {
                                 readAdapter.readCell(cellValue, s, r, c, sCount, rCount, cCount);
@@ -166,11 +166,7 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                 excelListener.onWorkbookEnd(workbook, creationHelper);
             }
         }
-        List<Throwable> postThrowableRecords = postProcessor.processPost(postValues);
-        for (Throwable postThrowableRecord : postThrowableRecords) {
-            exceptionHandler.handle(-1, -1, -1, null, null, null, workbook, postThrowableRecord);
-        }
-        throwableRecords.addAll(postThrowableRecords);
+        throwableRecords.addAll(postProcessor.processPost(postValues, exceptionHandler));
         for (PostValue pv : postValues) {
             int s = pv.getSheetIndex();
             int r = pv.getRowIndex();

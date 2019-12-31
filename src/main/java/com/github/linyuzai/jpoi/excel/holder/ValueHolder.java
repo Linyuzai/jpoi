@@ -5,9 +5,11 @@ import org.apache.poi.ss.usermodel.*;
 
 public class ValueHolder<S, V> {
 
+    private int workbookIndex;
     private int sheetIndex;
     private int rowIndex;
     private int cellIndex;
+    private Workbook workbook;
     private Sheet sheet;
     private Row row;
     private Cell cell;
@@ -16,6 +18,14 @@ public class ValueHolder<S, V> {
     private S source;
     private V value;
     private ValueConverter valueConverter;
+
+    public int getWorkbookIndex() {
+        return workbookIndex;
+    }
+
+    public void setWorkbookIndex(int workbookIndex) {
+        this.workbookIndex = workbookIndex;
+    }
 
     public int getSheetIndex() {
         return sheetIndex;
@@ -39,6 +49,14 @@ public class ValueHolder<S, V> {
 
     public void setCellIndex(int cellIndex) {
         this.cellIndex = cellIndex;
+    }
+
+    public Workbook getWorkbook() {
+        return workbook;
+    }
+
+    public void setWorkbook(Workbook workbook) {
+        this.workbook = workbook;
     }
 
     public Sheet getSheet() {

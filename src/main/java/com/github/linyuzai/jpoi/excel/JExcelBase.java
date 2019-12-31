@@ -114,10 +114,12 @@ public abstract class JExcelBase<T extends JExcelBase<T>> {
         }
     }
 
-    public static void fillPostValue(PostValue postValue, int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper) {
+    public static void fillPostValue(PostValue postValue,int w, int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper) {
+        postValue.setWorkbook(workbook);
         postValue.setSheet(sheet);
         postValue.setRow(row);
         postValue.setCell(cell);
+        postValue.setWorkbookIndex(w);
         postValue.setSheetIndex(s);
         postValue.setRowIndex(r);
         postValue.setCellIndex(c);

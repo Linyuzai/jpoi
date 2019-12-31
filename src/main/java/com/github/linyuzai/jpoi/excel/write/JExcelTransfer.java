@@ -142,7 +142,7 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
                             Object value = convertValue(valueConverters, s, r, c, o);
                             if (value instanceof PostValue) {
                                 PostValue postValue = (PostValue) value;
-                                fillPostValue(postValue, s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
+                                fillPostValue(postValue, w, s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
                                 postValues.add(postValue);
                             } else {
                                 valueSetter.setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
@@ -179,11 +179,7 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
                 excelListener.onWorkbookEnd(workbook, creationHelper);
             }
         }
-        List<Throwable> postThrowableRecords = postProcessor.processPost(postValues);
-        for (Throwable postThrowableRecord : postThrowableRecords) {
-            exceptionHandler.handle(-1, -1, -1, null, null, null, workbook, postThrowableRecord);
-        }
-        throwableRecords.addAll(postThrowableRecords);
+        throwableRecords.addAll(postProcessor.processPost(postValues, exceptionHandler));
         for (PostValue pv : postValues) {
             int s = pv.getSheetIndex();
             int r = pv.getRowIndex();

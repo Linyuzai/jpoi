@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.processor;
 
+import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
 import com.github.linyuzai.jpoi.excel.value.post.PostValue;
 
 import java.util.Collection;
@@ -15,7 +16,7 @@ public class EmptyPostProcessor implements PostProcessor {
     }
 
     @Override
-    public List<Throwable> processPost(Collection<? extends PostValue> postValues) {
+    public List<Throwable> processPost(Collection<? extends PostValue> postValues, ExcelExceptionHandler handler) {
         return Collections.emptyList();
     }
 }

@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.processor;
 
+import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
 import com.github.linyuzai.jpoi.excel.value.post.PostValue;
 
 import java.util.Collection;
@@ -17,7 +18,7 @@ public abstract class ThreadPoolPostProcessor implements PostProcessor {
     }
 
     @Override
-    public List<Throwable> processPost(Collection<? extends PostValue> postValues) {
+    public List<Throwable> processPost(Collection<? extends PostValue> postValues, ExcelExceptionHandler handler) {
         List<Throwable> throwableRecords = new Vector<>();
         CountDownLatch cdl = new CountDownLatch(getCountDownLatchCount(postValues));
         for (PostValue postValue : postValues) {
@@ -25,6 +26,8 @@ public abstract class ThreadPoolPostProcessor implements PostProcessor {
                 try {
                     processPostValue(postValue);
                 } catch (Throwable e) {
+                    handler.handle(postValue.getSheetIndex(), postValue.getRowIndex(), postValue.getCellIndex(),
+                            postValue.getCell(), postValue.getRow(), postValue.getSheet(), postValue.getWorkbook(), e);
                     throwableRecords.add(e);
                 } finally {
                     cdl.countDown();
@@ -34,6 +37,7 @@ public abstract class ThreadPoolPostProcessor implements PostProcessor {
         try {
             cdl.await();
         } catch (InterruptedException e) {
+            handler.handle(-1, -1, -1, null, null, null, null, e);
             throwableRecords.add(e);
         }
         return throwableRecords;

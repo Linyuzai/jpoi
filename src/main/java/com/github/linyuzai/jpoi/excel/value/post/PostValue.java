@@ -5,6 +5,10 @@ import org.apache.poi.ss.usermodel.*;
 
 public interface PostValue {
 
+    int getWorkbookIndex();
+
+    void setWorkbookIndex(int workbookIndex);
+
     int getSheetIndex();
 
     void setSheetIndex(int sheetIndex);
@@ -16,6 +20,10 @@ public interface PostValue {
     int getCellIndex();
 
     void setCellIndex(int cellIndex);
+
+    Workbook getWorkbook();
+
+    void setWorkbook(Workbook workbook);
 
     Sheet getSheet();
 
