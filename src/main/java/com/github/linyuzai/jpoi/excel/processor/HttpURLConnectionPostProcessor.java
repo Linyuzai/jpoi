@@ -13,6 +13,10 @@ import java.util.concurrent.ExecutorService;
 
 public class HttpURLConnectionPostProcessor extends ThreadPoolPostProcessor {
 
+    public HttpURLConnectionPostProcessor() {
+        super();
+    }
+
     public HttpURLConnectionPostProcessor(ExecutorService executorService) {
         super(executorService);
     }

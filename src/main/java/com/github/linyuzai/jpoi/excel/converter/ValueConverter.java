@@ -24,6 +24,8 @@ public interface ValueConverter extends SupportOrder, SupportCache {
             return NullValueConverter.getInstance();
         } else if (cls == PoiValueConverter.class) {
             return PoiValueConverter.getInstance();
+        } else if (cls == PostValueConverter.class) {
+            return PostValueConverter.getInstance();
         } else if (cls == ReadBase64PictureValueConverter.class) {
             return ReadBase64PictureValueConverter.getInstance();
         } else if (cls == ReadCommentValueConverter.class) {
@@ -38,6 +40,8 @@ public interface ValueConverter extends SupportOrder, SupportCache {
             return ReadPictureValueConverter.getInstance();
         } else if (cls == ReadSupportValueConverter.class) {
             return ReadSupportValueConverter.getInstance();
+        } else if (cls == ReadUrlPictureValueConverter.class) {
+            return ReadUrlPictureValueConverter.getInstance();
         } else if (cls == StringNumberValueConverter.class) {
             return StringNumberValueConverter.getInstance();
         } else if (cls == StringValueConverter.class) {
@@ -54,6 +58,8 @@ public interface ValueConverter extends SupportOrder, SupportCache {
             return WritePictureValueConverter.getInstance();
         } else if (cls == WriteSupportValueConverter.class) {
             return WriteSupportValueConverter.getInstance();
+        } else if (cls == WriteUrlPictureValueConverter.class) {
+            return WriteUrlPictureValueConverter.getInstance();
         } else if (ValueConverter.cache.containsKey(cls.getName())) {
             return ValueConverter.cache.get(cls.getName());
         } else {

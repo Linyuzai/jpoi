@@ -28,6 +28,8 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
         super(workbook);
         setValueGetter(CombinationValueGetter.getInstance());
         addValueConverter(NullValueConverter.getInstance());
+        addValueConverter(ReadFormulaValueConverter.getInstance());
+        addValueConverter(PostValueConverter.getInstance());
         //addValueConverter(WritePictureValueConverter.getInstance());
         addValueConverter(PoiValueConverter.getInstance());
         addValueConverter(ReadSupportValueConverter.getInstance());
@@ -108,6 +110,9 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
             int sCount = workbook.getNumberOfSheets();
             for (int s = 0; s < sCount; s++) {
                 Sheet sheet = workbook.getSheetAt(s);
+                if (sheet == null) {
+                    continue;
+                }
                 Drawing<?> drawing = sheet.getDrawingPatriarch();
                 for (ExcelListener excelListener : listeners) {
                     excelListener.onSheetStart(s, sheet, drawing, workbook);
@@ -115,24 +120,29 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                 int rCount = sheet.getLastRowNum() + 1;
                 for (int r = 0; r < rCount; r++) {
                     Row row = sheet.getRow(r);
+                    if (row == null) {
+                        continue;
+                    }
                     for (ExcelListener excelListener : listeners) {
                         excelListener.onRowStart(r, s, row, sheet, workbook);
                     }
                     int cCount = row.getLastCellNum();
                     for (int c = 0; c < cCount; c++) {
                         Cell cell = row.getCell(c);
+                        if (cell == null) {
+                            continue;
+                        }
                         for (ExcelListener excelListener : listeners) {
                             excelListener.onCellStart(c, r, s, cell, row, sheet, workbook);
                         }
                         try {
                             Object o = valueGetter.getValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
                             Object cellValue = convertValue(valueConverters, s, r, c, o);
-                            if (cellValue instanceof PostValue) {
-                                PostValue postValue = (PostValue) cellValue;
+                            Object value = readAdapter.readCell(cellValue, s, r, c, sCount, rCount, cCount);
+                            if (value instanceof PostValue) {
+                                PostValue postValue = (PostValue) value;
                                 fillPostValue(postValue, w, s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
                                 postValues.add(postValue);
-                            } else {
-                                readAdapter.readCell(cellValue, s, r, c, sCount, rCount, cCount);
                             }
                         } catch (Throwable e) {
                             throwableRecords.add(e);

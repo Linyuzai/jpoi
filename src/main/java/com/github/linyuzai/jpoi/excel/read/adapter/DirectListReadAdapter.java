@@ -14,8 +14,9 @@ public class DirectListReadAdapter extends ListReadAdapter {
     }
 
     @Override
-    public void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+    public Object adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
         ((Map<Integer, Object>) cellContainer).put(c, value);
+        return value;
     }
 
     @Override

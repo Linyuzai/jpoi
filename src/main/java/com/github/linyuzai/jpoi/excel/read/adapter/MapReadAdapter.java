@@ -43,9 +43,10 @@ public class MapReadAdapter extends AnnotationReadAdapter {
     }
 
     @Override
-    public void readRowHeaderCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+    public Object readRowHeaderCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
         String str = String.valueOf(value);
         addFieldData(s, c, str, str);
+        return str;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class MapReadAdapter extends AnnotationReadAdapter {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) throws Throwable {
+    public Object adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) throws Throwable {
         FieldData fieldData = fieldDataMap.get(s);
         if (fieldData != null) {
             ReadField readField = fieldData.getReadFieldMap().get(c);
@@ -67,8 +68,10 @@ public class MapReadAdapter extends AnnotationReadAdapter {
                     val = valueConverter.convertValue(s, r, c, value);
                 }
                 ((Map<String, Object>) cellContainer).put(readField.getFieldName(), val);
+                return val;
             }
         }
+        return null;
     }
 
     @Override

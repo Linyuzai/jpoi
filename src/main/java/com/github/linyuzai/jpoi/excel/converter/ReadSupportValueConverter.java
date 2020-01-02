@@ -41,4 +41,9 @@ public class ReadSupportValueConverter implements ValueConverter {
         }
         return null;
     }
+
+    @Override
+    public int getOrder() {
+        return Integer.MAX_VALUE - 3;
+    }
 }

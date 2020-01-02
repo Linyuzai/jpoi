@@ -20,17 +20,19 @@ public class ReadFormulaValueConverter implements ValueConverter {
 
     @Override
     public Object convertValue(int sheet, int row, int cell, Object value) {
-        if (((CombinationValue) value).getValue(null) instanceof Collection) {
-            for (Object o : ((Collection) ((CombinationValue) value).getValue(null))) {
-                if (o instanceof SupportFormula) {
-                    return getFormula(sheet, row, cell, (SupportFormula) o);
+        if (value instanceof SupportFormula) {
+            return getFormula(sheet, row, cell, (SupportFormula) value);
+        } else if (value instanceof CombinationValue) {
+            Object v = ((CombinationValue) value).getValue(null);
+            if (v instanceof Collection) {
+                for (Object o : (Collection) v) {
+                    if (o instanceof SupportFormula) {
+                        return getFormula(sheet, row, cell, (SupportFormula) o);
+                    }
                 }
             }
-        } else {
-            if (value instanceof SupportFormula) {
-                return getFormula(sheet, row, cell, (SupportFormula) value);
-            } else if (((CombinationValue) value).getValue(null) instanceof SupportFormula) {
-                return getFormula(sheet, row, cell, (SupportFormula) ((CombinationValue) value).getValue(null));
+            if (v instanceof SupportFormula) {
+                return getFormula(sheet, row, cell, (SupportFormula) v);
             }
         }
         return null;
@@ -43,5 +45,10 @@ public class ReadFormulaValueConverter implements ValueConverter {
         } else {
             return value;
         }
+    }
+
+    @Override
+    public int getOrder() {
+        return Integer.MAX_VALUE - 4;
     }
 }

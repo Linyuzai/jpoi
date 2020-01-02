@@ -2,6 +2,7 @@ package com.github.linyuzai.jpoi.excel.read.adapter;
 
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.value.combination.CombinationValue;
+import com.github.linyuzai.jpoi.excel.value.post.PostValue;
 import com.github.linyuzai.jpoi.exception.JPoiException;
 import com.github.linyuzai.jpoi.util.ClassUtils;
 
@@ -147,14 +148,17 @@ public class ObjectReadAdapter extends MapReadAdapter {
     }
 
     @Override
-    public void readRowHeaderCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+    public Object readRowHeaderCell(Object value, int s, int r, int c, int sCount, int rCount, int cCount) {
+        if (classes.length <= s) {
+            return null;
+        }
         if (Map.class.isAssignableFrom(classes[s])) {
             super.readRowHeaderCell(value, s, r, c, sCount, rCount, cCount);
         } else {
             if (value != null) {
                 FieldData fd = getFieldDataMap().get(s);
                 if (fd == null) {
-                    return;
+                    return null;
                 }
                 List<ReadField> readFields = fd.getReadFields();
                 if (value instanceof CombinationValue) {
@@ -179,6 +183,7 @@ public class ObjectReadAdapter extends MapReadAdapter {
                 }
             }
         }
+        return value;
     }
 
     @Override
@@ -188,6 +193,9 @@ public class ObjectReadAdapter extends MapReadAdapter {
         if (toMap) {
             return super.createContainer(value, s, r, c, sCount, rCount, cCount);
         }
+        if (classes.length <= s) {
+            return null;
+        }
         try {
             return classes[s].newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
@@ -196,22 +204,27 @@ public class ObjectReadAdapter extends MapReadAdapter {
     }
 
     @Override
-    public void adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) throws Throwable {
+    public Object adaptValue(Object cellContainer, Object value, int s, int r, int c, int sCount, int rCount, int cCount) throws Throwable {
         FieldData fieldData = getFieldDataMap().get(s);
         boolean toMap = fieldData != null && fieldData.isToMap();
         if (toMap) {
-            super.adaptValue(cellContainer, value, s, r, c, sCount, rCount, cCount);
+            return super.adaptValue(cellContainer, value, s, r, c, sCount, rCount, cCount);
         } else {
-            if (fieldData != null) {
+            if (fieldData == null) {
+                return null;
+            } else {
                 //List<ReadField> rfs = new ArrayList<>(fieldData.getReadFieldMap().values());
                 //ReadField readField = rfs.get(c);
                 List<ReadField> readFields = fieldData.getReadFields();
                 if (c >= readFields.size()) {
-                    return;
+                    return null;
                 }
                 ReadField readField = readFields.get(c);
                 if (readField != null) {
-                    setFieldValue(cellContainer, value, s, r, c, readField);
+                    Object o = setFieldValue(cellContainer, value, s, r, c, readField);
+                    if (o instanceof PostValue) {
+                        return o;
+                    }
                     if (value instanceof CombinationValue ||
                             readField instanceof AnnotationReadField && ((AnnotationReadField) readField).getCombinationFields().size() > 0) {
                         for (ReadField combinationField : ((AnnotationReadField) readField).getCombinationFields()) {
@@ -229,11 +242,15 @@ public class ObjectReadAdapter extends MapReadAdapter {
                         setFieldValue(cellContainer, value, s, r, c, readField);
                     }*/
                 }
+                return null;
             }
         }
     }
 
-    public void setFieldValue(Object cellContainer, Object value, int s, int r, int c, ReadField readField) throws Throwable {
+    public Object setFieldValue(Object cellContainer, Object value, int s, int r, int c, ReadField readField) throws Throwable {
+        if (classes.length <= s) {
+            return null;
+        }
         ValueConverter valueConverter;
         Object val = value;
         String fieldName = readField.getFieldName();
@@ -243,11 +260,15 @@ public class ObjectReadAdapter extends MapReadAdapter {
                     valueConverter.supportValue(s, r, c, value)) {
                 val = valueConverter.convertValue(s, r, c, value);
             }
+            if (val instanceof PostValue) {
+                return val;
+            }
             //Field field = classes[s].getDeclaredField(fieldName);
             Field field = ClassUtils.getField(classes[s], fieldName);
             field.setAccessible(true);
             field.set(cellContainer, baseConvert(field.getType(), val));
         }
+        return null;
     }
 
     private Object baseConvert(Class<?> cls, Object value) {
