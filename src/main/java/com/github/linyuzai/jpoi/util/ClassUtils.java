@@ -26,21 +26,21 @@ public class ClassUtils {
 
     public static List<Field> getFields(Class<?> cls) {
         List<Field> fields = new ArrayList<>();
-        while (cls != null) {//当父类为null的时候说明到达了最上层的父类(Object类).
+        while (cls != null) {
             fields.addAll(Arrays.asList(cls.getDeclaredFields()));
-            cls = cls.getSuperclass(); //得到父类,然后赋给自己
+            cls = cls.getSuperclass();
         }
         return fields;
     }
 
     public static Field getField(Class<?> cls, String name) throws NoSuchFieldException {
         Field field = null;
-        while (cls != null) {//当父类为null的时候说明到达了最上层的父类(Object类).
+        while (cls != null) {
             try {
                 field = cls.getDeclaredField(name);
                 break;
             } catch (NoSuchFieldException ignore) {
-                cls = cls.getSuperclass(); //得到父类,然后赋给自己
+                cls = cls.getSuperclass();
             }
         }
         if (field == null) {
@@ -51,21 +51,21 @@ public class ClassUtils {
 
     public static List<Method> getMethods(Class<?> cls) {
         List<Method> methods = new ArrayList<>();
-        while (cls != null) {//当父类为null的时候说明到达了最上层的父类(Object类).
+        while (cls != null) {
             methods.addAll(Arrays.asList(cls.getDeclaredMethods()));
-            cls = cls.getSuperclass(); //得到父类,然后赋给自己
+            cls = cls.getSuperclass();
         }
         return methods;
     }
 
     public static Method getMethod(Class<?> cls, String name) throws NoSuchMethodException {
         Method method = null;
-        while (cls != null) {//当父类为null的时候说明到达了最上层的父类(Object类).
+        while (cls != null) {
             try {
                 method = cls.getDeclaredMethod(name);
                 break;
             } catch (NoSuchMethodException ignore) {
-                cls = cls.getSuperclass(); //得到父类,然后赋给自己
+                cls = cls.getSuperclass();
             }
         }
         if (method == null) {
