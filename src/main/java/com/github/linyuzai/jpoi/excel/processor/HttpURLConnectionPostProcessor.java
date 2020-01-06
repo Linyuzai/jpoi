@@ -11,7 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 
-public class HttpURLConnectionPostProcessor extends ThreadPoolPostProcessor {
+public class HttpURLConnectionPostProcessor extends HttpPostProcessor {
 
     public HttpURLConnectionPostProcessor() {
         super();
@@ -29,14 +29,7 @@ public class HttpURLConnectionPostProcessor extends ThreadPoolPostProcessor {
             HttpURLConnection connection = getHttpURLConnection(url);
             connection.connect();
             InputStream is = connection.getInputStream();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = is.read(buffer)) != -1) {
-                baos.write(buffer, 0, len);
-            }
-            byte[] bytes = baos.toByteArray();
-            baos.close();
+            byte[] bytes = getContent(is);
             connection.disconnect();
             ValueConverter vc = holder.getValueConverter();
             holder.setValue(vc == null ? bytes : vc.convertValue(holder.getSheetIndex(), holder.getRowIndex(), holder.getCellIndex(), bytes));

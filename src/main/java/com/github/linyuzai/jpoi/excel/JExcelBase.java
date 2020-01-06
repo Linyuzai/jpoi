@@ -1,5 +1,7 @@
 package com.github.linyuzai.jpoi.excel;
 
+import com.github.linyuzai.jpoi.cache.CacheManager;
+import com.github.linyuzai.jpoi.cache.UncachedCacheManager;
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
 import com.github.linyuzai.jpoi.excel.handler.InterruptedExceptionHandler;
@@ -22,6 +24,7 @@ public abstract class JExcelBase<T extends JExcelBase<T>> {
     protected List<ExcelListener> excelListeners;
     protected List<ValueConverter> valueConverters;
     protected PostProcessor postProcessor;
+    protected CacheManager cacheManager;
     protected ExcelExceptionHandler excelExceptionHandler;
 
     public JExcelBase(Workbook workbook) {
@@ -29,6 +32,7 @@ public abstract class JExcelBase<T extends JExcelBase<T>> {
         this.excelListeners = new ArrayList<>();
         this.valueConverters = new ArrayList<>();
         this.postProcessor = EmptyPostProcessor.getInstance();
+        this.cacheManager = UncachedCacheManager.getInstance();
         this.excelExceptionHandler = InterruptedExceptionHandler.getInstance();
     }
 
@@ -87,6 +91,14 @@ public abstract class JExcelBase<T extends JExcelBase<T>> {
         return (T) this;
     }
 
+    public CacheManager getCacheManager() {
+        return cacheManager;
+    }
+
+    public void setCacheManager(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
+
     public ExcelExceptionHandler getExceptionHandler() {
         return excelExceptionHandler;
     }
@@ -109,12 +121,16 @@ public abstract class JExcelBase<T extends JExcelBase<T>> {
         if (postProcessor == null) {
             throw new JPoiException("PostProcessor is null");
         }
+        if (cacheManager == null) {
+            throw new JPoiException("CacheManager is null");
+        }
         if (excelExceptionHandler == null) {
             throw new JPoiException("ExcelExceptionHandler is null");
         }
     }
 
-    public static void fillPostValue(PostValue postValue,int w, int s, int r, int c, Cell cell, Row row, Sheet sheet, Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper) {
+    public static void fillPostValue(PostValue postValue, int w, int s, int r, int c, Cell cell, Row row, Sheet sheet,
+                                     Drawing<?> drawing, Workbook workbook, CreationHelper creationHelper) {
         postValue.setWorkbook(workbook);
         postValue.setSheet(sheet);
         postValue.setRow(row);

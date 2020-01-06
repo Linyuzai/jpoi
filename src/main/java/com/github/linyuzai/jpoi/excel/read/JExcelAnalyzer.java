@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.read;
 
+import com.github.linyuzai.jpoi.cache.CacheManager;
 import com.github.linyuzai.jpoi.excel.JExcelBase;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
@@ -92,13 +93,13 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
             throw new JPoiException("ValueGetter is null");
         }
         return new JExcelReader(analyze(workbook, readAdapter, excelListeners, valueConverters,
-                valueGetter, postProcessor, excelExceptionHandler, close));
+                valueGetter, postProcessor, cacheManager, excelExceptionHandler, close));
     }
 
-    private static Values analyze(Workbook workbook, ReadAdapter readAdapter, List<ExcelListener> listeners,
-                                  List<ValueConverter> valueConverters, ValueGetter valueGetter,
-                                  PostProcessor postProcessor, ExcelExceptionHandler exceptionHandler,
-                                  boolean close) throws IOException {
+    private Values analyze(Workbook workbook, ReadAdapter readAdapter, List<ExcelListener> listeners,
+                           List<ValueConverter> valueConverters, ValueGetter valueGetter,
+                           PostProcessor postProcessor, CacheManager cacheManager,
+                           ExcelExceptionHandler exceptionHandler, boolean close) throws IOException {
         boolean forceBreak = false;
         List<PostValue> postValues = new ArrayList<>();
         List<Throwable> throwableRecords = new ArrayList<>();
@@ -136,13 +137,24 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                             excelListener.onCellStart(c, r, s, cell, row, sheet, workbook);
                         }
                         try {
-                            Object o = valueGetter.getValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
-                            Object cellValue = convertValue(valueConverters, s, r, c, o);
-                            Object value = readAdapter.readCell(cellValue, s, r, c, sCount, rCount, cCount);
-                            if (value instanceof PostValue) {
-                                PostValue postValue = (PostValue) value;
+                            Object source = valueGetter.getValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
+                            Object cache = cacheManager.getCache(this, source, s, r, c);
+                            Object value;
+                            if (cache == null) {
+                                value = convertValue(valueConverters, s, r, c, source);
+                            } else {
+                                value = cache;
+                            }
+                            Object returnValue = readAdapter.readCell(value, s, r, c, sCount, rCount, cCount);
+                            if (returnValue instanceof PostValue) {
+                                PostValue postValue = (PostValue) returnValue;
                                 fillPostValue(postValue, w, s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
-                                postValues.add(postValue);
+                                Object postCache = cacheManager.getCache(this, postValue, s, r, c);
+                                if (postCache == null) {
+                                    postValues.add(postValue);
+                                } else {
+                                    readAdapter.readCell(postCache, s, r, c, sCount, rCount, cCount);
+                                }
                             }
                         } catch (Throwable e) {
                             throwableRecords.add(e);
@@ -176,22 +188,23 @@ public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
                 excelListener.onWorkbookEnd(workbook, creationHelper);
             }
         }
-        throwableRecords.addAll(postProcessor.processPost(postValues, exceptionHandler));
-        for (PostValue pv : postValues) {
-            int s = pv.getSheetIndex();
-            int r = pv.getRowIndex();
-            int c = pv.getCellIndex();
-            Cell cell = pv.getCell();
-            Row row = pv.getRow();
-            Sheet sheet = pv.getSheet();
-            try {
-                readAdapter.readCell(pv.getValue(), s, r, c, -1, -1, -1);
-            } catch (Throwable e) {
-                throwableRecords.add(e);
-                forceBreak = exceptionHandler.handle(s, r, c, cell, row, sheet, workbook, e);
-            }
-            if (forceBreak) {
-                break;
+        if (!forceBreak) {
+            throwableRecords.addAll(postProcessor.processPost(postValues, exceptionHandler));
+            for (PostValue pv : postValues) {
+                int s = pv.getSheetIndex();
+                int r = pv.getRowIndex();
+                int c = pv.getCellIndex();
+                Object value = pv.getValue();
+                try {
+                    cacheManager.setCache(this, pv, value, s, r, c);
+                    readAdapter.readCell(value, s, r, c, -1, -1, -1);
+                } catch (Throwable e) {
+                    throwableRecords.add(e);
+                    forceBreak = exceptionHandler.handle(s, r, c, pv.getCell(), pv.getRow(), pv.getSheet(), workbook, e);
+                }
+                if (forceBreak) {
+                    break;
+                }
             }
         }
         if (close) {

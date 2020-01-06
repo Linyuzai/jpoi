@@ -25,8 +25,9 @@ public abstract class ThreadPoolPostProcessor implements PostProcessor {
     @Override
     public List<Throwable> processPost(Collection<? extends PostValue> postValues, ExcelExceptionHandler handler) {
         List<Throwable> throwableRecords = new Vector<>();
-        CountDownLatch cdl = new CountDownLatch(getCountDownLatchCount(postValues));
-        for (PostValue postValue : postValues) {
+        final Collection<? extends PostValue> processValues = getProcessPostValues(postValues);
+        CountDownLatch cdl = new CountDownLatch(processValues.size());
+        for (PostValue postValue : processValues) {
             executorService.execute(() -> {
                 try {
                     processPostValue(postValue);
@@ -50,8 +51,8 @@ public abstract class ThreadPoolPostProcessor implements PostProcessor {
 
     public abstract void processPostValue(PostValue postValue) throws Throwable;
 
-    public int getCountDownLatchCount(Collection<? extends PostValue> postValues) {
-        return postValues.size();
+    public Collection<? extends PostValue> getProcessPostValues(Collection<? extends PostValue> postValues) {
+        return postValues;
     }
 
     public ExecutorService getExecutorService() {

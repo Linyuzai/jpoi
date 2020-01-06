@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.write;
 
+import com.github.linyuzai.jpoi.cache.CacheManager;
 import com.github.linyuzai.jpoi.excel.JExcelBase;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
@@ -91,12 +92,12 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
             real = AutoWorkbook.getWorkbook(count);
         }
         return new JExcelWriter(transfer(real, writeAdapter, excelListeners, valueConverters,
-                valueSetter, postProcessor, excelExceptionHandler));
+                valueSetter, postProcessor, cacheManager, excelExceptionHandler));
     }
 
-    private static Values transfer(Workbook workbook, WriteAdapter writeAdapter, List<ExcelListener> excelListeners,
-                                   List<ValueConverter> valueConverters, ValueSetter valueSetter,
-                                   PostProcessor postProcessor, ExcelExceptionHandler exceptionHandler) {
+    private Values transfer(Workbook workbook, WriteAdapter writeAdapter, List<ExcelListener> excelListeners,
+                            List<ValueConverter> valueConverters, ValueSetter valueSetter,
+                            PostProcessor postProcessor, CacheManager cacheManager, ExcelExceptionHandler exceptionHandler) {
         /*real = workbook;
         if (workbook instanceof AutoWorkbook) {
             int count = 0;
@@ -139,13 +140,27 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
                             excelListener.onCellStart(c, r, s, cell, row, sheet, workbook);
                         }
                         try {
-                            Object o = writeAdapter.getData(s, r, c);
-                            Object value = convertValue(valueConverters, s, r, c, o);
+                            Object source = writeAdapter.getData(s, r, c);
+                            Object cache = cacheManager.getCache(this, source, s, r, c);
+                            Object value;
+                            if (cache == null) {
+                                value = convertValue(valueConverters, s, r, c, source);
+                            } else {
+                                value = cache;
+                            }
                             if (value instanceof PostValue) {
                                 PostValue postValue = (PostValue) value;
                                 fillPostValue(postValue, w, s, r, c, cell, row, sheet, drawing, workbook, creationHelper);
-                                postValues.add(postValue);
+                                Object postCache = cacheManager.getCache(this, postValue, s, r, c);
+                                if (postCache == null) {
+                                    postValues.add(postValue);
+                                } else {
+                                    valueSetter.setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, postCache);
+                                }
                             } else {
+                                if (cache == null) {
+                                    cacheManager.setCache(this, source, value, s, r, c);
+                                }
                                 valueSetter.setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
                             }
                         } catch (Throwable e) {
@@ -180,23 +195,26 @@ public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
                 excelListener.onWorkbookEnd(workbook, creationHelper);
             }
         }
-        throwableRecords.addAll(postProcessor.processPost(postValues, exceptionHandler));
-        for (PostValue pv : postValues) {
-            int s = pv.getSheetIndex();
-            int r = pv.getRowIndex();
-            int c = pv.getCellIndex();
-            Cell cell = pv.getCell();
-            Row row = pv.getRow();
-            Sheet sheet = pv.getSheet();
-            try {
-                valueSetter.setValue(s, r, c, cell, row, sheet,
-                        pv.getDrawing(), workbook, pv.getCreationHelper(), pv.getValue());
-            } catch (Throwable e) {
-                throwableRecords.add(e);
-                forceBreak = exceptionHandler.handle(s, r, c, cell, row, sheet, workbook, e);
-            }
-            if (forceBreak) {
-                break;
+        if (!forceBreak) {
+            throwableRecords.addAll(postProcessor.processPost(postValues, exceptionHandler));
+            for (PostValue pv : postValues) {
+                int s = pv.getSheetIndex();
+                int r = pv.getRowIndex();
+                int c = pv.getCellIndex();
+                Cell cell = pv.getCell();
+                Row row = pv.getRow();
+                Sheet sheet = pv.getSheet();
+                Object value = pv.getValue();
+                try {
+                    cacheManager.setCache(this, pv, value, s, r, c);
+                    valueSetter.setValue(s, r, c, cell, row, sheet, pv.getDrawing(), workbook, pv.getCreationHelper(), value);
+                } catch (Throwable e) {
+                    throwableRecords.add(e);
+                    forceBreak = exceptionHandler.handle(s, r, c, cell, row, sheet, workbook, e);
+                }
+                if (forceBreak) {
+                    break;
+                }
             }
         }
         return new Values(workbook, throwableRecords);
