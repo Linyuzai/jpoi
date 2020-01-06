@@ -1,4 +1,4 @@
-package com.github.linyuzai.jpoi.cache;
+package com.github.linyuzai.jpoi.excel.cache;
 
 import com.github.linyuzai.jpoi.excel.JExcelBase;
 

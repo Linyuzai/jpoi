@@ -1,6 +1,6 @@
 package com.github.linyuzai.jpoi.excel.write;
 
-import com.github.linyuzai.jpoi.cache.CacheManager;
+import com.github.linyuzai.jpoi.excel.cache.CacheManager;
 import com.github.linyuzai.jpoi.excel.JExcelBase;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;

@@ -1,7 +1,7 @@
 package com.github.linyuzai.jpoi.excel;
 
-import com.github.linyuzai.jpoi.cache.CacheManager;
-import com.github.linyuzai.jpoi.cache.UncachedCacheManager;
+import com.github.linyuzai.jpoi.excel.cache.CacheManager;
+import com.github.linyuzai.jpoi.excel.cache.UncachedCacheManager;
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
 import com.github.linyuzai.jpoi.excel.handler.InterruptedExceptionHandler;
