@@ -1,11 +1,11 @@
 package com.github.linyuzai.jpoi.excel.read;
 
 import com.github.linyuzai.jpoi.excel.cache.CacheManager;
-import com.github.linyuzai.jpoi.excel.JExcelBase;
+import com.github.linyuzai.jpoi.excel.JExcelProcessor;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
 import com.github.linyuzai.jpoi.excel.listener.ExcelListener;
-import com.github.linyuzai.jpoi.excel.processor.PostProcessor;
+import com.github.linyuzai.jpoi.excel.post.PostProcessor;
 import com.github.linyuzai.jpoi.excel.read.adapter.DirectListReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.MapReadAdapter;
 import com.github.linyuzai.jpoi.excel.read.adapter.ObjectReadAdapter;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JExcelAnalyzer extends JExcelBase<JExcelAnalyzer> {
+public class JExcelAnalyzer extends JExcelProcessor<JExcelAnalyzer> {
 
     private ValueGetter valueGetter;
     private ReadAdapter readAdapter;

@@ -1,6 +1,6 @@
 package com.github.linyuzai.jpoi.excel.cache;
 
-import com.github.linyuzai.jpoi.excel.JExcelBase;
+import com.github.linyuzai.jpoi.excel.JExcelProcessor;
 import com.github.linyuzai.jpoi.excel.holder.UrlPostValueHolder;
 
 import java.util.Map;
@@ -12,7 +12,7 @@ public class InMemoryUrlCacheManager implements CacheManager {
     private final Map<Object, Object> cacheMap = new ConcurrentHashMap<>();
 
     @Override
-    public Object getCache(JExcelBase<?> base, Object source, int s, int r, int c) {
+    public Object getCache(JExcelProcessor<?> processor, Object source, int s, int r, int c) {
         if (source instanceof UrlPostValueHolder) {
             return cacheMap.get(CACHE_PREFIX + ((UrlPostValueHolder) source).getSource());
         }
@@ -20,7 +20,7 @@ public class InMemoryUrlCacheManager implements CacheManager {
     }
 
     @Override
-    public void setCache(JExcelBase<?> base, Object source, Object value, int s, int r, int c) {
+    public void setCache(JExcelProcessor<?> processor, Object source, Object value, int s, int r, int c) {
         if (source instanceof UrlPostValueHolder) {
             cacheMap.put(CACHE_PREFIX + ((UrlPostValueHolder) source).getSource(), value);
         }

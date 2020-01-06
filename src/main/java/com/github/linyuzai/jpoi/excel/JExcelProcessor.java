@@ -6,8 +6,8 @@ import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
 import com.github.linyuzai.jpoi.excel.handler.InterruptedExceptionHandler;
 import com.github.linyuzai.jpoi.excel.listener.ExcelListener;
-import com.github.linyuzai.jpoi.excel.processor.EmptyPostProcessor;
-import com.github.linyuzai.jpoi.excel.processor.PostProcessor;
+import com.github.linyuzai.jpoi.excel.post.EmptyPostProcessor;
+import com.github.linyuzai.jpoi.excel.post.PostProcessor;
 import com.github.linyuzai.jpoi.excel.value.post.PostValue;
 import com.github.linyuzai.jpoi.exception.JPoiException;
 import com.github.linyuzai.jpoi.support.SupportOrder;
@@ -18,7 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public abstract class JExcelBase<T extends JExcelBase<T>> {
+public abstract class JExcelProcessor<T extends JExcelProcessor<T>> {
 
     protected Workbook workbook;
     protected List<ExcelListener> excelListeners;
@@ -27,7 +27,7 @@ public abstract class JExcelBase<T extends JExcelBase<T>> {
     protected CacheManager cacheManager;
     protected ExcelExceptionHandler excelExceptionHandler;
 
-    public JExcelBase(Workbook workbook) {
+    public JExcelProcessor(Workbook workbook) {
         this.workbook = workbook;
         this.excelListeners = new ArrayList<>();
         this.valueConverters = new ArrayList<>();

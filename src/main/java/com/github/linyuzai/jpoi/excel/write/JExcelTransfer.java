@@ -1,11 +1,11 @@
 package com.github.linyuzai.jpoi.excel.write;
 
 import com.github.linyuzai.jpoi.excel.cache.CacheManager;
-import com.github.linyuzai.jpoi.excel.JExcelBase;
+import com.github.linyuzai.jpoi.excel.JExcelProcessor;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
 import com.github.linyuzai.jpoi.excel.listener.ExcelListener;
-import com.github.linyuzai.jpoi.excel.processor.PostProcessor;
+import com.github.linyuzai.jpoi.excel.post.PostProcessor;
 import com.github.linyuzai.jpoi.excel.value.post.PostValue;
 import com.github.linyuzai.jpoi.excel.write.adapter.SimpleDataWriteAdapter;
 import com.github.linyuzai.jpoi.excel.write.adapter.TitleIndexDataWriteAdapter;
@@ -19,7 +19,7 @@ import org.apache.poi.ss.usermodel.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JExcelTransfer extends JExcelBase<JExcelTransfer> {
+public class JExcelTransfer extends JExcelProcessor<JExcelTransfer> {
 
     private ValueSetter valueSetter;
     private WriteAdapter writeAdapter;

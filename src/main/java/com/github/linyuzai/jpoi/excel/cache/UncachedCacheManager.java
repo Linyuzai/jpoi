@@ -1,6 +1,6 @@
 package com.github.linyuzai.jpoi.excel.cache;
 
-import com.github.linyuzai.jpoi.excel.JExcelBase;
+import com.github.linyuzai.jpoi.excel.JExcelProcessor;
 
 public class UncachedCacheManager implements CacheManager {
 
@@ -11,12 +11,12 @@ public class UncachedCacheManager implements CacheManager {
     }
 
     @Override
-    public Object getCache(JExcelBase<?> base, Object source, int s, int r, int c) {
+    public Object getCache(JExcelProcessor<?> processor, Object source, int s, int r, int c) {
         return null;
     }
 
     @Override
-    public void setCache(JExcelBase<?> base, Object source, Object value, int s, int r, int c) {
+    public void setCache(JExcelProcessor<?> processor, Object source, Object value, int s, int r, int c) {
 
     }
 }

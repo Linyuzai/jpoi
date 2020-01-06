@@ -1,10 +1,10 @@
 package com.github.linyuzai.jpoi.excel.cache;
 
-import com.github.linyuzai.jpoi.excel.JExcelBase;
+import com.github.linyuzai.jpoi.excel.JExcelProcessor;
 
 public interface CacheManager {
 
-    Object getCache(JExcelBase<?> base, Object source, int s, int r, int c);
+    Object getCache(JExcelProcessor<?> processor, Object source, int s, int r, int c);
 
-    void setCache(JExcelBase<?> base, Object source, Object value, int s, int r, int c);
+    void setCache(JExcelProcessor<?> processor, Object source, Object value, int s, int r, int c);
 }

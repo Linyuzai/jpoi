@@ -1,10 +1,9 @@
-package com.github.linyuzai.jpoi.excel.processor;
+package com.github.linyuzai.jpoi.excel.post;
 
 import com.github.linyuzai.jpoi.excel.converter.ValueConverter;
 import com.github.linyuzai.jpoi.excel.holder.UrlPostValueHolder;
 import com.github.linyuzai.jpoi.excel.value.post.PostValue;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -40,13 +39,13 @@ public class HttpURLConnectionPostProcessor extends HttpPostProcessor {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setConnectTimeout(6 * 1000);
         connection.setReadTimeout(6 * 1000);
-        connection.setDoOutput(true);// 使用 URL 连接进行输出
-        connection.setDoInput(true);// 使用 URL 连接进行输入
-        connection.setUseCaches(false);// 忽略缓存
-        connection.setRequestMethod("GET");// 设置URL请求方法
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        connection.setUseCaches(false);
+        connection.setRequestMethod("GET");
         //可设置请求头
         connection.setRequestProperty("Content-Type", "application/octet-stream");
-        connection.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
+        connection.setRequestProperty("Connection", "Keep-Alive");
         connection.setRequestProperty("Charset", "UTF-8");
         return connection;
     }
