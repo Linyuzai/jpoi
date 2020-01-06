@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryUrlCacheManager implements CacheManager {
-
     private static final String CACHE_PREFIX = "UrlPostValueHolder@";
+
     private final Map<Object, Object> cacheMap = new ConcurrentHashMap<>();
 
     @Override
