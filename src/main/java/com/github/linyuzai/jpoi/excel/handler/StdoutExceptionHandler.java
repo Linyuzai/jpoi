@@ -14,14 +14,6 @@ public class StdoutExceptionHandler implements ExcelExceptionHandler {
     }
 
     /**
-     * @param s
-     * @param r
-     * @param c
-     * @param cell
-     * @param row
-     * @param sheet
-     * @param workbook
-     * @param e
      * @return 是否终止
      */
     @Override

@@ -161,6 +161,11 @@ public class ObjectReadAdapter extends MapReadAdapter {
                     return null;
                 }
                 List<ReadField> readFields = fd.getReadFields();
+                if (cCount > readFields.size()) {
+                    for (int i = readFields.size(); i < cCount; i++) {
+                        readFields.add(null);
+                    }
+                }
                 if (value instanceof CombinationValue) {
                     value = ReadDataValueConverter.getInstance().convertValue(s, r, c, value);
                 }
@@ -170,12 +175,10 @@ public class ObjectReadAdapter extends MapReadAdapter {
 
                 for (int i = 0; i < readFields.size(); i++) {
                     ReadField readField = readFields.get(i);
-                    if (title.equals(readField.getFieldDescription())) {
-                        if (c != i) {
-                            index1 = c;
-                            index2 = i;
-                            break;
-                        }
+                    if (readField != null && title.equals(readField.getFieldDescription()) && c != i) {
+                        index1 = c;
+                        index2 = i;
+                        break;
                     }
                 }
                 if (index1 != -1) {

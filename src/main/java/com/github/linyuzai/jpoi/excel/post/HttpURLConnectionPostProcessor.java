@@ -43,7 +43,6 @@ public class HttpURLConnectionPostProcessor extends HttpPostProcessor {
         connection.setDoInput(true);
         connection.setUseCaches(false);
         connection.setRequestMethod("GET");
-        //可设置请求头
         connection.setRequestProperty("Content-Type", "application/octet-stream");
         connection.setRequestProperty("Connection", "Keep-Alive");
         connection.setRequestProperty("Charset", "UTF-8");

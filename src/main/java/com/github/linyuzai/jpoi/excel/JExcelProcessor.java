@@ -95,8 +95,9 @@ public abstract class JExcelProcessor<T extends JExcelProcessor<T>> {
         return cacheManager;
     }
 
-    public void setCacheManager(CacheManager cacheManager) {
+    public T setCacheManager(CacheManager cacheManager) {
         this.cacheManager = cacheManager;
+        return (T) this;
     }
 
     public ExcelExceptionHandler getExceptionHandler() {
