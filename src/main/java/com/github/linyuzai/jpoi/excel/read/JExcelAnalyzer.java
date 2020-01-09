@@ -155,6 +155,10 @@ public class JExcelAnalyzer extends JExcelProcessor<JExcelAnalyzer> {
                                 } else {
                                     readAdapter.readCell(postCache, s, r, c, sCount, rCount, cCount);
                                 }
+                            } else {
+                                if (cache == null) {
+                                    cacheManager.setCache(this, source, value, s, r, c);
+                                }
                             }
                         } catch (Throwable e) {
                             throwableRecords.add(e);

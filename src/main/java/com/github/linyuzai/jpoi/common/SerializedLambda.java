@@ -79,8 +79,12 @@ public class SerializedLambda implements Serializable {
      *
      * @return 实现类
      */
-    public Class<?> getImplClass() throws Throwable {
-        return Class.forName(getImplClassName());
+    public Class<?> getImplClass() {
+        try {
+            return Class.forName(getImplClassName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -116,11 +120,6 @@ public class SerializedLambda implements Serializable {
      */
     @Override
     public String toString() {
-        try {
-            return String.format("%s -> %s::%s", getFunctionalInterfaceClassName(), getImplClass().getSimpleName(),
-                    implMethodName);
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
+        return String.format("%s -> %s::%s", getFunctionalInterfaceClassName(), getImplClass().getSimpleName(), implMethodName);
     }
 }
