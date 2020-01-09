@@ -8,7 +8,7 @@ import com.github.linyuzai.jpoi.excel.value.combination.ListCombinationValue;
 import com.github.linyuzai.jpoi.excel.write.style.JCellStyle;
 import com.github.linyuzai.jpoi.excel.write.style.JRowStyle;
 import com.github.linyuzai.jpoi.exception.JPoiException;
-import com.github.linyuzai.jpoi.util.ClassUtils;
+import com.github.linyuzai.jpoi.common.util.ClassUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 

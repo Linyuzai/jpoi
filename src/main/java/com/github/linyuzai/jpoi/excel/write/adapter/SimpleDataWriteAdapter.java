@@ -1,6 +1,7 @@
 package com.github.linyuzai.jpoi.excel.write.adapter;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class SimpleDataWriteAdapter extends TitleIndexDataWriteAdapter {
 
@@ -13,7 +14,7 @@ public class SimpleDataWriteAdapter extends TitleIndexDataWriteAdapter {
     }
 
     @SafeVarargs
-    public <T> SimpleDataWriteAdapter(List<?> dataList, LambdaMethod<T, ?>... lambdaMethods) throws Throwable {
+    public <T> SimpleDataWriteAdapter(List<?> dataList, Function<T, ?>... lambdaMethods) throws Throwable {
         addListData(dataList, lambdaMethods);
     }
 
@@ -26,7 +27,7 @@ public class SimpleDataWriteAdapter extends TitleIndexDataWriteAdapter {
     }
 
     @SafeVarargs
-    public <T> SimpleDataWriteAdapter(String sheetName, List<?> dataList, LambdaMethod<T, ?>... lambdaMethods) throws Throwable {
+    public <T> SimpleDataWriteAdapter(String sheetName, List<?> dataList, Function<T, ?>... lambdaMethods) throws Throwable {
         addListData(sheetName, dataList, lambdaMethods);
     }
 }

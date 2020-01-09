@@ -4,7 +4,7 @@ import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.value.combination.CombinationValue;
 import com.github.linyuzai.jpoi.excel.value.post.PostValue;
 import com.github.linyuzai.jpoi.exception.JPoiException;
-import com.github.linyuzai.jpoi.util.ClassUtils;
+import com.github.linyuzai.jpoi.common.util.ClassUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
