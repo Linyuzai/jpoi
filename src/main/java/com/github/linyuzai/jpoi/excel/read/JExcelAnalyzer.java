@@ -30,6 +30,7 @@ public class JExcelAnalyzer extends JExcelProcessor<JExcelAnalyzer> {
         setValueGetter(CombinationValueGetter.getInstance());
         addValueConverter(NullValueConverter.getInstance());
         addValueConverter(ReadFormulaValueConverter.getInstance());
+        addValueConverter(ReadDataFormatValueConverter.getInstance());
         addValueConverter(PostValueConverter.getInstance());
         //addValueConverter(WritePictureValueConverter.getInstance());
         addValueConverter(PoiValueConverter.getInstance());

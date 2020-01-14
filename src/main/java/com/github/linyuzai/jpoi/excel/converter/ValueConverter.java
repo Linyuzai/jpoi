@@ -30,6 +30,8 @@ public interface ValueConverter extends SupportOrder, SupportCache {
             return ReadBase64PictureValueConverter.getInstance();
         } else if (cls == ReadCommentValueConverter.class) {
             return ReadCommentValueConverter.getInstance();
+        } else if (cls == ReadDataFormatValueConverter.class) {
+            return ReadDataFormatValueConverter.getInstance();
         } else if (cls == ReadDataValueConverter.class) {
             return ReadDataValueConverter.getInstance();
         } else if (cls == ReadFormulaValueConverter.class) {
