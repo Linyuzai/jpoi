@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.handler;
 
+import com.github.linyuzai.jpoi.excel.JExcelProcessor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -25,7 +26,7 @@ public class InterruptedExceptionHandler implements ExcelExceptionHandler {
      * @return 是否终止
      */
     @Override
-    public boolean handle(int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook, Throwable e) {
+    public boolean handle(JExcelProcessor<?> context, int s, int r, int c, Cell cell, Row row, Sheet sheet, Workbook workbook, Throwable e) {
         return true;
     }
 }

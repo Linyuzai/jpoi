@@ -163,7 +163,7 @@ public class JExcelAnalyzer extends JExcelProcessor<JExcelAnalyzer> {
                             }
                         } catch (Throwable e) {
                             throwableRecords.add(e);
-                            forceBreak = exceptionHandler.handle(s, r, c, cell, row, sheet, workbook, e);
+                            forceBreak = exceptionHandler.handle(this, s, r, c, cell, row, sheet, workbook, e);
                         }
                         if (forceBreak) {
                             break;
@@ -205,7 +205,7 @@ public class JExcelAnalyzer extends JExcelProcessor<JExcelAnalyzer> {
                     readAdapter.readCell(value, s, r, c, -1, -1, -1);
                 } catch (Throwable e) {
                     throwableRecords.add(e);
-                    forceBreak = exceptionHandler.handle(s, r, c, pv.getCell(), pv.getRow(), pv.getSheet(), workbook, e);
+                    forceBreak = exceptionHandler.handle(this, s, r, c, pv.getCell(), pv.getRow(), pv.getSheet(), workbook, e);
                 }
                 if (forceBreak) {
                     break;

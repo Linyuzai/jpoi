@@ -12,23 +12,23 @@ public class InMemoryUrlCacheManager extends InMemoryCacheManager {
     private final Map<Object, Object> cacheMap = new ConcurrentHashMap<>();
 
     @Override
-    public Object getCache(JExcelProcessor<?> processor, Object source, int s, int r, int c) {
+    public Object getCache(JExcelProcessor<?> context, Object source, int s, int r, int c) {
         if (source instanceof UrlPostValueHolder) {
-            return super.getCache(processor, ((UrlPostValueHolder) source).getSource(), s, r, c);
+            return super.getCache(context, ((UrlPostValueHolder) source).getSource(), s, r, c);
         }
         if (source instanceof String) {
-            return super.getCache(processor, source, s, r, c);
+            return super.getCache(context, source, s, r, c);
         }
         return null;
     }
 
     @Override
-    public void setCache(JExcelProcessor<?> processor, Object source, Object value, int s, int r, int c) {
+    public void setCache(JExcelProcessor<?> context, Object source, Object value, int s, int r, int c) {
         if (source instanceof UrlPostValueHolder) {
-            super.setCache(processor, ((UrlPostValueHolder) source).getSource(), value, s, r, c);
+            super.setCache(context, ((UrlPostValueHolder) source).getSource(), value, s, r, c);
         }
         if (source instanceof String) {
-            super.setCache(processor, source, value, s, r, c);
+            super.setCache(context, source, value, s, r, c);
         }
     }
 

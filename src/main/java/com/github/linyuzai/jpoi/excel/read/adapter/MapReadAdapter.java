@@ -79,6 +79,14 @@ public class MapReadAdapter extends AnnotationReadAdapter {
         return 1;
     }
 
+    public ReadField getReadField(int s, int c) {
+        return getFieldDataMap().get(s).getReadFields().get(c);
+    }
+
+    public String getFieldName(int s, int c) {
+        return getReadField(s, c).getFieldName();
+    }
+
     public static class FieldData {
         private String sheetName;
         private boolean toMap;

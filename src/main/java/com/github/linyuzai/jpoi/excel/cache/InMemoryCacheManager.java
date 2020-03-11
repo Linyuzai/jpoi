@@ -12,12 +12,12 @@ public class InMemoryCacheManager implements CacheManager {
     private final Map<Object, Object> cacheMap = new ConcurrentHashMap<>();
 
     @Override
-    public Object getCache(JExcelProcessor<?> processor, Object source, int s, int r, int c) {
+    public Object getCache(JExcelProcessor<?> context, Object source, int s, int r, int c) {
         return cacheMap.get(getCachePrefix() + source);
     }
 
     @Override
-    public void setCache(JExcelProcessor<?> processor, Object source, Object value, int s, int r, int c) {
+    public void setCache(JExcelProcessor<?> context, Object source, Object value, int s, int r, int c) {
         cacheMap.put(getCachePrefix() + source, value);
     }
 

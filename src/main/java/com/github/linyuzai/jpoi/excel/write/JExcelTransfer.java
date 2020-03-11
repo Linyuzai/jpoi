@@ -165,7 +165,7 @@ public class JExcelTransfer extends JExcelProcessor<JExcelTransfer> {
                             }
                         } catch (Throwable e) {
                             throwableRecords.add(e);
-                            forceBreak = exceptionHandler.handle(s, r, c, cell, row, sheet, workbook, e);
+                            forceBreak = exceptionHandler.handle(this, s, r, c, cell, row, sheet, workbook, e);
                         }
                         if (forceBreak) {
                             break;
@@ -210,7 +210,7 @@ public class JExcelTransfer extends JExcelProcessor<JExcelTransfer> {
                     valueSetter.setValue(s, r, c, cell, row, sheet, pv.getDrawing(), workbook, pv.getCreationHelper(), value);
                 } catch (Throwable e) {
                     throwableRecords.add(e);
-                    forceBreak = exceptionHandler.handle(s, r, c, cell, row, sheet, workbook, e);
+                    forceBreak = exceptionHandler.handle(this, s, r, c, cell, row, sheet, workbook, e);
                 }
                 if (forceBreak) {
                     break;
