@@ -45,14 +45,14 @@ public class JExcel {
 
     public static JExcelTransfer of(Workbook workbook) {
         if (workbook == null) {
-            throw new JPoiException("workbook is null");
+            throw new JPoiException("Workbook is null");
         }
         return new JExcelTransfer(workbook);
     }
 
     public static JExcelAnalyzer from(Workbook workbook) {
         if (workbook == null) {
-            throw new JPoiException("workbook is null");
+            throw new JPoiException("Workbook is null");
         }
         return new JExcelAnalyzer(workbook);
     }

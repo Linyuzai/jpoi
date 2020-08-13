@@ -1,8 +1,11 @@
 package com.github.linyuzai.jpoi.excel.read;
 
+import com.github.linyuzai.jpoi.excel.handler.ExceptionValue;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JExcelReader {
     private JExcelAnalyzer.Values values;
@@ -21,7 +24,7 @@ public class JExcelReader {
     }
 
     public JExcelReader firstReader() {
-        return new JExcelReader(new JExcelAnalyzer.Values(first(), values.getThrowableRecords()));
+        return new JExcelReader(new JExcelAnalyzer.Values(first(), values.getExceptionValues()));
     }
 
     public Object last() {
@@ -34,7 +37,7 @@ public class JExcelReader {
     }
 
     public JExcelReader lastReader() {
-        return new JExcelReader(new JExcelAnalyzer.Values(last(), values.getThrowableRecords()));
+        return new JExcelReader(new JExcelAnalyzer.Values(last(), values.getExceptionValues()));
     }
 
     public Object index(int index) {
@@ -54,10 +57,14 @@ public class JExcelReader {
     }
 
     public JExcelReader indexReader(int index) {
-        return new JExcelReader(new JExcelAnalyzer.Values(index(index), values.getThrowableRecords()));
+        return new JExcelReader(new JExcelAnalyzer.Values(index(index), values.getExceptionValues()));
     }
 
     public List<Throwable> getThrowableRecords() {
-        return values.getThrowableRecords();
+        return values.getExceptionValues().stream().map(ExceptionValue::getThrowable).collect(Collectors.toList());
+    }
+
+    public List<ExceptionValue> getExceptionValues() {
+        return values.getExceptionValues();
     }
 }

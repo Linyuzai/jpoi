@@ -1,10 +1,10 @@
 package com.github.linyuzai.jpoi.excel.write.adapter;
 
+import com.github.linyuzai.jpoi.common.SerializedLambda;
 import com.github.linyuzai.jpoi.exception.JPoiException;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 public class MultiListWriteAdapter extends LambdaFieldDataWriteAdapter {
 
@@ -48,12 +48,12 @@ public class MultiListWriteAdapter extends LambdaFieldDataWriteAdapter {
     }
 
     @SafeVarargs
-    public final <T> void addListData(List<?> dataList, Function<T, ?>... lambdaMethods) throws Throwable {
+    public final <T> void addListData(List<?> dataList, SerializedLambda.Func<T, ?>... lambdaMethods) throws Throwable {
         addListData(null, dataList, lambdaMethods);
     }
 
     @SafeVarargs
-    public final <T> void addListData(String sheetName, List<?> dataList, Function<T, ?>... lambdaMethods) throws Throwable {
+    public final <T> void addListData(String sheetName, List<?> dataList, SerializedLambda.Func<T, ?>... lambdaMethods) throws Throwable {
         ListData listData = new ListData();
         listData.setDataList(dataList);
         listData.setSheetName(sheetName);

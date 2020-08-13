@@ -4,6 +4,7 @@ import com.github.linyuzai.jpoi.excel.cache.CacheManager;
 import com.github.linyuzai.jpoi.excel.JExcelProcessor;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
+import com.github.linyuzai.jpoi.excel.handler.ExceptionValue;
 import com.github.linyuzai.jpoi.excel.listener.ExcelListener;
 import com.github.linyuzai.jpoi.excel.post.PostProcessor;
 import com.github.linyuzai.jpoi.excel.value.post.PostValue;
@@ -108,7 +109,7 @@ public class JExcelTransfer extends JExcelProcessor<JExcelTransfer> {
         }*/
         boolean forceBreak = false;
         List<PostValue> postValues = new ArrayList<>();
-        List<Throwable> throwableRecords = new ArrayList<>();
+        List<ExceptionValue> exceptionValues = new ArrayList<>();
         for (int w = 0; w < 1; w++) {
             CreationHelper creationHelper = workbook.getCreationHelper();
             for (ExcelListener excelListener : excelListeners) {
@@ -164,7 +165,7 @@ public class JExcelTransfer extends JExcelProcessor<JExcelTransfer> {
                                 valueSetter.setValue(s, r, c, cell, row, sheet, drawing, workbook, creationHelper, value);
                             }
                         } catch (Throwable e) {
-                            throwableRecords.add(e);
+                            exceptionValues.add(new ExceptionValue(s, r, c, e));
                             forceBreak = exceptionHandler.handle(this, s, r, c, cell, row, sheet, workbook, e);
                         }
                         if (forceBreak) {
@@ -196,7 +197,7 @@ public class JExcelTransfer extends JExcelProcessor<JExcelTransfer> {
             }
         }
         if (!forceBreak) {
-            throwableRecords.addAll(postProcessor.processPost(postValues, exceptionHandler));
+            exceptionValues.addAll(postProcessor.processPost(postValues, this));
             for (PostValue pv : postValues) {
                 int s = pv.getSheetIndex();
                 int r = pv.getRowIndex();
@@ -209,7 +210,7 @@ public class JExcelTransfer extends JExcelProcessor<JExcelTransfer> {
                     cacheManager.setCache(this, pv, value, s, r, c);
                     valueSetter.setValue(s, r, c, cell, row, sheet, pv.getDrawing(), workbook, pv.getCreationHelper(), value);
                 } catch (Throwable e) {
-                    throwableRecords.add(e);
+                    exceptionValues.add(new ExceptionValue(s, r, c, e));
                     forceBreak = exceptionHandler.handle(this, s, r, c, cell, row, sheet, workbook, e);
                 }
                 if (forceBreak) {
@@ -217,16 +218,16 @@ public class JExcelTransfer extends JExcelProcessor<JExcelTransfer> {
                 }
             }
         }
-        return new Values(workbook, throwableRecords);
+        return new Values(workbook, exceptionValues);
     }
 
     public static class Values {
         private Workbook workbook;
-        private List<Throwable> throwableRecords;
+        private List<ExceptionValue> exceptionValues;
 
-        public Values(Workbook workbook, List<Throwable> throwableRecords) {
+        public Values(Workbook workbook, List<ExceptionValue> exceptionValues) {
             this.workbook = workbook;
-            this.throwableRecords = throwableRecords;
+            this.exceptionValues = exceptionValues;
         }
 
         public Workbook getWorkbook() {
@@ -237,12 +238,12 @@ public class JExcelTransfer extends JExcelProcessor<JExcelTransfer> {
             this.workbook = workbook;
         }
 
-        public List<Throwable> getThrowableRecords() {
-            return throwableRecords;
+        public List<ExceptionValue> getExceptionValues() {
+            return exceptionValues;
         }
 
-        public void setThrowableRecords(List<Throwable> throwableRecords) {
-            this.throwableRecords = throwableRecords;
+        public void setExceptionValues(List<ExceptionValue> exceptionValues) {
+            this.exceptionValues = exceptionValues;
         }
     }
 }

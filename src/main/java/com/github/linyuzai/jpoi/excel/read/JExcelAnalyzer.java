@@ -4,6 +4,7 @@ import com.github.linyuzai.jpoi.excel.cache.CacheManager;
 import com.github.linyuzai.jpoi.excel.JExcelProcessor;
 import com.github.linyuzai.jpoi.excel.converter.*;
 import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
+import com.github.linyuzai.jpoi.excel.handler.ExceptionValue;
 import com.github.linyuzai.jpoi.excel.listener.ExcelListener;
 import com.github.linyuzai.jpoi.excel.post.PostProcessor;
 import com.github.linyuzai.jpoi.excel.read.adapter.DirectListReadAdapter;
@@ -103,7 +104,7 @@ public class JExcelAnalyzer extends JExcelProcessor<JExcelAnalyzer> {
                            ExcelExceptionHandler exceptionHandler, boolean close) throws IOException {
         boolean forceBreak = false;
         List<PostValue> postValues = new ArrayList<>();
-        List<Throwable> throwableRecords = new ArrayList<>();
+        List<ExceptionValue> exceptionValues = new ArrayList<>();
         for (int w = 0; w < 1; w++) {
             CreationHelper creationHelper = workbook.getCreationHelper();
             for (ExcelListener excelListener : listeners) {
@@ -162,7 +163,7 @@ public class JExcelAnalyzer extends JExcelProcessor<JExcelAnalyzer> {
                                 }
                             }
                         } catch (Throwable e) {
-                            throwableRecords.add(e);
+                            exceptionValues.add(new ExceptionValue(s, r, c, e));
                             forceBreak = exceptionHandler.handle(this, s, r, c, cell, row, sheet, workbook, e);
                         }
                         if (forceBreak) {
@@ -194,7 +195,7 @@ public class JExcelAnalyzer extends JExcelProcessor<JExcelAnalyzer> {
             }
         }
         if (!forceBreak) {
-            throwableRecords.addAll(postProcessor.processPost(postValues, exceptionHandler));
+            exceptionValues.addAll(postProcessor.processPost(postValues, this));
             for (PostValue pv : postValues) {
                 int s = pv.getSheetIndex();
                 int r = pv.getRowIndex();
@@ -204,7 +205,7 @@ public class JExcelAnalyzer extends JExcelProcessor<JExcelAnalyzer> {
                     cacheManager.setCache(this, pv, value, s, r, c);
                     readAdapter.readCell(value, s, r, c, -1, -1, -1);
                 } catch (Throwable e) {
-                    throwableRecords.add(e);
+                    exceptionValues.add(new ExceptionValue(s, r, c, e));
                     forceBreak = exceptionHandler.handle(this, s, r, c, pv.getCell(), pv.getRow(), pv.getSheet(), workbook, e);
                 }
                 if (forceBreak) {
@@ -215,16 +216,16 @@ public class JExcelAnalyzer extends JExcelProcessor<JExcelAnalyzer> {
         if (close) {
             workbook.close();
         }
-        return new Values(readAdapter.getValue(), throwableRecords);
+        return new Values(readAdapter.getValue(), exceptionValues);
     }
 
     public static class Values {
         private Object value;
-        private List<Throwable> throwableRecords;
+        private List<ExceptionValue> exceptionValues;
 
-        public Values(Object value, List<Throwable> throwableRecords) {
+        public Values(Object value, List<ExceptionValue> exceptionValues) {
             this.value = value;
-            this.throwableRecords = throwableRecords;
+            this.exceptionValues = exceptionValues;
         }
 
         public Object getValue() {
@@ -235,12 +236,12 @@ public class JExcelAnalyzer extends JExcelProcessor<JExcelAnalyzer> {
             this.value = value;
         }
 
-        public List<Throwable> getThrowableRecords() {
-            return throwableRecords;
+        public List<ExceptionValue> getExceptionValues() {
+            return exceptionValues;
         }
 
-        public void setThrowableRecords(List<Throwable> throwableRecords) {
-            this.throwableRecords = throwableRecords;
+        public void setExceptionValues(List<ExceptionValue> exceptionValues) {
+            this.exceptionValues = exceptionValues;
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.github.linyuzai.jpoi.excel.post;
 
-import com.github.linyuzai.jpoi.excel.handler.ExcelExceptionHandler;
+import com.github.linyuzai.jpoi.excel.JExcelProcessor;
+import com.github.linyuzai.jpoi.excel.handler.ExceptionValue;
 import com.github.linyuzai.jpoi.excel.value.post.PostValue;
 
 import java.util.Collection;
@@ -23,8 +24,8 @@ public abstract class ThreadPoolPostProcessor implements PostProcessor {
     }
 
     @Override
-    public List<Throwable> processPost(Collection<? extends PostValue> postValues, ExcelExceptionHandler handler) {
-        List<Throwable> throwableRecords = new Vector<>();
+    public List<ExceptionValue> processPost(Collection<? extends PostValue> postValues, JExcelProcessor<?> context) {
+        List<ExceptionValue> exceptionValues = new Vector<>();
         final Collection<? extends PostValue> processValues = getProcessPostValues(postValues);
         CountDownLatch cdl = new CountDownLatch(processValues.size());
         for (PostValue postValue : processValues) {
@@ -32,9 +33,20 @@ public abstract class ThreadPoolPostProcessor implements PostProcessor {
                 try {
                     processPostValue(postValue);
                 } catch (Throwable e) {
-                    handler.handle(postValue.getSheetIndex(), postValue.getRowIndex(), postValue.getCellIndex(),
-                            postValue.getCell(), postValue.getRow(), postValue.getSheet(), postValue.getWorkbook(), e);
-                    throwableRecords.add(e);
+                    context.getExceptionHandler().handle(context,
+                            postValue.getSheetIndex(),
+                            postValue.getRowIndex(),
+                            postValue.getCellIndex(),
+                            postValue.getCell(),
+                            postValue.getRow(),
+                            postValue.getSheet(),
+                            postValue.getWorkbook(),
+                            e);
+                    exceptionValues.add(new ExceptionValue(
+                            postValue.getSheetIndex(),
+                            postValue.getRowIndex(),
+                            postValue.getCellIndex(),
+                            e));
                 } finally {
                     cdl.countDown();
                 }
@@ -43,10 +55,22 @@ public abstract class ThreadPoolPostProcessor implements PostProcessor {
         try {
             cdl.await();
         } catch (InterruptedException e) {
-            handler.handle(-1, -1, -1, null, null, null, null, e);
-            throwableRecords.add(e);
+            context.getExceptionHandler().handle(context,
+                    -1,
+                    -1,
+                    -1,
+                    null,
+                    null,
+                    null,
+                    null,
+                    e);
+            exceptionValues.add(new ExceptionValue(
+                    -1,
+                    -1,
+                    -1,
+                    e));
         }
-        return throwableRecords;
+        return exceptionValues;
     }
 
     public abstract void processPostValue(PostValue postValue) throws Throwable;

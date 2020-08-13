@@ -1,5 +1,6 @@
 package com.github.linyuzai.jpoi.excel.write;
 
+import com.github.linyuzai.jpoi.excel.handler.ExceptionValue;
 import com.github.linyuzai.jpoi.exception.JPoiException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -7,6 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JExcelWriter {
     private JExcelTransfer.Values values;
@@ -52,6 +54,10 @@ public class JExcelWriter {
     }
 
     public List<Throwable> getThrowableRecords() {
-        return values.getThrowableRecords();
+        return values.getExceptionValues().stream().map(ExceptionValue::getThrowable).collect(Collectors.toList());
+    }
+
+    public List<ExceptionValue> getExceptionValues() {
+        return values.getExceptionValues();
     }
 }

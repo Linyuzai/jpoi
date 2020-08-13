@@ -7,16 +7,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 public class LambdaFieldDataWriteAdapter extends ListDataWriteAdapter {
 
     @SafeVarargs
-    public final <T> void addListData(ListData listData, Function<T, ?>... lambdaMethods) throws Throwable {
+    public final <T> void addListData(ListData listData, SerializedLambda.Func<T, ?>... lambdaMethods) throws Throwable {
         int sheet = getListDataList().size();
         getListDataList().add(sheet, listData);
         List<WriteField> writeFieldList = new ArrayList<>();
-        for (Function<T, ?> lambdaMethod : lambdaMethods) {
+        for (SerializedLambda.Func<T, ?> lambdaMethod : lambdaMethods) {
             SerializedLambda serializedLambda = SerializedLambda.resolve(lambdaMethod);
             String methodName = serializedLambda.getImplMethodName();
             Method method;

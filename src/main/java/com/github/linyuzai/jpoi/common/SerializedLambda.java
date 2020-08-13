@@ -122,4 +122,8 @@ public class SerializedLambda implements Serializable {
     public String toString() {
         return String.format("%s -> %s::%s", getFunctionalInterfaceClassName(), getImplClass().getSimpleName(), implMethodName);
     }
+
+    public interface Func<T, R> {
+        R apply(T t);
+    }
 }

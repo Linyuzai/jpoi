@@ -1,7 +1,8 @@
 package com.github.linyuzai.jpoi.excel.write.adapter;
 
+import com.github.linyuzai.jpoi.common.SerializedLambda;
+
 import java.util.List;
-import java.util.function.Function;
 
 public class SimpleDataWriteAdapter extends TitleIndexDataWriteAdapter {
 
@@ -14,7 +15,7 @@ public class SimpleDataWriteAdapter extends TitleIndexDataWriteAdapter {
     }
 
     @SafeVarargs
-    public <T> SimpleDataWriteAdapter(List<?> dataList, Function<T, ?>... lambdaMethods) throws Throwable {
+    public <T> SimpleDataWriteAdapter(List<?> dataList, SerializedLambda.Func<T, ?>... lambdaMethods) throws Throwable {
         addListData(dataList, lambdaMethods);
     }
 
@@ -27,7 +28,7 @@ public class SimpleDataWriteAdapter extends TitleIndexDataWriteAdapter {
     }
 
     @SafeVarargs
-    public <T> SimpleDataWriteAdapter(String sheetName, List<?> dataList, Function<T, ?>... lambdaMethods) throws Throwable {
+    public <T> SimpleDataWriteAdapter(String sheetName, List<?> dataList, SerializedLambda.Func<T, ?>... lambdaMethods) throws Throwable {
         addListData(sheetName, dataList, lambdaMethods);
     }
 }
