@@ -123,7 +123,7 @@ public class SerializedLambda implements Serializable {
         return String.format("%s -> %s::%s", getFunctionalInterfaceClassName(), getImplClass().getSimpleName(), implMethodName);
     }
 
-    public interface Func<T, R> {
+    public interface Func<T, R> extends Serializable {
         R apply(T t);
     }
 }
